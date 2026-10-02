@@ -26,7 +26,7 @@ export const ContactScreen: React.FC<ContactScreenProps> = ({
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [copiedEmail, setCopiedEmail] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.agreedToTerms) {
       alert('Please agree to the Terms of Service and Privacy Policy to proceed.');
@@ -35,15 +35,24 @@ export const ContactScreen: React.FC<ContactScreenProps> = ({
 
     setIsSubmitting(true);
 
-    setTimeout(() => {
-      setIsSubmitting(false);
+    try {
+      const { callBackend } = await import('../lib/backendApi');
+      await callBackend({
+        action: 'lead',
+        name: formData.fullName,
+        email: formData.workEmail,
+        company_website: formData.companyWebsite,
+        traffic_volume: formData.trafficVolume,
+        primary_goal: formData.primaryGoal,
+        message: formData.message,
+      });
+
       setIsSubmitted(true);
       onShowToast(
         'Inquiry Sent Successfully',
-        `Thank you ${formData.fullName || 'there'}! An AI Specialist will follow up shortly at ${formData.workEmail || 'your email'}.`
+        `Thank you ${formData.fullName || 'there'}! Your inquiry has been saved and our AI Specialist will follow up shortly.`
       );
 
-      // Reset form after delay
       setTimeout(() => {
         setIsSubmitted(false);
         setFormData({
@@ -56,7 +65,14 @@ export const ContactScreen: React.FC<ContactScreenProps> = ({
           agreedToTerms: false,
         });
       }, 3500);
-    }, 1000);
+    } catch (error) {
+      onShowToast(
+        'Submission Failed',
+        error instanceof Error ? error.message : 'Please try again in a moment.'
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleCopyEmail = (e: React.MouseEvent) => {

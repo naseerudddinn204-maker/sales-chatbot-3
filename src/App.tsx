@@ -70,8 +70,12 @@ export default function App() {
           onToggleFrameView={() => setIsFramedView((prev) => !prev)}
         />
 
-        {/* Main Content Area with padding for fixed header and bottom navigation */}
-        <main className="flex-1 w-full pt-16 pb-20 bg-[#f9f9ff]">
+        {/* Main Content Area with responsive padding */}
+        <main
+          className={`flex-1 w-full pt-16 ${
+            isFramedView ? 'pb-20' : 'pb-20 md:pb-8'
+          } bg-[#f9f9ff]`}
+        >
           {currentTab === 'contact' && (
             <ContactScreen
               onOpenLiveChat={() => setIsLiveChatOpen(true)}
@@ -104,8 +108,55 @@ export default function App() {
           )}
         </main>
 
-        {/* Fixed Bottom Navigation */}
-        <BottomNav currentTab={currentTab} onTabChange={handleTabChange} />
+        {/* Clean Desktop/Laptop Footer (Hidden on Mobile) */}
+        {!isFramedView && (
+          <footer className="hidden md:flex flex-col border-t border-gray-200/80 bg-white/70 py-6 px-6 text-xs text-gray-500">
+            <div className="flex items-center justify-between gap-4">
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-6 rounded-lg bg-[#d61616] text-white flex items-center justify-center font-bold">
+                  <span className="material-symbols-outlined text-[15px]">smart_toy</span>
+                </div>
+                <span className="font-bold text-gray-900">ChatBot AI Automation</span>
+                <span className="text-gray-300">|</span>
+                <span>© {new Date().getFullYear()} All rights reserved.</span>
+              </div>
+
+              <div className="flex items-center gap-5">
+                <button
+                  onClick={() => handleTabChange('home')}
+                  className="hover:text-gray-900 cursor-pointer"
+                >
+                  Home
+                </button>
+                <button
+                  onClick={() => handleTabChange('demo')}
+                  className="hover:text-gray-900 cursor-pointer"
+                >
+                  Interactive Demo
+                </button>
+                <button
+                  onClick={() => handleTabChange('pricing')}
+                  className="hover:text-gray-900 cursor-pointer"
+                >
+                  Pricing
+                </button>
+                <button
+                  onClick={() => handleTabChange('contact')}
+                  className="hover:text-gray-900 cursor-pointer"
+                >
+                  Contact
+                </button>
+              </div>
+            </div>
+          </footer>
+        )}
+
+        {/* Bottom Navigation (Only visible on Mobile screens, or inside the Mobile Frame mockup) */}
+        <BottomNav
+          currentTab={currentTab}
+          onTabChange={handleTabChange}
+          isFramedView={isFramedView}
+        />
       </div>
 
       {/* Modals */}

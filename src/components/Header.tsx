@@ -35,8 +35,12 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
         </button>
 
-        {/* Center navigation for tablet & desktop */}
-        <nav className="hidden md:flex items-center gap-1 bg-gray-100/80 p-1 rounded-xl">
+        {/* Center navigation for tablet & desktop (hidden on mobile, and hidden when mobile mockup frame is active) */}
+        <nav
+          className={`${
+            isFramedView ? 'hidden' : 'hidden md:flex'
+          } items-center gap-1 bg-gray-100/80 p-1 rounded-xl`}
+        >
           <button
             onClick={() => onTabChange('home')}
             className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${

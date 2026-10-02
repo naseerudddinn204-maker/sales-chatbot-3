@@ -4,9 +4,10 @@ import { ScreenTab } from '../types';
 interface BottomNavProps {
   currentTab: ScreenTab;
   onTabChange: (tab: ScreenTab) => void;
+  isFramedView?: boolean;
 }
 
-export const BottomNav: React.FC<BottomNavProps> = ({ currentTab, onTabChange }) => {
+export const BottomNav: React.FC<BottomNavProps> = ({ currentTab, onTabChange, isFramedView }) => {
   const tabs = [
     { id: 'home' as ScreenTab, label: 'Home', icon: 'home' },
     { id: 'demo' as ScreenTab, label: 'Demo', icon: 'play_circle' },
@@ -15,7 +16,13 @@ export const BottomNav: React.FC<BottomNavProps> = ({ currentTab, onTabChange })
   ];
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-40 pb-safe bg-white/95 backdrop-blur-xl border-t border-gray-200/70 shadow-[0_-4px_16px_rgba(0,0,0,0.04)]">
+    <nav
+      className={`${
+        isFramedView
+          ? 'sticky bottom-0'
+          : 'fixed bottom-0 left-0 right-0 md:hidden'
+      } z-40 pb-safe bg-white/95 backdrop-blur-xl border-t border-gray-200/70 shadow-[0_-4px_16px_rgba(0,0,0,0.04)]`}
+    >
       <div className="max-w-md mx-auto h-16 px-2 flex items-center justify-around">
         {tabs.map((tab) => {
           const isActive = currentTab === tab.id;

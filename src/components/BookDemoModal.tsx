@@ -36,19 +36,33 @@ export const BookDemoModal: React.FC<BookDemoModalProps> = ({
     '05:00 PM',
   ];
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    setTimeout(() => {
-      setIsSubmitting(false);
+    try {
+      const { callBackend } = await import('../lib/backendApi');
+      await callBackend({
+        action: 'booking',
+        name: name || 'Valued Partner',
+        email,
+        date: selectedDate,
+        time: selectedTime,
+        timezone,
+        topic,
+      });
+
       onSuccess({
         date: selectedDate,
         time: selectedTime,
         name: name || 'Valued Partner',
       });
       onClose();
-    }, 800);
+    } catch (error) {
+      alert(error instanceof Error ? error.message : 'Unable to book the demo. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (

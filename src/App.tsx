@@ -42,10 +42,15 @@ export default function App() {
   const handleTabChange = (tab: ScreenTab) => {
     setCurrentTab(tab);
     window.scrollTo({ top: 0, behavior: 'smooth' });
+    // Also scroll the framed container to top if in framed view
+    const mainEl = document.querySelector('main');
+    if (mainEl) {
+      mainEl.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   };
 
   return (
-    <div className="min-h-screen bg-[#f9f9ff] text-[#151c27] flex flex-col items-center">
+    <div className="min-h-screen bg-[#f9f9ff] text-[#151c27] flex flex-col items-center justify-center">
       {/* Toast Notification Container */}
       <Toast
         show={toast.show}
@@ -56,13 +61,13 @@ export default function App() {
 
       {/* Main Container Wrapper */}
       <div
-        className={`w-full min-h-screen flex flex-col relative transition-all duration-300 ${
+        className={`w-full transition-all duration-300 ${
           isFramedView
-            ? 'max-w-[430px] my-4 shadow-2xl rounded-3xl border border-gray-300/80 overflow-hidden bg-white ring-12 ring-gray-900/5'
-            : 'max-w-md sm:max-w-2xl md:max-w-3xl lg:max-w-4xl mx-auto'
+            ? 'max-w-[420px] h-[840px] max-h-[92vh] my-4 shadow-2xl rounded-[2.5rem] border-[9px] border-gray-900 bg-[#f9f9ff] flex flex-col relative ring-1 ring-gray-900/10 overflow-hidden'
+            : 'min-h-screen max-w-md sm:max-w-2xl md:max-w-3xl lg:max-w-4xl mx-auto flex flex-col relative'
         }`}
       >
-        {/* Fixed Top Header */}
+        {/* Top Header - Always pinned stationary */}
         <Header
           currentTab={currentTab}
           onTabChange={handleTabChange}
@@ -70,11 +75,13 @@ export default function App() {
           onToggleFrameView={() => setIsFramedView((prev) => !prev)}
         />
 
-        {/* Main Content Area with responsive padding */}
+        {/* Main Scrollable Content Area */}
         <main
-          className={`flex-1 w-full pt-16 ${
-            isFramedView ? 'pb-20' : 'pb-20 md:pb-8'
-          } bg-[#f9f9ff]`}
+          className={`flex-1 w-full bg-[#f9f9ff] ${
+            isFramedView
+              ? 'overflow-y-auto pb-4 pt-1'
+              : 'pt-16 pb-20 md:pb-8'
+          }`}
         >
           {currentTab === 'contact' && (
             <ContactScreen
@@ -151,7 +158,7 @@ export default function App() {
           </footer>
         )}
 
-        {/* Bottom Navigation (Only visible on Mobile screens, or inside the Mobile Frame mockup) */}
+        {/* Bottom Navigation Menu Bar (Fixed stationary at the bottom on Mobile so visitor can switch pages immediately) */}
         <BottomNav
           currentTab={currentTab}
           onTabChange={handleTabChange}

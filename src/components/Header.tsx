@@ -15,14 +15,21 @@ export const Header: React.FC<HeaderProps> = ({
   onToggleFrameView,
 }) => {
   return (
-    <header className="fixed top-0 w-full z-40 bg-[#f9f9ff]/90 backdrop-blur-xl border-b border-gray-200/60 pt-safe">
+    <header
+      className={`${
+        isFramedView
+          ? 'sticky top-0 w-full shrink-0 z-40'
+          : 'fixed top-0 left-0 right-0 w-full z-40 pt-safe'
+      } bg-[#f9f9ff]/95 backdrop-blur-xl border-b border-gray-200/60 select-none transform translate-z-0 will-change-transform`}
+      style={{ WebkitTransform: 'translateZ(0)' }}
+    >
       <div className="max-w-4xl mx-auto h-16 px-4 sm:px-6 flex items-center justify-between gap-3">
         {/* Brand Logo & Wordmark */}
         <button
           onClick={() => onTabChange('home')}
           className="flex items-center gap-2.5 group text-left cursor-pointer focus:outline-none"
         >
-          <div className="w-9 h-9 rounded-xl bg-[#d61616] flex items-center justify-center shadow-sm text-white transition-transform group-hover:scale-105">
+          <div className="w-9 h-9 rounded-xl bg-[#d61616] flex items-center justify-center shadow-sm text-white transition-transform group-hover:scale-105 shrink-0">
             <span className="material-symbols-outlined text-[22px]">smart_toy</span>
           </div>
           <div className="flex flex-col">

@@ -48,11 +48,11 @@ export default function App() {
 
   const handleTabChange = (tab: ScreenTab) => {
     setCurrentTab(tab);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: 'auto' });
     // Also scroll the framed container to top if in framed view
     const mainEl = document.querySelector('main');
     if (mainEl) {
-      mainEl.scrollTo({ top: 0, behavior: 'smooth' });
+      mainEl.scrollTo({ top: 0, behavior: 'auto' });
     }
   };
 

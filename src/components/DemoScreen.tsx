@@ -162,7 +162,7 @@ export const DemoScreen: React.FC<DemoScreenProps> = ({
   };
 
   return (
-    <div className="flex flex-col w-full pb-10">
+    <div className="flex flex-col w-full pb-10">\n      <ChatbotCatalog onNavigateToContact={onNavigateToContact} />
       {/* Header Info */}
       <section className="px-4 sm:px-6 py-6 flex flex-col items-start gap-2">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#fee2e2] text-[#991b1b]">

@@ -178,6 +178,17 @@ export const DemoScreen: React.FC<DemoScreenProps> = ({
         </div>
       </section>
 
+      <section className="px-4 sm:px-6 pb-6">
+        <div className="bg-white border border-gray-200 rounded-2xl p-4 sm:p-5 shadow-sm">
+          <div className="mb-3">
+            <div className="text-[10px] font-bold uppercase tracking-wider text-blue-600">Available AI chatbots</div>
+            <h2 className="mt-1 font-headline text-xl sm:text-2xl font-extrabold text-gray-950">Choose a chatbot to test.</h2>
+            <p className="mt-1 text-xs sm:text-sm text-gray-600">Every enabled chatbot from the admin dashboard appears here automatically.</p>
+          </div>
+          <ChatbotCatalog onNavigateToContact={onNavigateToContact} />
+        </div>
+      </section>
+
       <section className="px-4 sm:px-6 pb-4">
         <div className="grid grid-cols-3 gap-2">
           <div className="bg-white border border-gray-200 rounded-xl p-3 text-center"><span className="text-[10px] text-gray-400 uppercase font-semibold block">Response</span><span className="font-bold text-gray-900 text-sm">{lastLatency}ms</span></div>

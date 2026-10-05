@@ -40,12 +40,12 @@ export const Header: React.FC<HeaderProps> = ({
           <button onClick={() => onTabChange('home')} className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${currentTab === 'home' ? 'bg-white text-gray-900 shadow-xs' : 'text-gray-600 hover:text-gray-900'}`}>Home</button>
           <button onClick={() => onTabChange('demo')} className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${currentTab === 'demo' ? 'bg-white text-gray-900 shadow-xs' : 'text-gray-600 hover:text-gray-900'}`}>Free Demo</button>
           <button onClick={() => onTabChange('pricing')} className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${currentTab === 'pricing' ? 'bg-white text-gray-900 shadow-xs' : 'text-gray-600 hover:text-gray-900'}`}>Pricing & ROI</button>
-          <button onClick={() => onTabChange('contact')} className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${currentTab === 'contact' ? 'bg-[#d61616] text-white shadow-xs' : 'text-gray-600 hover:text-gray-900'}`}>Contact Experts</button>
+          <button onClick={() => onTabChange('contact')} className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${currentTab === 'contact' ? 'bg-white text-gray-900 shadow-xs' : 'text-gray-600 hover:text-gray-900'}`}>Contact Experts</button>
         </nav>
 
         <button
           onClick={() => onTabChange('demo')}
-          className="h-9 px-3.5 rounded-lg bg-[#d61616] hover:bg-[#bd1313] text-white text-xs font-bold flex items-center justify-center shadow-sm active:scale-95 transition-all whitespace-nowrap cursor-pointer"
+          className="h-9 px-3.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold flex items-center justify-center shadow-sm active:scale-95 transition-all whitespace-nowrap cursor-pointer"
         >
           <span className="material-symbols-outlined text-[16px] mr-1">bolt</span>
           <span>Try Free</span>

@@ -3,7 +3,7 @@ import { Bot, Code2, LogOut, Plus, Save, Trash2, DollarSign, Copy, Check } from 
 import { createChatbot, createPrice, deleteChatbot, deletePrice, getAdminUser, getSession, listChatbots, listPrices, signOut, updateChatbot, updatePrice } from '../lib/supabaseAdmin';
 import { AdminLogin } from './AdminLogin';
 
-type Bot = { id:string; name:string; slug:string; description:string; system_prompt:string; welcome_message:string; enabled:boolean };
+type Bot = { id:string; name:string; slug:string; description:string; system_prompt:string; welcome_message:string; enabled:boolean; embed_code?:string };
 type Price = { id:string; plan_name:string; monthly_price:number; annual_price:number; description:string; features:string[]; highlighted:boolean; enabled:boolean; sort_order:number };
 
 export function AdminDashboard() {
@@ -45,11 +45,12 @@ export function AdminDashboard() {
   );
 
   const origin = window.location.origin;
-  const embedCode = selected ? `<script src="${origin}/embed.js" data-chatbot="${selected.slug}" defer></script>` : '';
+  const defaultEmbedCode = selected ? `<script src="${origin}/embed.js" data-chatbot="${selected.slug}" defer></script>` : '';
+  const embedCode = selected?.embed_code?.trim() || defaultEmbedCode;
   const liveUrl = selected ? `${origin}/embed/${selected.slug}` : '';
 
   async function addBot() {
-    const rows = await createChatbot({ name:'New Chatbot', slug:`chatbot-${Date.now()}`, description:'', system_prompt:'You are a helpful AI sales assistant.', welcome_message:'Hello! How can I help you?', enabled:true });
+    const rows = await createChatbot({ name:'New Chatbot', slug:`chatbot-${Date.now()}`, description:'', system_prompt:'You are a helpful AI sales assistant.', welcome_message:'Hello! How can I help you?', enabled:true, embed_code:'' });
     const bot = rows[0];
     setBots([bot, ...bots]);
     setSelected(bot);
@@ -172,7 +173,15 @@ export function AdminDashboard() {
 
               <div className="min-w-0 rounded-3xl bg-white p-4 shadow-sm sm:p-6">
                 <div className="mb-4 flex min-w-0 items-center gap-2"><Code2 className="shrink-0" size={20}/><h2 className="truncate text-xl font-bold">Embed this chatbot</h2></div>
-                <p className="break-words text-sm text-slate-500">Paste this code into any website's HTML. The chatbot will load from your backend-powered embed page.</p>
+                <p className="break-words text-sm text-slate-500">Har chatbot ka apna embed code yahan save karein. Agar aap kuch paste nahi karte, default code automatically use hoga.</p>
+                <textarea
+                  className={inputClass + " mt-4 font-mono text-xs sm:text-sm"}
+                  rows={5}
+                  value={selected.embed_code || defaultEmbedCode}
+                  onChange={e=>setSelected({...selected,embed_code:e.target.value})}
+                  placeholder="Paste your chatbot embed code here"
+                />
+                <p className="mt-2 break-words text-xs text-slate-500">Custom code save karne ke liye upar <b>Save</b> button dabayein. Neeche wala code sirf copy/use ke liye hai; dashboard custom HTML ko execute nahi karta.</p>
                 <pre className="mt-4 max-w-full overflow-hidden whitespace-pre-wrap break-all rounded-2xl bg-slate-950 p-3 text-xs text-slate-100 sm:p-4 sm:text-sm">{embedCode}</pre>
                 <div className="mt-4 grid gap-3 sm:flex sm:flex-wrap">
                   <button onClick={copyEmbed} className="flex w-full items-center justify-center gap-2 rounded-xl bg-slate-900 px-4 py-2 text-white sm:w-auto">{embedCopied?<Check size={16}/>:<Copy size={16}/>} {embedCopied?'Copied':'Copy embed code'}</button>

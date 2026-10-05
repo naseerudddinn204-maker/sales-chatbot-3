@@ -163,9 +163,9 @@ export const DemoScreen: React.FC<DemoScreenProps> = ({
   return (
     <div className="flex flex-col w-full pb-12 bg-[#f9f9ff]">
       <section className="px-4 sm:px-6 pt-8 pb-6">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#dbeafe] text-[#1d4ed8]">
-          <span className="w-2 h-2 rounded-full bg-[#2563eb] animate-pulse" />
-          <span className="text-[11px] font-bold uppercase tracking-wider">Free AI Demo</span>
+        <div className="inline-flex items-center gap-2 rounded-full border border-blue-100 bg-blue-50 px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider text-blue-700">
+          <span className="h-1.5 w-1.5 rounded-full bg-blue-600" />
+          Free AI Demo
         </div>
         <h1 className="font-headline text-[28px] sm:text-[36px] text-[#111827] tracking-tight font-extrabold leading-tight mt-3">Try the AI chatbot for free.</h1>
         <p className="text-[14px] sm:text-[15px] text-[#4b5563] mt-2 max-w-2xl">Test different chatbot modes, ask questions, and see how an AI assistant can support your customers and generate leads.</p>

@@ -38,7 +38,7 @@ export const Header: React.FC<HeaderProps> = ({
 
         <nav className="hidden md:flex items-center gap-1 bg-gray-100/80 p-1 rounded-xl">
           <button onClick={() => onTabChange('home')} className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${currentTab === 'home' ? 'bg-white text-gray-900 shadow-xs' : 'text-gray-600 hover:text-gray-900'}`}>Home</button>
-          <button onClick={() => onTabChange('demo')} className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${currentTab === 'demo' ? 'bg-white text-gray-900 shadow-xs' : 'text-gray-600 hover:text-gray-900'}`}>Interactive Demo</button>
+          <button onClick={() => onTabChange('demo')} className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${currentTab === 'demo' ? 'bg-white text-gray-900 shadow-xs' : 'text-gray-600 hover:text-gray-900'}`}>Free Demo</button>
           <button onClick={() => onTabChange('pricing')} className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${currentTab === 'pricing' ? 'bg-white text-gray-900 shadow-xs' : 'text-gray-600 hover:text-gray-900'}`}>Pricing & ROI</button>
           <button onClick={() => onTabChange('contact')} className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${currentTab === 'contact' ? 'bg-[#d61616] text-white shadow-xs' : 'text-gray-600 hover:text-gray-900'}`}>Contact Experts</button>
         </nav>

@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { ChatMessage } from '../types';
+import { ChatbotCatalog } from './ChatbotCatalog';
 
 interface DemoScreenProps {
   onNavigateToContact: () => void;

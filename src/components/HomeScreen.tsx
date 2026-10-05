@@ -1,5 +1,6 @@
 import React from 'react';
 import { ArrowRight, Bot, Check, MessageSquare, Zap, ShieldCheck, BarChart3 } from 'lucide-react';
+import { ChatbotCatalog } from './ChatbotCatalog';
 
 interface HomeScreenProps {
   onNavigateToDemo: () => void;
@@ -159,6 +160,18 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
               <p className="mt-1 text-sm text-gray-600">Connect your AI assistant to the workflows and information your business needs.</p>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* Live chatbot catalog */}
+      <section className="px-5 sm:px-8 lg:px-12 py-10 bg-white border-b border-gray-100">
+        <div className="max-w-6xl mx-auto">
+          <div className="max-w-2xl mb-2">
+            <div className="text-[11px] font-bold uppercase tracking-wider text-blue-600">Live from dashboard</div>
+            <h2 className="mt-2 font-headline text-2xl sm:text-3xl font-extrabold text-gray-950">Choose an AI chatbot.</h2>
+            <p className="mt-2 text-sm sm:text-base text-gray-600">Every enabled chatbot you add in the admin dashboard appears here automatically.</p>
+          </div>
+          <ChatbotCatalog onNavigateToContact={onNavigateToContact} />
         </div>
       </section>
 

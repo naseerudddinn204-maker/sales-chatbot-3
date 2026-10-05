@@ -15,10 +15,8 @@ type Chatbot = {
 type Price = { chatbot_id:string; plan_name:string; monthly_price:number; annual_price:number; highlighted?:boolean; enabled:boolean };
 
 function getDemoSlug(bot: Chatbot) {
-  // Do not execute arbitrary HTML/JS stored in the database.
-  // Read only the supported data-chatbot value from the saved embed snippet.
   const code = bot.embed_code || '';
-  const match = code.match(/data-chatbot\\s*=\\s*["']([^"']+)["']/i);
+  const match = code.match(/data-chatbot\s*=\s*["']([^"']+)["']/i);
   return match?.[1] || bot.slug;
 }
 
@@ -49,7 +47,6 @@ export const ChatbotCatalog: React.FC<{ onNavigateToContact?: () => void }> = ({
     <div className="mb-5">
       <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 text-blue-700 text-[11px] font-bold uppercase tracking-wider">Available AI Chatbots</div>
       <h2 className="font-headline text-2xl sm:text-3xl font-extrabold text-gray-900 mt-2">Choose a chatbot to test</h2>
-      <p className="text-sm text-gray-600 mt-1">Every enabled chatbot added from the admin dashboard appears here automatically.</p>
     </div>
     {loading && <div className="rounded-2xl bg-white border p-6 text-sm text-gray-500">Loading chatbots…</div>}
     {error && <div className="rounded-2xl bg-red-50 border border-red-100 p-6 text-sm text-red-700">{error}</div>}

@@ -9,8 +9,13 @@ import { PricingScreen } from './components/PricingScreen';
 import { LiveChatModal } from './components/LiveChatModal';
 import { BookDemoModal } from './components/BookDemoModal';
 import { Toast } from './components/Toast';
+import { AdminDashboard } from './components/AdminDashboard';
+import { EmbedChat } from './components/EmbedChat';
 
 export default function App() {
+  const path = window.location.pathname;
+  if (path === '/admin' || path.startsWith('/admin/')) return <AdminDashboard />;
+  if (path.startsWith('/embed/')) return <EmbedChat slug={decodeURIComponent(path.split('/embed/')[1] || 'sales-chatbot')} />;
   const [currentTab, setCurrentTab] = useState<ScreenTab>('contact');
   const [isFramedView, setIsFramedView] = useState(false);
   const [isLiveChatOpen, setIsLiveChatOpen] = useState(false);

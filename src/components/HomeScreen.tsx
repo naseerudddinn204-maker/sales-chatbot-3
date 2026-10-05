@@ -163,18 +163,6 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
         </div>
       </section>
 
-      {/* Live chatbot catalog */}
-      <section className="px-5 sm:px-8 lg:px-12 py-10 bg-white border-b border-gray-100">
-        <div className="max-w-6xl mx-auto">
-          <div className="max-w-2xl mb-2">
-            <div className="text-[11px] font-bold uppercase tracking-wider text-blue-600">Live from dashboard</div>
-            <h2 className="mt-2 font-headline text-2xl sm:text-3xl font-extrabold text-gray-950">Choose an AI chatbot.</h2>
-            <p className="mt-2 text-sm sm:text-base text-gray-600">Every enabled chatbot you add in the admin dashboard appears here automatically.</p>
-          </div>
-          <ChatbotCatalog onNavigateToContact={onNavigateToContact} />
-        </div>
-      </section>
-
       {/* How it works */}
       <section className="px-5 sm:px-8 lg:px-12 py-10">
         <div className="max-w-6xl mx-auto">

@@ -4,8 +4,23 @@ import { Bot, ExternalLink, ShoppingCart } from 'lucide-react';
 const SUPABASE_URL = 'https://tlkmcfpzfdokcnyyvkov.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_-gNvioLExBonu8hGuWa8lQ_eIWmhMn6';
 
-type Chatbot = { id:string; name:string; slug:string; description?:string|null; enabled:boolean };
+type Chatbot = {
+  id:string;
+  name:string;
+  slug:string;
+  description?:string|null;
+  enabled:boolean;
+  embed_code?:string|null;
+};
 type Price = { chatbot_id:string; plan_name:string; monthly_price:number; annual_price:number; highlighted?:boolean; enabled:boolean };
+
+function getDemoSlug(bot: Chatbot) {
+  // Do not execute arbitrary HTML/JS stored in the database.
+  // Read only the supported data-chatbot value from the saved embed snippet.
+  const code = bot.embed_code || '';
+  const match = code.match(/data-chatbot\\s*=\\s*["']([^"']+)["']/i);
+  return match?.[1] || bot.slug;
+}
 
 export const ChatbotCatalog: React.FC<{ onNavigateToContact?: () => void }> = ({ onNavigateToContact }) => {
   const [bots,setBots] = useState<Chatbot[]>([]);
@@ -18,7 +33,7 @@ export const ChatbotCatalog: React.FC<{ onNavigateToContact?: () => void }> = ({
       try {
         const headers = { apikey: SUPABASE_KEY, Authorization: 'Bearer ' + SUPABASE_KEY };
         const [botRes, priceRes] = await Promise.all([
-          fetch(SUPABASE_URL + '/rest/v1/chatbots?select=id,name,slug,description,enabled&enabled=eq.true&order=created_at.desc',{headers}),
+          fetch(SUPABASE_URL + '/rest/v1/chatbots?select=id,name,slug,description,enabled,embed_code&enabled=eq.true&order=created_at.desc',{headers}),
           fetch(SUPABASE_URL + '/rest/v1/chatbot_prices?select=chatbot_id,plan_name,monthly_price,annual_price,highlighted,enabled&enabled=eq.true&order=sort_order.asc',{headers})
         ]);
         if (!botRes.ok || !priceRes.ok) throw new Error('Could not load chatbots');
@@ -43,6 +58,7 @@ export const ChatbotCatalog: React.FC<{ onNavigateToContact?: () => void }> = ({
       {bots.map(bot => {
         const botPrices = prices.filter(p => p.chatbot_id === bot.id);
         const cheapest = botPrices.length ? Math.min(...botPrices.map(p => Number(p.monthly_price))) : null;
+        const demoSlug = getDemoSlug(bot);
         return <article key={bot.id} className="bg-white rounded-2xl border border-gray-200 shadow-sm p-5 flex flex-col">
           <div className="flex items-start justify-between gap-3">
             <div className="w-11 h-11 rounded-xl bg-gray-950 text-white flex items-center justify-center"><Bot size={22}/></div>
@@ -53,7 +69,7 @@ export const ChatbotCatalog: React.FC<{ onNavigateToContact?: () => void }> = ({
           <div className="mt-4 flex items-end justify-between gap-3">
             <div>{cheapest !== null ? <><span className="text-xs text-gray-500">Starting from</span><div className="font-extrabold text-xl text-gray-900">{'$'}{cheapest}<span className="text-xs font-medium text-gray-500">/mo</span></div></> : <span className="text-sm text-gray-500">Pricing available on request</span>}</div>
             <div className="flex gap-2">
-              <a href={'/embed/' + encodeURIComponent(bot.slug)} target="_blank" rel="noreferrer" className="h-9 px-3 rounded-lg bg-gray-950 text-white text-xs font-bold flex items-center gap-1.5 hover:bg-gray-800"><ExternalLink size={14}/> Test</a>
+              <a href={'/embed/' + encodeURIComponent(demoSlug)} target="_blank" rel="noreferrer" className="h-9 px-3 rounded-lg bg-gray-950 text-white text-xs font-bold flex items-center gap-1.5 hover:bg-gray-800"><ExternalLink size={14}/> Test</a>
               <button onClick={onNavigateToContact} className="h-9 px-3 rounded-lg bg-[#d61616] text-white text-xs font-bold flex items-center gap-1.5 hover:bg-[#bd1313]"><ShoppingCart size={14}/> Get Started</button>
             </div>
           </div>

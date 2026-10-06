@@ -11,6 +11,8 @@ type Chatbot = {
   description?:string|null;
   enabled:boolean;
   embed_code?:string|null;
+  logo_url?:string|null;
+  brand_color?:string|null;
 };
 type Price = { chatbot_id:string; plan_name:string; monthly_price:number; annual_price:number; highlighted?:boolean; enabled:boolean };
 
@@ -31,7 +33,7 @@ export const ChatbotCatalog: React.FC<{ onNavigateToContact?: () => void }> = ({
       try {
         const headers = { apikey: SUPABASE_KEY, Authorization: 'Bearer ' + SUPABASE_KEY };
         const [botRes, priceRes] = await Promise.all([
-          fetch(SUPABASE_URL + '/rest/v1/chatbots?select=id,name,slug,description,enabled,embed_code&enabled=eq.true&order=created_at.desc',{headers}),
+          fetch(SUPABASE_URL + '/rest/v1/chatbots?select=id,name,slug,description,enabled,embed_code,logo_url,brand_color&enabled=eq.true&order=created_at.desc',{headers}),
           fetch(SUPABASE_URL + '/rest/v1/chatbot_prices?select=chatbot_id,plan_name,monthly_price,annual_price,highlighted,enabled&enabled=eq.true&order=sort_order.asc',{headers})
         ]);
         if (!botRes.ok || !priceRes.ok) throw new Error('Could not load chatbots');
@@ -58,7 +60,7 @@ export const ChatbotCatalog: React.FC<{ onNavigateToContact?: () => void }> = ({
         const demoSlug = getDemoSlug(bot);
         return <article key={bot.id} className="bg-white rounded-2xl border border-gray-200 shadow-sm p-5 flex flex-col">
           <div className="flex items-start justify-between gap-3">
-            <div className="w-11 h-11 rounded-xl bg-gray-950 text-white flex items-center justify-center"><Bot size={22}/></div>
+            <div className="w-11 h-11 rounded-xl text-white flex items-center justify-center overflow-hidden" style={{backgroundColor:bot.brand_color||'#030712'}}>{bot.logo_url ? <img src={bot.logo_url} alt={bot.name} className="w-full h-full object-contain bg-white p-1"/> : <Bot size={22}/>}</div>
             <span className="text-[10px] font-bold uppercase tracking-wide text-emerald-600 bg-emerald-50 px-2 py-1 rounded-full">Live Demo</span>
           </div>
           <h3 className="font-bold text-lg text-gray-900 mt-4">{bot.name}</h3>

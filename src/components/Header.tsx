@@ -22,13 +22,21 @@ export const Header: React.FC<HeaderProps> = ({
         <button
           onClick={() => onTabChange('home')}
           className="flex items-center gap-2.5 group text-left cursor-pointer focus:outline-none"
+          aria-label="Orken AI home"
         >
-          <div className="w-9 h-9 rounded-xl bg-[#d61616] flex items-center justify-center shadow-sm text-white transition-transform group-hover:scale-105 shrink-0">
-            <span className="material-symbols-outlined text-[22px]">smart_toy</span>
+          <div className="w-9 h-9 rounded-xl bg-white border border-gray-200 flex items-center justify-center shadow-sm overflow-hidden transition-transform group-hover:scale-105 shrink-0">
+            <img
+              src="https://www.orken.us/favicon.ico"
+              alt="Orken AI"
+              className="w-full h-full object-contain p-1.5"
+              onError={(e) => {
+                e.currentTarget.style.display = 'none';
+              }}
+            />
           </div>
           <div className="flex flex-col">
             <span className="font-headline text-[19px] text-[#111827] tracking-tight font-extrabold leading-none">
-              ChatBot
+              Orken AI
             </span>
             <span className="text-[10px] text-gray-500 uppercase tracking-widest font-semibold mt-0.5">
               AI Automation

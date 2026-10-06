@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import { Bot, Code2, LogOut, Plus, Save, Trash2, DollarSign, Copy, Check } from 'lucide-react';
-import { createChatbot, createPrice, deleteChatbot, deletePrice, getAdminUser, getSession, listChatbots, listPrices, signOut, updateChatbot, updatePrice } from '../lib/supabaseAdmin';
+import { Bot, Code2, LogOut, Plus, Save, Trash2, DollarSign, Copy, Check, ClipboardList } from 'lucide-react';
+import { createChatbot, createPrice, deleteChatbot, deletePrice, getAdminUser, getSession, listChatbots, listLeads, listPrices, signOut, updateChatbot, updatePrice } from '../lib/supabaseAdmin';
 import { AdminLogin } from './AdminLogin';
 
 type Bot = { id:string; name:string; slug:string; description:string; system_prompt:string; welcome_message:string; enabled:boolean; embed_code?:string; logo_url?:string; brand_color?:string; knowledge_description?:string; knowledge_text?:string };
-type Price = { id:string; plan_name:string; monthly_price:number; annual_price:number; description:string; features:string[]; highlighted:boolean; enabled:boolean; sort_order:number };
+type Price = { id:string; plan_name:string; monthly_price:number; annual_price:number; description:string; features:string[]; highlighted:boolean; enabled:boolean; sort_order:number };\ntype Lead = { id:string; name:string; email:string; company?:string; phone?:string; company_website:string; traffic_volume?:string; primary_goal?:string; message?:string; created_at:string };
 
 export function AdminDashboard() {
   const [loggedIn, setLoggedIn] = useState(!!getSession());
   const [authorized, setAuthorized] = useState(false);
   const [bots, setBots] = useState<Bot[]>([]);
   const [selected, setSelected] = useState<Bot | null>(null);
-  const [prices, setPrices] = useState<Price[]>([]);
+  const [prices, setPrices] = useState<Price[]>([]);\n  const [leads, setLeads] = useState<Lead[]>([]);
   const [loading, setLoading] = useState(true);
   const [notice, setNotice] = useState('');
   const [embedCopied, setEmbedCopied] = useState(false);
@@ -116,6 +116,25 @@ export function AdminDashboard() {
 
       <main className="mx-auto w-full max-w-7xl box-border px-3 py-4 sm:px-4 sm:py-6 lg:px-6">
         {notice && <div className="mb-4 break-words rounded-xl bg-emerald-50 p-3 text-sm text-emerald-700">{notice}</div>}
+
+        <div className="mb-4 min-w-0 rounded-3xl bg-white p-4 shadow-sm sm:p-6">
+          <div className="mb-4 flex items-center gap-2">
+            <ClipboardList size={20}/>
+            <div>
+              <h2 className="text-xl font-bold">Chatbot Requests</h2>
+              <p className="text-sm text-slate-500">“Request your AI chatbot” forms submitted from the Contact Expert page.</p>
+            </div>
+            <span className="ml-auto rounded-full bg-slate-100 px-3 py-1 text-xs font-bold">{leads.length}</span>
+          </div>
+          {leads.length === 0 ? <div className="rounded-2xl bg-slate-50 p-5 text-sm text-slate-500">No chatbot requests yet.</div> : (
+            <div className="overflow-x-auto">
+              <table className="w-full min-w-[900px] text-left text-sm">
+                <thead><tr className="border-b text-xs uppercase text-slate-500"><th className="p-3">Date</th><th className="p-3">Client</th><th className="p-3">Email</th><th className="p-3">Website</th><th className="p-3">Goal</th><th className="p-3">Traffic</th><th className="p-3">Message</th></tr></thead>
+                <tbody>{leads.map(lead=><tr key={lead.id} className="border-b last:border-0"><td className="p-3 whitespace-nowrap">{new Date(lead.created_at).toLocaleString()}</td><td className="p-3 font-semibold">{lead.name}{lead.company && <div className="text-xs font-normal text-slate-500">{lead.company}</div>}</td><td className="p-3">{lead.email}{lead.phone && <div className="text-xs text-slate-500">{lead.phone}</div>}</td><td className="p-3"><a className="text-blue-600 hover:underline" href={lead.company_website} target="_blank" rel="noreferrer">{lead.company_website}</a></td><td className="p-3">{lead.primary_goal||'—'}</td><td className="p-3">{lead.traffic_volume||'—'}</td><td className="p-3 max-w-[280px]">{lead.message||'—'}</td></tr>)}</tbody>
+              </table>
+            </div>
+          )}
+        </div>
 
         <div className="grid min-w-0 gap-4 lg:grid-cols-[280px_minmax(0,1fr)] lg:gap-6">
           <aside className="min-w-0 rounded-3xl bg-white p-3 shadow-sm sm:p-4 lg:h-fit lg:sticky lg:top-24">

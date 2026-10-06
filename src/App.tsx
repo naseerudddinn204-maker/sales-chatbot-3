@@ -49,7 +49,6 @@ export default function App() {
   const handleTabChange = (tab: ScreenTab) => {
     setCurrentTab(tab);
     window.scrollTo({ top: 0, behavior: 'auto' });
-    // Also scroll the framed container to top if in framed view
     const mainEl = document.querySelector('main');
     if (mainEl) {
       mainEl.scrollTo({ top: 0, behavior: 'auto' });
@@ -58,7 +57,6 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-[#f9f9ff] text-[#151c27] flex flex-col items-center justify-center">
-      {/* Toast Notification Container */}
       <Toast
         show={toast.show}
         title={toast.title}
@@ -66,7 +64,6 @@ export default function App() {
         onClose={() => setToast((prev) => ({ ...prev, show: false }))}
       />
 
-      {/* Main Container Wrapper */}
       <div
         className={`w-full transition-all duration-300 ${
           isFramedView
@@ -74,7 +71,6 @@ export default function App() {
             : 'min-h-screen max-w-md sm:max-w-2xl md:max-w-3xl lg:max-w-4xl mx-auto flex flex-col relative'
         }`}
       >
-        {/* Top Header - Always pinned stationary */}
         <Header
           currentTab={currentTab}
           onTabChange={handleTabChange}
@@ -82,7 +78,6 @@ export default function App() {
           onToggleFrameView={() => setIsFramedView((prev) => !prev)}
         />
 
-        {/* Main Scrollable Content Area */}
         <main
           className={`flex-1 w-full bg-[#f9f9ff] ${
             isFramedView
@@ -122,50 +117,32 @@ export default function App() {
           )}
         </main>
 
-        {/* Clean Desktop/Laptop Footer (Hidden on Mobile) */}
         {!isFramedView && (
           <footer className="hidden md:flex flex-col border-t border-gray-200/80 bg-white/70 py-6 px-6 text-xs text-gray-500">
             <div className="flex items-center justify-between gap-4">
               <div className="flex items-center gap-2">
-                <div className="w-6 h-6 rounded-lg bg-[#d61616] text-white flex items-center justify-center font-bold">
-                  <span className="material-symbols-outlined text-[15px]">smart_toy</span>
+                <div className="w-6 h-6 rounded-lg bg-white border border-gray-200 flex items-center justify-center overflow-hidden">
+                  <img
+                    src="https://www.orken.us/favicon.ico"
+                    alt="Orken AI"
+                    className="w-full h-full object-contain p-1"
+                  />
                 </div>
-                <span className="font-bold text-gray-900">ChatBot AI Automation</span>
+                <span className="font-bold text-gray-900">Orken AI</span>
                 <span className="text-gray-300">|</span>
                 <span>© {new Date().getFullYear()} All rights reserved.</span>
               </div>
 
               <div className="flex items-center gap-5">
-                <button
-                  onClick={() => handleTabChange('home')}
-                  className="hover:text-gray-900 cursor-pointer"
-                >
-                  Home
-                </button>
-                <button
-                  onClick={() => handleTabChange('demo')}
-                  className="hover:text-gray-900 cursor-pointer"
-                >
-                  Interactive Demo
-                </button>
-                <button
-                  onClick={() => handleTabChange('pricing')}
-                  className="hover:text-gray-900 cursor-pointer"
-                >
-                  Pricing
-                </button>
-                <button
-                  onClick={() => handleTabChange('contact')}
-                  className="hover:text-gray-900 cursor-pointer"
-                >
-                  Contact
-                </button>
+                <button onClick={() => handleTabChange('home')} className="hover:text-gray-900 cursor-pointer">Home</button>
+                <button onClick={() => handleTabChange('demo')} className="hover:text-gray-900 cursor-pointer">Interactive Demo</button>
+                <button onClick={() => handleTabChange('pricing')} className="hover:text-gray-900 cursor-pointer">Pricing</button>
+                <button onClick={() => handleTabChange('contact')} className="hover:text-gray-900 cursor-pointer">Contact</button>
               </div>
             </div>
           </footer>
         )}
 
-        {/* Bottom Navigation Menu Bar (Fixed stationary at the bottom on Mobile so visitor can switch pages immediately) */}
         <BottomNav
           currentTab={currentTab}
           onTabChange={handleTabChange}
@@ -173,7 +150,6 @@ export default function App() {
         />
       </div>
 
-      {/* Modals */}
       <LiveChatModal
         isOpen={isLiveChatOpen}
         onClose={() => setIsLiveChatOpen(false)}

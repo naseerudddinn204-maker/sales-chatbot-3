@@ -120,7 +120,7 @@ export function EmbedChat({ slug }: { slug: string }) {
       </div>
 
       <div className="h-[470px] overflow-y-auto p-4 space-y-3">
-        {messages.map((m,i)=><div key={i} className={`flex ${m.role==='user'?'justify-end':'justify-start'}`}><div className={`max-w-[82%] rounded-2xl px-4 py-3 text-sm ${m.role==='user'?'text-white':'bg-slate-100 text-slate-800'}`}>{m.text}</div></div>)}
+        {messages.map((m,i)=><div key={i} className={`flex ${m.role==='user'?'justify-end':'justify-start'}`}><div className={`max-w-[82%] rounded-2xl px-4 py-3 text-sm ${m.role==='user'?'text-white bg-slate-950':'bg-slate-100 text-slate-800'}`}>{m.text}</div></div>)}
         {loading&&<div className="text-xs text-slate-400">Typing…</div>}
       </div>
 

@@ -22,8 +22,9 @@ export function AdminDashboard() {
       const admin = await getAdminUser();
       if (!admin) { setAuthorized(false); return; }
       setAuthorized(true);
-      const data = await listChatbots();
+      const [data, leadData] = await Promise.all([listChatbots(), listLeads()]);
       setBots(data);
+      setLeads(leadData || []);
       if (!selected && data[0]) setSelected(data[0]);
     } catch (e) { setNotice(e instanceof Error ? e.message : 'Could not load dashboard'); }
     finally { setLoading(false); }

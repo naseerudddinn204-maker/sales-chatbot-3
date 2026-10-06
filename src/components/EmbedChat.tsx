@@ -26,6 +26,9 @@ export function EmbedChat({ slug }: { slug: string }) {
 
   useEffect(()=>{
     if(config?.welcome_message) setMessages([{role:'assistant',text:config.welcome_message}]);
+    if(config?.knowledge_description) setBusinessDescription(config.knowledge_description);
+    if(config?.knowledge_text) setFiles([{name:'Saved business knowledge',text:config.knowledge_text,size:config.knowledge_text.length}]);
+    if(config?.knowledge_description || config?.knowledge_text) setKnowledgeActive(true);
   },[config?.welcome_message]);
 
   async function handleFiles(selected:FileList|null){
@@ -112,18 +115,18 @@ export function EmbedChat({ slug }: { slug: string }) {
             <button type="button" onClick={activateKnowledge} className="flex-1 rounded-xl bg-slate-950 py-2.5 text-xs font-bold text-white">Use this knowledge</button>
             <button type="button" onClick={resetKnowledge} className="rounded-xl border px-3 py-2.5 text-xs font-semibold text-slate-600">Clear</button>
           </div>
-          <p className="text-[10px] leading-relaxed text-slate-400">Your business description and uploaded file contents are kept only in this page session. They are not saved to chatbot configuration or browser storage. Refreshing this page clears them.</p>
+          <p className="text-[10px] leading-relaxed text-slate-400">Saved chatbot knowledge is loaded automatically for this chatbot. Admin changes are stored in Supabase and remain available after refresh.</p>
         </div>}
       </div>
 
       <div className="h-[470px] overflow-y-auto p-4 space-y-3">
-        {messages.map((m,i)=><div key={i} className={`flex ${m.role==='user'?'justify-end':'justify-start'}`}><div className={`max-w-[82%] rounded-2xl px-4 py-3 text-sm ${m.role==='user'?'bg-slate-950 text-white':'bg-slate-100 text-slate-800'}`}>{m.text}</div></div>)}
+        {messages.map((m,i)=><div key={i} className={`flex ${m.role==='user'?'justify-end':'justify-start'}`}><div className={`max-w-[82%] rounded-2xl px-4 py-3 text-sm ${m.role==='user'?'text-white':'bg-slate-100 text-slate-800'}`}>{m.text}</div></div>)}
         {loading&&<div className="text-xs text-slate-400">Typing…</div>}
       </div>
 
       <form onSubmit={e=>{e.preventDefault();send()}} className="border-t p-3 flex gap-2">
         <input value={input} onChange={e=>setInput(e.target.value)} className="flex-1 rounded-xl border px-3 py-3 outline-none" placeholder={knowledgeActive?'Ask about your business…':'Type a message…'}/>
-        <button disabled={loading} className="rounded-xl bg-slate-950 px-4 text-white disabled:opacity-50"><Send size={18}/></button>
+        <button disabled={loading} className="rounded-xl px-4 text-white disabled:opacity-50" style={{backgroundColor:config?.brand_color||'#020617'}}><Send size={18}/></button>
       </form>
     </div>
   </div>;

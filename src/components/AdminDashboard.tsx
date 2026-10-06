@@ -3,7 +3,7 @@ import { Bot, Code2, LogOut, Plus, Save, Trash2, DollarSign, Copy, Check } from 
 import { createChatbot, createPrice, deleteChatbot, deletePrice, getAdminUser, getSession, listChatbots, listPrices, signOut, updateChatbot, updatePrice } from '../lib/supabaseAdmin';
 import { AdminLogin } from './AdminLogin';
 
-type Bot = { id:string; name:string; slug:string; description:string; system_prompt:string; welcome_message:string; enabled:boolean; embed_code?:string };
+type Bot = { id:string; name:string; slug:string; description:string; system_prompt:string; welcome_message:string; enabled:boolean; embed_code?:string; logo_url?:string; brand_color?:string; knowledge_description?:string; knowledge_text?:string };
 type Price = { id:string; plan_name:string; monthly_price:number; annual_price:number; description:string; features:string[]; highlighted:boolean; enabled:boolean; sort_order:number };
 
 export function AdminDashboard() {
@@ -50,7 +50,7 @@ export function AdminDashboard() {
   const liveUrl = selected ? `${origin}/embed/${selected.slug}` : '';
 
   async function addBot() {
-    const rows = await createChatbot({ name:'New Chatbot', slug:`chatbot-${Date.now()}`, description:'', system_prompt:'You are a helpful AI sales assistant.', welcome_message:'Hello! How can I help you?', enabled:true, embed_code:'' });
+    const rows = await createChatbot({ name:'New Chatbot', slug:`chatbot-${Date.now()}`, description:'', system_prompt:'You are a helpful AI sales assistant.', welcome_message:'Hello! How can I help you?', enabled:true, embed_code:'', logo_url:'', brand_color:'#111827', knowledge_description:'', knowledge_text:'' });
     const bot = rows[0];
     setBots([bot, ...bots]);
     setSelected(bot);
@@ -126,7 +126,7 @@ export function AdminDashboard() {
             <div className="grid gap-2">
               {bots.map(bot => (
                 <button key={bot.id} onClick={() => setSelected(bot)} className={`w-full min-w-0 overflow-hidden rounded-2xl p-3 text-left ${selected?.id===bot.id?'bg-slate-900 text-white':'bg-slate-50'}`}>
-                  <div className="flex min-w-0 items-center gap-2"><Bot className="shrink-0" size={17}/><span className="truncate font-semibold">{bot.name}</span></div>
+                  <div className="flex min-w-0 items-center gap-2">{bot.logo_url ? <img src={bot.logo_url} alt="" className="h-7 w-7 shrink-0 rounded-lg object-contain"/> : <Bot className="shrink-0" size={17}/>}<span className="truncate font-semibold">{bot.name}</span></div>
                   <div className="mt-1 truncate text-xs opacity-70">/{bot.slug}</div>
                 </button>
               ))}
@@ -148,6 +148,37 @@ export function AdminDashboard() {
                   <textarea className={inputClass} value={selected.description||''} onChange={e=>setSelected({...selected,description:e.target.value})} placeholder="Description"/>
                   <textarea className={inputClass} rows={5} value={selected.system_prompt||''} onChange={e=>setSelected({...selected,system_prompt:e.target.value})} placeholder="System prompt"/>
                   <textarea className={inputClass + " md:col-span-2"} rows={3} value={selected.welcome_message||''} onChange={e=>setSelected({...selected,welcome_message:e.target.value})} placeholder="Welcome message"/>
+                  <div className="md:col-span-2 grid gap-4 md:grid-cols-2">
+                    <div>
+                      <label className="mb-1 block text-sm font-semibold">Chatbot Logo</label>
+                      <input className={inputClass} value={selected.logo_url||''} onChange={e=>setSelected({...selected,logo_url:e.target.value})} placeholder="Logo image URL (https://...)" />
+                      {selected.logo_url && <img src={selected.logo_url} alt={selected.name} className="mt-3 h-14 w-14 rounded-2xl object-contain border p-1" />}
+                    </div>
+                    <div>
+                      <label className="mb-1 block text-sm font-semibold">Brand Color</label>
+                      <div className="flex gap-2">
+                        <input type="color" className="h-11 w-14 rounded-lg border" value={selected.brand_color||'#111827'} onChange={e=>setSelected({...selected,brand_color:e.target.value})} />
+                        <input className={inputClass} value={selected.brand_color||'#111827'} onChange={e=>setSelected({...selected,brand_color:e.target.value})} placeholder="#111827" />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="md:col-span-2 border-t pt-4">
+                    <h3 className="font-bold">Business Knowledge</h3>
+                    <p className="mt-1 text-sm text-slate-500">Ye knowledge isi chatbot ke saath database mein save hogi.</p>
+                    <textarea className={inputClass + " mt-3"} rows={5} value={selected.knowledge_description||''} onChange={e=>setSelected({...selected,knowledge_description:e.target.value})} placeholder="Business description / FAQs / approved answers" />
+                    <textarea className={inputClass + " mt-3 font-mono text-xs"} rows={8} value={selected.knowledge_text||''} onChange={e=>setSelected({...selected,knowledge_text:e.target.value})} placeholder="Uploaded knowledge text..." />
+                    <input
+                      className={inputClass + " mt-3"}
+                      type="file"
+                      accept=".txt,.md,.csv,.json"
+                      onChange={async e=>{
+                        const file=e.target.files?.[0];
+                        if(!file) return;
+                        const text=await file.text();
+                        setSelected({...selected,knowledge_text:text});
+                      }}
+                    />
+                  </div>
                   <label className="flex min-w-0 items-center gap-2 text-sm"><input type="checkbox" checked={selected.enabled} onChange={e=>setSelected({...selected,enabled:e.target.checked})}/> Public chatbot enabled</label>
                 </div>
               </div>

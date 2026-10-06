@@ -34,10 +34,12 @@ Deno.serve(async req=>{
         : bot.system_prompt)+"\n\nVisitor question: "+message;
       const ar=await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key="+encodeURIComponent(key),{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({contents:[{parts:[{text:prompt}]}],generationConfig:{temperature:hasClientKnowledge?0.1:0.4}})});
       if(!ar.ok){const detail=await ar.text();console.error("Gemini API error",ar.status,detail);return json({error:ar.status===401||ar.status===403?"Gemini API key is invalid or does not have access.":ar.status===429?"Gemini rate limit reached. Please retry shortly.":"Gemini request failed. Check the Gemini API key and model configuration."},502);}const d=await ar.json();reply=d?.candidates?.[0]?.content?.parts?.[0]?.text?.trim()||reply;if(!reply)throw new Error("Gemini returned an empty response.");
-    }else return json({error:"GEMINI_API_KEY is not configured in Supabase Edge Function secrets."},503);
-    else if(lower.includes("price")||lower.includes("cost")||lower.includes("plan"))reply="Our Starter plan is $49/mo, Growth is $149/mo, and Enterprise is $499/mo. Annual billing has discounted pricing.";
-    else if(lower.includes("human")||lower.includes("agent")||lower.includes("representative"))reply="Absolutely. I can connect you with a human sales specialist for a tailored walkthrough.";
-    else if(lower.includes("model")||lower.includes("ai"))reply="This demo uses an AI-powered sales concierge.";
+    }else{
+      if(hasClientKnowledge)return json({error:"GEMINI_API_KEY is not configured in Supabase Edge Function secrets."},503);
+      if(lower.includes("price")||lower.includes("cost")||lower.includes("plan"))reply="Our Starter plan is $49/mo, Growth is $149/mo, and Enterprise is $499/mo. Annual billing has discounted pricing.";
+      else if(lower.includes("human")||lower.includes("agent")||lower.includes("representative"))reply="Absolutely. I can connect you with a human sales specialist for a tailored walkthrough.";
+      else if(lower.includes("model")||lower.includes("ai"))reply="This demo uses an AI-powered sales concierge.";
+    }
     const session_id=String(body?.session_id||crypto.randomUUID());
     await sb.from("chatbot_messages").insert({chatbot_id:bot.id,session_id,user_message:message,assistant_message:reply});
     return json({ok:true,reply,session_id,knowledge_active:hasClientKnowledge});

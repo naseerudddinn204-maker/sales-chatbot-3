@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { DemoFormData } from '../types';
+import { callBackend } from '../lib/backendApi';
 
 interface ContactScreenProps {
   onOpenLiveChat: () => void;
@@ -32,7 +33,6 @@ export const ContactScreen: React.FC<ContactScreenProps> = ({
     }
     setIsSubmitting(true);
     try {
-      const { callBackend } = await import('../lib/backendApi');
       await callBackend({
         action: 'lead',
         name: formData.fullName,

@@ -115,7 +115,6 @@ export function EmbedChat({ slug }: { slug: string }) {
             <button type="button" onClick={activateKnowledge} className="flex-1 rounded-xl bg-slate-950 py-2.5 text-xs font-bold text-white">Use this knowledge</button>
             <button type="button" onClick={resetKnowledge} className="rounded-xl border px-3 py-2.5 text-xs font-semibold text-slate-600">Clear</button>
           </div>
-          <p className="text-[10px] leading-relaxed text-slate-400">Saved chatbot knowledge is loaded automatically for this chatbot. Admin changes are stored in Supabase and remain available after refresh.</p>
         </div>}
       </div>
 

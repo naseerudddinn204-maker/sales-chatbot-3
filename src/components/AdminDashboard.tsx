@@ -4,14 +4,16 @@ import { createChatbot, createPrice, deleteChatbot, deletePrice, getAdminUser, g
 import { AdminLogin } from './AdminLogin';
 
 type Bot = { id:string; name:string; slug:string; description:string; system_prompt:string; welcome_message:string; enabled:boolean; embed_code?:string; logo_url?:string; brand_color?:string; knowledge_description?:string; knowledge_text?:string };
-type Price = { id:string; plan_name:string; monthly_price:number; annual_price:number; description:string; features:string[]; highlighted:boolean; enabled:boolean; sort_order:number };\ntype Lead = { id:string; name:string; email:string; company?:string; phone?:string; company_website:string; traffic_volume?:string; primary_goal?:string; message?:string; created_at:string };
+type Price = { id:string; plan_name:string; monthly_price:number; annual_price:number; description:string; features:string[]; highlighted:boolean; enabled:boolean; sort_order:number };
+type Lead = { id:string; name:string; email:string; company?:string; phone?:string; company_website:string; traffic_volume?:string; primary_goal?:string; message?:string; created_at:string };
 
 export function AdminDashboard() {
   const [loggedIn, setLoggedIn] = useState(!!getSession());
   const [authorized, setAuthorized] = useState(false);
   const [bots, setBots] = useState<Bot[]>([]);
   const [selected, setSelected] = useState<Bot | null>(null);
-  const [prices, setPrices] = useState<Price[]>([]);\n  const [leads, setLeads] = useState<Lead[]>([]);
+  const [prices, setPrices] = useState<Price[]>([]);
+  const [leads, setLeads] = useState<Lead[]>([]);
   const [loading, setLoading] = useState(true);
   const [notice, setNotice] = useState('');
   const [embedCopied, setEmbedCopied] = useState(false);

@@ -98,6 +98,11 @@ export function EmbedChat({ slug }: { slug: string }) {
       </div>
 
       <div className="border-b bg-white px-4 py-3">
+        <div className="mb-3 rounded-xl bg-slate-50 border border-slate-200 px-3 py-2.5">
+          <div className="text-xs font-bold text-slate-900 mb-1">How to use this chatbot</div>
+          <div className="text-[11px] leading-relaxed text-slate-500">1. Add your business information using the Optional section. 2. Click “Use this knowledge”. 3. Ask questions about your business, services, prices, policies, or other information you provided.</div>
+        </div>
+
         <button onClick={()=>setShowKnowledge(v=>!v)} className="w-full flex items-center justify-between text-left">
           <span className="flex items-center gap-2 text-sm font-bold text-slate-900"><FileText size={17}/> Customize with your business</span>
           <span className={knowledgeActive?'text-emerald-600 text-[11px] font-bold':'text-slate-400 text-[11px]'}>{knowledgeActive?'Knowledge active':'Optional'}</span>

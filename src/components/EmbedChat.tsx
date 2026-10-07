@@ -18,6 +18,7 @@ export function EmbedChat({ slug }: { slug: string }) {
   const [showKnowledge,setShowKnowledge]=useState(false);
   const [knowledgeActive,setKnowledgeActive]=useState(false);
   const [fileError,setFileError]=useState('');
+  const [backendError,setBackendError]=useState('');
 
   useEffect(()=>{
     fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'config',slug})})
@@ -68,6 +69,7 @@ export function EmbedChat({ slug }: { slug: string }) {
 
   async function send(){
     const text=input.trim(); if(!text||loading)return;
+    setBackendError('');
     setInput('');
     setMessages(m=>[...m,{role:'user',text}]);
     setLoading(true);
@@ -82,11 +84,27 @@ export function EmbedChat({ slug }: { slug: string }) {
           knowledge_text:knowledgeActive?knowledgeText:''
         })
       });
-      const d=await r.json();
+      const d=await r.json().catch(()=>({}));
       if(d.session_id)setSession(d.session_id);
-      setMessages(m=>[...m,{role:'assistant',text:d.reply||'Sorry, I could not answer that.'}]);
-    }catch{
-      setMessages(m=>[...m,{role:'assistant',text:'The chatbot is temporarily unavailable.'}]);
+      if(!r.ok){
+        const detail=typeof d?.details==='string'?d.details:'';
+        const error=typeof d?.error==='string'?d.error:'Backend request failed';
+        const full=detail?`${error}: ${detail}`:error;
+        setBackendError(full);
+        setMessages(m=>[...m,{role:'assistant',text:`Backend error (${r.status}): ${full}`}]);
+        return;
+      }
+      if(!d.reply){
+        const error='Backend returned no chatbot reply.';
+        setBackendError(error);
+        setMessages(m=>[...m,{role:'assistant',text:error}]);
+        return;
+      }
+      setMessages(m=>[...m,{role:'assistant',text:d.reply}]);
+    }catch(error){
+      const message=error instanceof Error?error.message:'Network error: unable to reach the chatbot backend.';
+      setBackendError(message);
+      setMessages(m=>[...m,{role:'assistant',text:`Connection error: ${message}`}]);
     }finally{setLoading(false);}
   }
 
@@ -124,6 +142,7 @@ export function EmbedChat({ slug }: { slug: string }) {
       </div>
 
       <div className="h-[470px] overflow-y-auto p-4 space-y-3">
+        {backendError&&<div className="rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-700"><div className="font-bold mb-1">Chatbot backend error</div><div className="break-words">{backendError}</div></div>}
         {messages.map((m,i)=><div key={i} className={`flex ${m.role==='user'?'justify-end':'justify-start'}`}><div className={`max-w-[82%] rounded-2xl px-4 py-3 text-sm ${m.role==='user'?'text-white bg-slate-950':'bg-slate-100 text-slate-800'}`}>{m.text}</div></div>)}
         {loading&&<div className="text-xs text-slate-400">Typing…</div>}
       </div>

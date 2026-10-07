@@ -189,6 +189,68 @@ export const DemoScreen: React.FC<DemoScreenProps> = ({
         </div>
       </section>
 
+      <section className="px-4 sm:px-6 pb-6">
+        <div className="rounded-2xl border border-blue-100 bg-gradient-to-br from-blue-50 via-white to-indigo-50 p-5 sm:p-6 shadow-sm">
+          <div className="flex items-start gap-3">
+            <div className="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center shrink-0">
+              <span className="material-symbols-outlined text-[20px]">menu_book</span>
+            </div>
+            <div>
+              <div className="text-[10px] font-bold uppercase tracking-wider text-blue-600">How to use your chatbot</div>
+              <h2 className="mt-1 font-headline text-xl sm:text-2xl font-extrabold text-gray-950">Add your business information in 3 easy steps.</h2>
+              <p className="mt-2 text-xs sm:text-sm leading-relaxed text-gray-600">Your chatbot needs your business knowledge to give customers useful and accurate answers. Add the information from your admin dashboard before embedding the chatbot on your website.</p>
+            </div>
+          </div>
+
+          <div className="mt-5 grid gap-3 md:grid-cols-3">
+            <div className="rounded-xl border border-gray-200 bg-white p-4">
+              <div className="flex items-center gap-2">
+                <span className="w-7 h-7 rounded-full bg-gray-900 text-white flex items-center justify-center text-xs font-bold">1</span>
+                <h3 className="font-bold text-sm text-gray-900">Open Admin Dashboard</h3>
+              </div>
+              <p className="mt-2 text-xs leading-relaxed text-gray-600">Log in to your admin dashboard and open your chatbot. Find the <span className="font-semibold text-gray-900">Business Knowledge</span> section.</p>
+            </div>
+
+            <div className="rounded-xl border border-gray-200 bg-white p-4">
+              <div className="flex items-center gap-2">
+                <span className="w-7 h-7 rounded-full bg-gray-900 text-white flex items-center justify-center text-xs font-bold">2</span>
+                <h3 className="font-bold text-sm text-gray-900">Add Your Information</h3>
+              </div>
+              <p className="mt-2 text-xs leading-relaxed text-gray-600">Write your company details in <span className="font-semibold text-gray-900">Business Description</span>, or upload a <span className="font-semibold text-gray-900">TXT, MD, CSV or JSON</span> file.</p>
+            </div>
+
+            <div className="rounded-xl border border-gray-200 bg-white p-4">
+              <div className="flex items-center gap-2">
+                <span className="w-7 h-7 rounded-full bg-gray-900 text-white flex items-center justify-center text-xs font-bold">3</span>
+                <h3 className="font-bold text-sm text-gray-900">Save & Test</h3>
+              </div>
+              <p className="mt-2 text-xs leading-relaxed text-gray-600">Click <span className="font-semibold text-gray-900">Save Knowledge</span>, then test the chatbot below. The AI uses your saved business information when answering customers.</p>
+            </div>
+          </div>
+
+          <div className="mt-4 rounded-xl border border-blue-100 bg-white/80 p-4">
+            <div className="flex items-center gap-2 mb-2">
+              <span className="material-symbols-outlined text-blue-600 text-[18px]">tips_and_updates</span>
+              <span className="text-xs font-bold text-gray-900">What information should you add?</span>
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[11px] text-gray-600">
+              <div className="rounded-lg bg-gray-50 px-3 py-2">🏢 Company details</div>
+              <div className="rounded-lg bg-gray-50 px-3 py-2">🛍️ Products & services</div>
+              <div className="rounded-lg bg-gray-50 px-3 py-2">💰 Prices & packages</div>
+              <div className="rounded-lg bg-gray-50 px-3 py-2">❓ FAQs & policies</div>
+              <div className="rounded-lg bg-gray-50 px-3 py-2">📍 Location & hours</div>
+              <div className="rounded-lg bg-gray-50 px-3 py-2">📞 Contact information</div>
+              <div className="rounded-lg bg-gray-50 px-3 py-2">🚚 Shipping & delivery</div>
+              <div className="rounded-lg bg-gray-50 px-3 py-2">📝 Other business knowledge</div>
+            </div>
+          </div>
+
+          <div className="mt-4 rounded-xl bg-gray-900 px-4 py-3 text-xs leading-relaxed text-gray-200">
+            <span className="font-bold text-white">Example:</span> “We provide web development services starting at $500. We are open Monday–Friday, 9 AM–5 PM. Customers can contact us at support@example.com.”
+          </div>
+        </div>
+      </section>
+
       <section className="px-4 sm:px-6 pb-4">
         <div className="grid grid-cols-3 gap-2">
           <div className="bg-white border border-gray-200 rounded-xl p-3 text-center"><span className="text-[10px] text-gray-400 uppercase font-semibold block">Response</span><span className="font-bold text-gray-900 text-sm">{lastLatency}ms</span></div>

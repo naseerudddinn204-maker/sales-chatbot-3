@@ -64,6 +64,7 @@ export const ChatbotCatalog: React.FC<{ onNavigateToContact?: () => void }> = ({
             <span className="text-[10px] font-bold uppercase tracking-wide text-emerald-600 bg-emerald-50 px-2 py-1 rounded-full">Live Demo</span>
           </div>
           <h3 className="font-bold text-lg text-gray-900 mt-4">{bot.name}</h3>
+          <div className="mt-2 text-[11px] font-semibold text-gray-500">Add your information and ask questions</div>
           <p className="text-sm text-gray-600 mt-1 min-h-[40px]">{bot.description || 'AI chatbot for sales and customer support.'}</p>
           <div className="mt-4 flex items-end justify-between gap-3">
             <div>{cheapest !== null ? <><span className="text-xs text-gray-500">Starting from</span><div className="font-extrabold text-xl text-gray-900">{'$'}{cheapest}<span className="text-xs font-medium text-gray-500">/mo</span></div></> : <span className="text-sm text-gray-500">Pricing available on request</span>}</div>

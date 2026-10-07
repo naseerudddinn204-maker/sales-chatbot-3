@@ -197,8 +197,8 @@ export const DemoScreen: React.FC<DemoScreenProps> = ({
             </div>
             <div>
               <div className="text-[10px] font-bold uppercase tracking-wider text-blue-600">How to use your chatbot</div>
-              <h2 className="mt-1 font-headline text-xl sm:text-2xl font-extrabold text-gray-950">Add your business information in 3 easy steps.</h2>
-              <p className="mt-2 text-xs sm:text-sm leading-relaxed text-gray-600">Your chatbot needs your business knowledge to give customers useful and accurate answers. Add the information from your admin dashboard before embedding the chatbot on your website.</p>
+              <h2 className="mt-1 font-headline text-xl sm:text-2xl font-extrabold text-gray-950">Test your chatbot in 3 easy steps.</h2>
+              <p className="mt-2 text-xs sm:text-sm leading-relaxed text-gray-600">Use the test chatbot below to see how it responds to real customer questions. Try different questions and check whether the answers are clear, useful, and accurate.</p>
             </div>
           </div>
 
@@ -206,47 +206,41 @@ export const DemoScreen: React.FC<DemoScreenProps> = ({
             <div className="rounded-xl border border-gray-200 bg-white p-4">
               <div className="flex items-center gap-2">
                 <span className="w-7 h-7 rounded-full bg-gray-900 text-white flex items-center justify-center text-xs font-bold">1</span>
-                <h3 className="font-bold text-sm text-gray-900">Open Admin Dashboard</h3>
+                <h3 className="font-bold text-sm text-gray-900">Ask a question</h3>
               </div>
-              <p className="mt-2 text-xs leading-relaxed text-gray-600">Log in to your admin dashboard and open your chatbot. Find the <span className="font-semibold text-gray-900">Business Knowledge</span> section.</p>
+              <p className="mt-2 text-xs leading-relaxed text-gray-600">Type a business-related question in the chat box below, just like a real customer would.</p>
             </div>
 
             <div className="rounded-xl border border-gray-200 bg-white p-4">
               <div className="flex items-center gap-2">
                 <span className="w-7 h-7 rounded-full bg-gray-900 text-white flex items-center justify-center text-xs font-bold">2</span>
-                <h3 className="font-bold text-sm text-gray-900">Add Your Information</h3>
+                <h3 className="font-bold text-sm text-gray-900">Try different questions</h3>
               </div>
-              <p className="mt-2 text-xs leading-relaxed text-gray-600">Write your company details in <span className="font-semibold text-gray-900">Business Description</span>, or upload a <span className="font-semibold text-gray-900">TXT, MD, CSV or JSON</span> file.</p>
+              <p className="mt-2 text-xs leading-relaxed text-gray-600">Ask about products, services, prices, opening hours, FAQs, policies, or other information your customers may need.</p>
             </div>
 
             <div className="rounded-xl border border-gray-200 bg-white p-4">
               <div className="flex items-center gap-2">
                 <span className="w-7 h-7 rounded-full bg-gray-900 text-white flex items-center justify-center text-xs font-bold">3</span>
-                <h3 className="font-bold text-sm text-gray-900">Save & Test</h3>
+                <h3 className="font-bold text-sm text-gray-900">Check the answer</h3>
               </div>
-              <p className="mt-2 text-xs leading-relaxed text-gray-600">Click <span className="font-semibold text-gray-900">Save Knowledge</span>, then test the chatbot below. The AI uses your saved business information when answering customers.</p>
+              <p className="mt-2 text-xs leading-relaxed text-gray-600">Check whether the chatbot gives the correct information. It should not invent answers when information is unavailable.</p>
             </div>
           </div>
 
           <div className="mt-4 rounded-xl border border-blue-100 bg-white/80 p-4">
             <div className="flex items-center gap-2 mb-2">
               <span className="material-symbols-outlined text-blue-600 text-[18px]">tips_and_updates</span>
-              <span className="text-xs font-bold text-gray-900">What information should you add?</span>
+              <span className="text-xs font-bold text-gray-900">Try these questions</span>
             </div>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[11px] text-gray-600">
-              <div className="rounded-lg bg-gray-50 px-3 py-2">🏢 Company details</div>
-              <div className="rounded-lg bg-gray-50 px-3 py-2">🛍️ Products & services</div>
-              <div className="rounded-lg bg-gray-50 px-3 py-2">💰 Prices & packages</div>
-              <div className="rounded-lg bg-gray-50 px-3 py-2">❓ FAQs & policies</div>
-              <div className="rounded-lg bg-gray-50 px-3 py-2">📍 Location & hours</div>
-              <div className="rounded-lg bg-gray-50 px-3 py-2">📞 Contact information</div>
-              <div className="rounded-lg bg-gray-50 px-3 py-2">🚚 Shipping & delivery</div>
-              <div className="rounded-lg bg-gray-50 px-3 py-2">📝 Other business knowledge</div>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-[11px] text-gray-600">
+              <div className="rounded-lg bg-gray-50 px-3 py-2">What services do you offer?</div>
+              <div className="rounded-lg bg-gray-50 px-3 py-2">What are your prices?</div>
+              <div className="rounded-lg bg-gray-50 px-3 py-2">What are your business hours?</div>
+              <div className="rounded-lg bg-gray-50 px-3 py-2">Where are you located?</div>
+              <div className="rounded-lg bg-gray-50 px-3 py-2">What is your refund policy?</div>
+              <div className="rounded-lg bg-gray-50 px-3 py-2">How can I contact you?</div>
             </div>
-          </div>
-
-          <div className="mt-4 rounded-xl bg-gray-900 px-4 py-3 text-xs leading-relaxed text-gray-200">
-            <span className="font-bold text-white">Example:</span> “We provide web development services starting at $500. We are open Monday–Friday, 9 AM–5 PM. Customers can contact us at support@example.com.”
           </div>
         </div>
       </section>

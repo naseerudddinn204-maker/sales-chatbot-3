@@ -18,7 +18,7 @@ export default function App() {
   if (path === '/admin' || path.startsWith('/admin/')) return <AdminDashboard />;
   if (path.startsWith('/embed/')) return <EmbedChat slug={decodeURIComponent(path.split('/embed/')[1] || 'sales-chatbot')} />;
   if (path === '/chatbots' || path === '/chatbots/') return <ChatbotCatalog />;
-  const [currentTab, setCurrentTab] = useState<ScreenTab>('contact');
+  const [currentTab, setCurrentTab] = useState<ScreenTab>('home');
   const [isFramedView, setIsFramedView] = useState(false);
   const [isLiveChatOpen, setIsLiveChatOpen] = useState(false);
   const [isBookDemoOpen, setIsBookDemoOpen] = useState(false);

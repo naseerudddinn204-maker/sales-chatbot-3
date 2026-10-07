@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { callBackend } from '../lib/backendApi';
 
 interface BookDemoModalProps {
   isOpen: boolean;
@@ -11,7 +12,7 @@ export const BookDemoModal: React.FC<BookDemoModalProps> = ({
   onClose,
   onSuccess,
 }) => {
-  const [selectedDate, setSelectedDate] = useState('2026-10-05');
+  const [selectedDate, setSelectedDate] = useState('2026-10-07');
   const [selectedTime, setSelectedTime] = useState('14:00');
   const [timezone, setTimezone] = useState('America/New_York (EST)');
   const [name, setName] = useState('');
@@ -41,7 +42,6 @@ export const BookDemoModal: React.FC<BookDemoModalProps> = ({
     setIsSubmitting(true);
 
     try {
-      const { callBackend } = await import('../lib/backendApi');
       await callBackend({
         action: 'booking',
         name: name || 'Valued Partner',

@@ -12,7 +12,7 @@ export const BookDemoModal: React.FC<BookDemoModalProps> = ({
   onClose,
   onSuccess,
 }) => {
-  const [selectedDate, setSelectedDate] = useState('2026-10-07');
+  const [selectedDate, setSelectedDate] = useState('2026-10-05');
   const [selectedTime, setSelectedTime] = useState('14:00');
   const [timezone, setTimezone] = useState('America/New_York (EST)');
   const [name, setName] = useState('');

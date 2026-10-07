@@ -48,6 +48,8 @@ export function AdminDashboard() {
   );
 
   const origin = window.location.origin;
+  const adminPath = window.location.pathname;
+  const adminPage = adminPath.startsWith('/admin/requests') ? 'requests' : 'chatbots';
   const defaultEmbedCode = selected ? `<script src="${origin}/embed.js" data-chatbot="${selected.slug}" defer></script>` : '';
   const embedCode = selected?.embed_code?.trim() || defaultEmbedCode;
   const liveUrl = selected ? `${origin}/embed/${selected.slug}` : '';
@@ -109,18 +111,22 @@ export function AdminDashboard() {
         <div className="mx-auto flex w-full max-w-7xl flex-col gap-3 px-4 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-6 sm:py-4">
           <div className="min-w-0">
             <div className="truncate text-lg font-bold">Chatbot Admin</div>
-            <div className="truncate text-xs text-slate-500">Manage bots, pricing & embeds</div>
+            <div className="truncate text-xs text-slate-500">Manage your client requests and chatbots</div>
           </div>
-          <button onClick={() => { signOut(); setLoggedIn(false); }} className="flex w-full items-center justify-center gap-2 rounded-xl border px-4 py-2 text-sm sm:w-auto">
-            <LogOut size={16}/> Sign out
-          </button>
+          <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row">
+            <a href="/admin/requests" className={`rounded-xl px-4 py-2 text-center text-sm font-semibold ${adminPage==='requests'?'bg-slate-900 text-white':'border bg-white text-slate-700'}`}>Client Requests</a>
+            <a href="/admin/chatbots" className={`rounded-xl px-4 py-2 text-center text-sm font-semibold ${adminPage==='chatbots'?'bg-slate-900 text-white':'border bg-white text-slate-700'}`}>Chatbots</a>
+            <button onClick={() => { signOut(); setLoggedIn(false); }} className="flex items-center justify-center gap-2 rounded-xl border px-4 py-2 text-sm">
+              <LogOut size={16}/> Sign out
+            </button>
+          </div>
         </div>
       </header>
 
       <main className="mx-auto w-full max-w-7xl box-border px-3 py-4 sm:px-4 sm:py-6 lg:px-6">
         {notice && <div className="mb-4 break-words rounded-xl bg-emerald-50 p-3 text-sm text-emerald-700">{notice}</div>}
 
-        <div className="mb-4 min-w-0 rounded-3xl bg-white p-4 shadow-sm sm:p-6">
+        {adminPage === 'requests' && <div className="min-w-0 rounded-3xl bg-white p-4 shadow-sm sm:p-6">
           <div className="mb-4 flex items-center gap-2">
             <ClipboardList size={20}/>
             <div>
@@ -137,9 +143,9 @@ export function AdminDashboard() {
               </table>
             </div>
           )}
-        </div>
+        </div>}
 
-        <div className="grid min-w-0 gap-4 lg:grid-cols-[280px_minmax(0,1fr)] lg:gap-6">
+        {adminPage === 'chatbots' && <div className="grid min-w-0 gap-4 lg:grid-cols-[280px_minmax(0,1fr)] lg:gap-6">
           <aside className="min-w-0 rounded-3xl bg-white p-3 shadow-sm sm:p-4 lg:h-fit lg:sticky lg:top-24">
             <div className="mb-4 flex items-center justify-between gap-2">
               <h2 className="truncate font-bold">Your Chatbots</h2>
@@ -244,7 +250,7 @@ export function AdminDashboard() {
               </div>
             </>}
           </section>
-        </div>
+        </div>}
       </main>
     </div>
   );

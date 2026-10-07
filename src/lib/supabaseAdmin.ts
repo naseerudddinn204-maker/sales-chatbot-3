@@ -71,7 +71,11 @@ async function rest(path: string, options: RequestInit = {}) {
   return data;
 }
 
-export async function listLeads() {\n  return rest('leads?select=id,name,email,company,phone,company_website,traffic_volume,primary_goal,message,created_at&order=created_at.desc');\n}\n\nexport async function listChatbots() {
+export async function listLeads() {
+  return rest('leads?select=id,name,email,company,phone,company_website,traffic_volume,primary_goal,message,created_at&order=created_at.desc');
+}
+
+export async function listChatbots() {
   return rest('chatbots?select=*&order=created_at.desc');
 }
 

@@ -12,7 +12,11 @@ export async function callBackend<T = any>(payload: Record<string, unknown>): Pr
   const data = await response.json().catch(() => ({}));
 
   if (!response.ok) {
-    throw new Error(data?.error || 'Backend request failed');
+    const detail = typeof data?.details === 'string' ? data.details : '';
+    const message = typeof data?.error === 'string' ? data.error : 'Backend request failed';
+    throw new Error(
+      `Backend error (${response.status}): ${detail ? `${message}: ${detail}` : message}`
+    );
   }
 
   return data as T;

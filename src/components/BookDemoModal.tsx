@@ -12,7 +12,21 @@ export const BookDemoModal: React.FC<BookDemoModalProps> = ({
   onClose,
   onSuccess,
 }) => {
-  const [selectedDate, setSelectedDate] = useState('2026-10-05');
+  const getUpcomingDates = () => {
+    const result: { label: string; value: string }[] = [];
+    const today = new Date();
+    for (let i = 0; result.length < 4 && i < 14; i++) {
+      const d = new Date(today);
+      d.setDate(today.getDate() + i);
+      const value = d.toISOString().slice(0, 10);
+      const label = d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+      result.push({ label, value });
+    }
+    return result;
+  };
+
+  const dates = getUpcomingDates();
+  const [selectedDate, setSelectedDate] = useState(dates[0]?.value || '');
   const [selectedTime, setSelectedTime] = useState('14:00');
   const [timezone, setTimezone] = useState('America/New_York (EST)');
   const [name, setName] = useState('');
@@ -21,13 +35,6 @@ export const BookDemoModal: React.FC<BookDemoModalProps> = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   if (!isOpen) return null;
-
-  const dates = [
-    { label: 'Mon, Oct 5', value: '2026-10-05' },
-    { label: 'Tue, Oct 6', value: '2026-10-06' },
-    { label: 'Wed, Oct 7', value: '2026-10-07' },
-    { label: 'Thu, Oct 8', value: '2026-10-08' },
-  ];
 
   const timeSlots = [
     '09:30 AM',

@@ -15,7 +15,11 @@ import { ChatbotCatalog } from './components/ChatbotCatalog';
 
 export default function App() {
   const path = window.location.pathname;
-  if (path === '/admin' || path.startsWith('/admin/')) return <AdminDashboard />;
+  if (path === '/admin' || path === '/admin/') {
+    window.history.replaceState({}, '', '/admin/chatbots');
+    return <AdminDashboard />;
+  }
+  if (path.startsWith('/admin/')) return <AdminDashboard />;
   if (path.startsWith('/embed/')) return <EmbedChat slug={decodeURIComponent(path.split('/embed/')[1] || 'sales-chatbot')} />;
   if (path === '/chatbots' || path === '/chatbots/') return <ChatbotCatalog />;
   const [currentTab, setCurrentTab] = useState<ScreenTab>('home');

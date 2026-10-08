@@ -191,11 +191,16 @@ export function EmbedChat({ slug }: { slug: string }) {
               )}
             </div>
             <textarea value={visitorDescription} onChange={e => setVisitorDescription(e.target.value)} rows={2} className="mt-2 w-full resize-none rounded-lg border px-3 py-2 text-sm outline-none" placeholder="Business description, products, services, prices, policies, FAQs..." />
-            <div className="mt-2 flex items-center gap-2">
+            <div className="mt-2 flex flex-wrap items-center gap-2">
               <input id={"knowledge-file-" + slug} type="file" accept=".pdf,.txt,.md,.csv,.json,.html,.htm,.xml,text/plain,text/markdown,text/csv,application/json,application/pdf,text/html,text/xml" className="hidden" onChange={e => handleKnowledgeFile(e.target.files?.[0])} />
               <label htmlFor={"knowledge-file-" + slug} className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-semibold text-slate-700">
                 <Upload size={14}/> {knowledgeLoading ? 'Reading…' : 'Upload information file'}
               </label>
+              {(visitorDescription.trim() || visitorKnowledge.trim()) && (
+                <button type="button" onClick={() => setShowKnowledge(false)} className="inline-flex items-center gap-1.5 rounded-lg bg-slate-950 px-3 py-2 text-xs font-semibold text-white hover:bg-slate-800">
+                  <FileText size={14}/> Use knowledge
+                </button>
+              )}
               {knowledgeFile && <span className="flex min-w-0 items-center gap-1 text-xs text-emerald-700"><FileText size={13}/><span className="truncate">{knowledgeFile}</span></span>}
             </div>
             <div className="mt-2 text-[11px] text-slate-400">Supported: PDF, TXT, MD, CSV, JSON, HTML, XML. This information is used for this chat session.</div>

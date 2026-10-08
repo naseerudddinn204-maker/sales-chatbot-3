@@ -163,7 +163,7 @@ export const DemoScreen: React.FC<DemoScreenProps> = ({
           const botMsg: ChatMessage = {
             id: (Date.now() + 1).toString(),
             sender: 'bot',
-            text: 'Thank you! Your phone number has been recorded. Our manager will follow up with you.',
+            text: contact.type === 'email' ? 'Thank you! Your email address has been recorded. Our manager will follow up with you.' : 'Thank you! Your phone number has been recorded. Our manager will follow up with you.',
             time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
             options: [],
           };

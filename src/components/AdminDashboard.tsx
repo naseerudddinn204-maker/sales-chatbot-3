@@ -214,22 +214,45 @@ export function AdminDashboard() {
                       </div>
                     </div>
                   </div>
-                  <div className="md:col-span-2 border-t pt-4">
-                    <h3 className="font-bold">Business Knowledge</h3>
-                    <p className="mt-1 text-sm text-slate-500">Ye knowledge isi chatbot ke saath database mein save hogi.</p>
-                    <textarea className={inputClass + " mt-3"} rows={5} value={selected.knowledge_description||''} onChange={e=>setSelected({...selected,knowledge_description:e.target.value})} placeholder="Business description / FAQs / approved answers" />
-                    <textarea className={inputClass + " mt-3 font-mono text-xs"} rows={8} value={selected.knowledge_text||''} onChange={e=>setSelected({...selected,knowledge_text:e.target.value})} placeholder="Uploaded knowledge text..." />
-                    <input
-                      className={inputClass + " mt-3"}
-                      type="file"
-                      accept=".txt,.md,.csv,.json"
-                      onChange={async e=>{
-                        const file=e.target.files?.[0];
-                        if(!file) return;
-                        const text=await file.text();
-                        setSelected({...selected,knowledge_text:text});
-                      }}
+                  <div className="md:col-span-2 border-t pt-5">
+                    <div className="flex flex-col gap-1">
+                      <h3 className="font-bold">Client Business Information</h3>
+                      <p className="text-sm text-slate-500">Client yahan apne business ki information, FAQs, products, services aur approved answers de. Save karne ke baad chatbot isi information se visitors ko jawab dega.</p>
+                    </div>
+
+                    <label className="mt-4 mb-1 block text-sm font-semibold">Business information</label>
+                    <textarea
+                      className={inputClass}
+                      rows={8}
+                      value={selected.knowledge_description||''}
+                      onChange={e=>setSelected({...selected,knowledge_description:e.target.value})}
+                      placeholder={"Example:\nBusiness name: ...\nWhat we offer: ...\nServices: ...\nPricing: ...\nHow to use: ...\nContact details: ...\nFAQs and approved answers: ..."}
                     />
+
+                    <label className="mt-4 mb-1 block text-sm font-semibold">Additional knowledge / instructions</label>
+                    <textarea
+                      className={inputClass + " font-mono text-xs"}
+                      rows={8}
+                      value={selected.knowledge_text||''}
+                      onChange={e=>setSelected({...selected,knowledge_text:e.target.value})}
+                      placeholder={"Add extra approved information here.\n\nChatbot instructions:\n- Answer only about this business.\n- Use only the information supplied above.\n- Never guess or invent facts.\n- If the answer is not available, ask for the visitor's phone number so the manager can follow up.\n- Do not answer unrelated questions."}
+                    />
+
+                    <div className="mt-4 rounded-2xl border border-blue-100 bg-blue-50 p-4">
+                      <h4 className="font-bold text-sm text-blue-950">How to use this chatbot</h4>
+                      <ol className="mt-2 list-decimal pl-5 space-y-1 text-xs leading-5 text-blue-900">
+                        <li>Enter the client's business information and FAQs above.</li>
+                        <li>Add accurate pricing, features, services and usage instructions.</li>
+                        <li>Click <b>Save</b>. The information is stored in Supabase and remains after refresh.</li>
+                        <li>Open the chatbot Demo and ask questions about the business.</li>
+                        <li>The chatbot must answer only from the saved information; it should not invent answers.</li>
+                        <li>For an unrelated or unknown question, it asks for the visitor's phone number for manager follow-up.</li>
+                      </ol>
+                    </div>
+
+                    <div className="mt-4 rounded-2xl border border-amber-100 bg-amber-50 p-4 text-xs text-amber-900">
+                      <b>Important:</b> Do not put passwords, API keys, private customer data or other secrets in the business knowledge.
+                    </div>
                   </div>
                   <label className="flex min-w-0 items-center gap-2 text-sm"><input type="checkbox" checked={selected.enabled} onChange={e=>setSelected({...selected,enabled:e.target.checked})}/> Public chatbot enabled</label>
                 </div>

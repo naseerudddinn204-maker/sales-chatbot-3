@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { FileText, MessageCircle, Send, Upload, X, ChevronDown, ChevronUp, Mic, MicOff } from 'lucide-react';
+import { FileText, MessageCircle, Send, Upload, X, ChevronDown, ChevronUp, Mic, MicOff, Volume2 } from 'lucide-react';
 import { Header } from './Header';
 import { HomeScreen } from './HomeScreen';
 import { ScreenTab } from '../types';
@@ -58,6 +58,17 @@ export function EmbedChat({ slug }: { slug: string }) {
     recognition.start();
   }
 
+  function speakAnswer(text: string) {
+    if (!('speechSynthesis' in window)) {
+      setBackendError('Voice playback is not supported in this browser.');
+      return;
+    }
+    window.speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(String(text));
+    utterance.lang = 'en-US';
+    window.speechSynthesis.speak(utterance);
+  }
+
   async function sendVoiceMessage(text: string) {
     if (!text || loading) return;
     setInput('');
@@ -69,12 +80,7 @@ export function EmbedChat({ slug }: { slug: string }) {
       if (d.session_id) setSession(d.session_id);
       if (!r.ok || !d.reply) throw new Error(d?.error || 'Backend returned no chatbot reply.');
       setMessages(m => [...m, { role: 'assistant', text: d.reply }]);
-      if ('speechSynthesis' in window) {
-        window.speechSynthesis.cancel();
-        const utterance = new SpeechSynthesisUtterance(String(d.reply));
-        utterance.lang = 'en-US';
-        window.speechSynthesis.speak(utterance);
-      }
+      speakAnswer(d.reply);
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Connection error.';
       setBackendError(message);
@@ -266,7 +272,20 @@ export function EmbedChat({ slug }: { slug: string }) {
           {messages.map((m, i) => (
             <div key={i} className={'flex ' + (m.role === 'user' ? 'justify-end' : 'justify-start')}>
               <div className={'max-w-[82%] rounded-2xl px-4 py-3 text-sm ' + (m.role === 'user' ? 'text-white bg-slate-950' : 'bg-slate-100 text-slate-800')}>
-                {m.text}
+                <div className="flex items-end gap-2">
+                  <div className="whitespace-pre-wrap">{m.text}</div>
+                  {m.role === 'assistant' && (
+                    <button
+                      type="button"
+                      onClick={() => speakAnswer(m.text)}
+                      className="shrink-0 rounded-lg p-1.5 text-slate-500 hover:bg-white hover:text-slate-900"
+                      aria-label="Read answer aloud"
+                      title="Read answer aloud"
+                    >
+                      <Volume2 size={15} />
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
           ))}

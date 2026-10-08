@@ -34,7 +34,6 @@ export function EmbedChat({ slug }: { slug: string }) {
 
     async function loadConfig() {
       try {
-        // Read the saved chatbot knowledge directly from Supabase so it survives refreshes.
         const url = SUPABASE_URL + '/rest/v1/chatbots?select=id,name,slug,description,welcome_message,brand_color,logo_url,knowledge_description,knowledge_text&slug=eq.' + encodeURIComponent(slug) + '&enabled=eq.true&limit=1';
         const response = await fetch(url, { headers });
         const data = await response.json().catch(() => []);
@@ -134,7 +133,6 @@ export function EmbedChat({ slug }: { slug: string }) {
           message: text,
           session_id: session,
           slug,
-          // The saved admin knowledge is sent to the backend on every message.
           business_description: config?.knowledge_description || '',
           knowledge_text: [config?.knowledge_text || '', visitorDescription.trim(), visitorKnowledge].filter(Boolean).join('\n\n'),
         }),
@@ -170,12 +168,8 @@ export function EmbedChat({ slug }: { slug: string }) {
   return (
     <div className="w-full min-h-screen bg-white flex items-center justify-center p-4">
       <div className="w-full max-w-2xl h-[min(760px,calc(100vh-2rem))] overflow-hidden rounded-2xl bg-white shadow-xl border border-slate-200 flex flex-col">
-        <div className="shrink-0 px-5 py-3.5 text-white flex items-center gap-3" style={{ backgroundColor: config?.brand_color || '#020617' }}>
-          {config?.logo_url ? (
-            <img src={config.logo_url} alt={config?.name || 'Chatbot'} className="h-9 w-9 rounded-lg object-contain bg-white p-1" />
-          ) : (
-            <MessageCircle />
-          )}
+        <div className="shrink-0 bg-slate-950 px-5 py-3.5 text-white flex items-center gap-3">
+          <MessageCircle />
           <div className="min-w-0 flex-1">
             <div className="font-bold truncate">{config?.name || 'AI Chatbot'}</div>
             <div className="text-xs text-white/60">Online assistant</div>

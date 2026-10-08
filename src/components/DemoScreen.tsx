@@ -353,6 +353,7 @@ export const DemoScreen: React.FC<DemoScreenProps> = ({
                     </div>;
                   })}
                   {isTyping && <div className="flex items-center justify-center w-14 h-10 bg-blue-50 border border-blue-200 rounded-xl text-blue-700 font-extrabold text-lg">{countdown}</div>}
+                  <div ref={messagesEndRef} aria-hidden="true" className="h-px" />
                 </div>
                 <div className="p-3 border-t border-gray-200 bg-white">
                   <form onSubmit={(e) => { e.preventDefault(); handleSend(); }} className="flex items-center gap-2">

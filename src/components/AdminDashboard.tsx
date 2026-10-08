@@ -134,15 +134,15 @@ export function AdminDashboard() {
               <h2 className="text-xl font-bold">Client Questions</h2>
               <p className="text-sm text-slate-500">Questions from visitors who requested a manager call.</p>
             </div>
-            <span className="ml-auto rounded-full bg-slate-100 px-3 py-1 text-xs font-bold">{leads.filter(l => !!l.phone && !!l.message).length}</span>
+            <span className="ml-auto rounded-full bg-slate-100 px-3 py-1 text-xs font-bold">{leads.filter(l => (!!l.phone || !!l.email) && !!l.message).length}</span>
           </div>
-          {leads.filter(l => !!l.phone && !!l.message).length === 0 ? <div className="rounded-2xl bg-slate-50 p-5 text-sm text-slate-500">No client questions yet.</div> : (
+          {leads.filter(l => (!!l.phone || !!l.email) && !!l.message).length === 0 ? <div className="rounded-2xl bg-slate-50 p-5 text-sm text-slate-500">No client questions yet.</div> : (
             <div className="overflow-x-auto">
-              <table className="w-full min-w-[760px] text-left text-sm">
-                <thead><tr className="border-b text-xs uppercase text-slate-500"><th className="p-3">Date & Time</th><th className="p-3">Phone Number</th><th className="p-3">Question</th></tr></thead>
-                <tbody>{leads.filter(l => !!l.phone && !!l.message).map(lead => <tr key={lead.id} className="border-b last:border-0">
+              <table className="w-full min-w-[900px] text-left text-sm">
+                <thead><tr className="border-b text-xs uppercase text-slate-500"><th className="p-3">Date & Time</th><th className="p-3">Phone Number</th><th className="p-3">Email</th><th className="p-3">Question</th></tr></thead>
+                <tbody>{leads.filter(l => (!!l.phone || !!l.email) && !!l.message).map(lead => <tr key={lead.id} className="border-b last:border-0">
                   <td className="p-3 whitespace-nowrap">{new Date(lead.created_at).toLocaleString()}</td>
-                  <td className="p-3 font-semibold whitespace-nowrap">{lead.phone}</td>
+                  <td className="p-3 font-semibold whitespace-nowrap">{lead.phone || '—'}</td><td className="p-3 break-all">{lead.email || '—'}</td>
                   <td className="p-3 max-w-[520px] break-words">{lead.message}</td>
                 </tr>)}</tbody>
               </table>

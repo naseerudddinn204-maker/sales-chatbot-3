@@ -129,34 +129,50 @@ export const DemoScreen: React.FC<DemoScreenProps> = ({
       }
 
       let reply = '';
-      let intent = 'General QA';
+      let intent = 'Website Information';
       let suggestions: string[] = [];
 
-      if (lower.includes('refund') || lower.includes('return') || lower.includes('money')) {
-        intent = 'Policy / Billing';
-        reply = 'Refunds are automatically processed within 3-5 business days to the original payment method upon return parcel scan. Would you like me to generate a prepaid label?';
-        suggestions = ['Yes, generate label', 'Transfer to human rep'];
-      } else if (lower.includes('shopify') || lower.includes('ecommerce') || lower.includes('catalog')) {
-        intent = 'Integration Lookup';
-        reply = 'We support real-time Shopify & BigCommerce webhooks. Product catalogs, live inventory balances, and order statuses update instantly across chats.';
-        suggestions = ['Can I test live cart recovery?', 'Talk with AI Experts'];
-      } else if (lower.includes('pricing') || lower.includes('cost') || lower.includes('budget')) {
-        intent = 'Commercial Lead Qualification';
-        reply = 'Our Growth tier is $149/mo for 5,000 monthly conversations with unlimited team seats and CRM sync. Custom enterprise volume starts at $499/mo.';
-        suggestions = ['Book 15-min Demo Call', 'Transfer to sales rep'];
-      } else if (lower.includes('latency') || lower.includes('speed') || lower.includes('fast')) {
-        intent = 'Performance Telemetry';
-        reply = `Our streaming architecture delivers average time-to-first-token (TTFT) under 180ms worldwide, as demonstrated by this reply (resolved in ${latency}ms).`;
-        suggestions = ['Check security specs', 'Transfer to technical architect'];
-      } else if (lower.includes('security') || lower.includes('soc') || lower.includes('gdpr')) {
-        intent = 'Compliance & Security';
-        reply = 'We are SOC 2 Type II certified and fully GDPR compliant with EU data residency options. Zero customer conversation logs are ever fed back into public model weights.';
-        suggestions = ['Download security whitepaper', 'Talk with AI Experts'];
+      // This demo assistant is strictly limited to information about this website.
+      // It must not answer general knowledge, personal, political, medical, coding,
+      // or unrelated questions.
+      const greeting = /^(hi|hello|hey|salam|assalamualaikum|aoa|good morning|good afternoon|good evening)[!.\\s]*$/i.test(text);
+
+      if (greeting) {
+        intent = 'Website Greeting';
+        reply = 'Hi! 👋 Welcome! I can help you with this website, AI chatbot features, chatbot pricing, how to use the demos, and how to get started.';
+        suggestions = ['What are the chatbot prices?', 'How do I use a chatbot?', 'How do I get started?'];
+      } else if (/(price|pricing|cost|plan|plans|monthly|annual|yearly|subscription|fee)/i.test(lower)) {
+        intent = 'Chatbot Pricing';
+        reply = 'Our chatbot plans are Starter $49/month ($39/month billed annually), Growth $149/month ($119/month annually), and Enterprise $499/month ($399/month annually). Annual billing saves 20%.';
+        suggestions = ['What is included in Starter?', 'What is included in Growth?', 'What is Enterprise?'];
+      } else if (/(starter|growth|enterprise)/i.test(lower)) {
+        intent = 'Plan Information';
+        if (/starter/i.test(lower)) {
+          reply = 'Starter is $49/month or $39/month billed annually and includes 1,000 monthly conversations, 1 AI chatbot agent, website URL scraping, email support, and basic conversion metrics.';
+        } else if (/growth/i.test(lower)) {
+          reply = 'Growth is $149/month or $119/month billed annually and includes 5,000 monthly conversations, 3 AI agents, human handoff, integrations, custom tone and prompt guardrails, and priority support.';
+        } else {
+          reply = 'Enterprise is $499/month or $399/month billed annually with unlimited conversations and seats, custom grounding/fine-tuning, a dedicated Solutions Architect, SOC 2 Type II/GDPR support, SLA support, SSO, and audit logs.';
+        }
+        suggestions = ['Compare the plans', 'How do I get started?'];
+      } else if (/(how.*(use|work)|use.*chatbot|test.*chatbot|demo|try|choose a chatbot|available chatbot)/i.test(lower)) {
+        intent = 'How To Use';
+        reply = 'To use a chatbot, choose one from the Available AI Chatbots section and click Demo to test it. Use Get Started when you want to request that chatbot for your business.';
+        suggestions = ['What chatbots are available?', 'What does Get Started do?'];
+      } else if (/(get started|buy|purchase|request|contact|sign up|signup|launch|own chatbot)/i.test(lower)) {
+        intent = 'Getting Started';
+        reply = 'Choose the chatbot you want, click Get Started, and submit your business details through the contact form. Enterprise customers can contact us directly from the pricing page.';
+        suggestions = ['What are the prices?', 'How do I test a chatbot?'];
+      } else if (/(chatbot|ai assistant|ai bot|feature|features|human handoff|shopify|slack|zendesk|knowledge|upload|website content|security|gdpr|soc 2|integration|integrations)/i.test(lower)) {
+        intent = 'Website Features';
+        reply = 'This website provides AI chatbots for customer support, sales, lead generation, bookings, FAQs, and other business use cases. Chatbots can use your business knowledge, support human handoff, and selected plans include integrations.';
+        suggestions = ['What are the prices?', 'How do I use a chatbot?'];
       } else {
-        intent = 'Inbound Conversational';
-        reply = `Great question! In ${botMode} mode with a ${botTone} tone, our model grounds every answer exclusively in your company's uploaded docs with zero hallucination.`;
-        suggestions = ['Test human takeover', 'Schedule 1-on-1 walkthrough'];
+        intent = 'Out Of Scope';
+        reply = 'Sorry, I can only answer questions about this website, its AI chatbots, features, pricing, demos, and how to get started. Please ask me something related to the website.';
+        suggestions = ['What are the chatbot prices?', 'How do I use a chatbot?', 'How do I get started?'];
       }
+
 
       setDetectedIntent(intent);
 

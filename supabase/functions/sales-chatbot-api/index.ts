@@ -251,8 +251,8 @@ Deno.serve(async (req) => {
     if (botError) throw botError;
 
     const sessionId = clean(body?.session_id) || crypto.randomUUID();
-    const businessDescription = clean(bot.knowledge_description);
-    const knowledgeText = clean(bot.knowledge_text);
+    const businessDescription = clean(body?.business_description) || clean(bot.knowledge_description);
+    const knowledgeText = [clean(bot.knowledge_text), clean(body?.knowledge_text)].filter(Boolean).join("\n\n");
     const hasKnowledge = Boolean(businessDescription || knowledgeText);
     const key = Deno.env.get("GEMINI_API_KEY");
 

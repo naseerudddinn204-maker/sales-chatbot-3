@@ -49,7 +49,7 @@ export function AdminDashboard() {
 
   const origin = window.location.origin;
   const adminPath = window.location.pathname;
-  const adminPage = adminPath.startsWith('/admin/requests') ? 'requests' : 'chatbots';
+  const adminPage = adminPath.startsWith('/admin/questions') ? 'questions' : adminPath.startsWith('/admin/requests') ? 'requests' : 'chatbots';
   const defaultEmbedCode = selected ? `<script src="${origin}/embed.js" data-chatbot="${selected.slug}" defer></script>` : '';
   const embedCode = selected?.embed_code?.trim() || defaultEmbedCode;
   const liveUrl = selected ? `${origin}/embed/${selected.slug}` : '';
@@ -115,6 +115,7 @@ export function AdminDashboard() {
           </div>
           <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row">
             <a href="/admin/requests" className={`rounded-xl px-4 py-2 text-center text-sm font-semibold ${adminPage==='requests'?'bg-slate-900 text-white':'border bg-white text-slate-700'}`}>Client Requests</a>
+            <a href="/admin/questions" className={`rounded-xl px-4 py-2 text-center text-sm font-semibold ${adminPage==='questions'?'bg-slate-900 text-white':'border bg-white text-slate-700'}`}>Client Questions</a>
             <a href="/admin/chatbots" className={`rounded-xl px-4 py-2 text-center text-sm font-semibold ${adminPage==='chatbots'?'bg-slate-900 text-white':'border bg-white text-slate-700'}`}>Chatbots</a>
             <button onClick={() => { signOut(); setLoggedIn(false); }} className="flex items-center justify-center gap-2 rounded-xl border px-4 py-2 text-sm">
               <LogOut size={16}/> Sign out
@@ -125,6 +126,29 @@ export function AdminDashboard() {
 
       <main className="mx-auto w-full max-w-7xl box-border px-3 py-4 sm:px-4 sm:py-6 lg:px-6">
         {notice && <div className="mb-4 break-words rounded-xl bg-emerald-50 p-3 text-sm text-emerald-700">{notice}</div>}
+
+        {adminPage === 'questions' && <div className="min-w-0 rounded-3xl bg-white p-4 shadow-sm sm:p-6">
+          <div className="mb-4 flex items-center gap-2">
+            <ClipboardList size={20}/>
+            <div>
+              <h2 className="text-xl font-bold">Client Questions</h2>
+              <p className="text-sm text-slate-500">Questions from visitors who requested a manager call.</p>
+            </div>
+            <span className="ml-auto rounded-full bg-slate-100 px-3 py-1 text-xs font-bold">{leads.filter(l => !!l.phone && !!l.message).length}</span>
+          </div>
+          {leads.filter(l => !!l.phone && !!l.message).length === 0 ? <div className="rounded-2xl bg-slate-50 p-5 text-sm text-slate-500">No client questions yet.</div> : (
+            <div className="overflow-x-auto">
+              <table className="w-full min-w-[760px] text-left text-sm">
+                <thead><tr className="border-b text-xs uppercase text-slate-500"><th className="p-3">Date & Time</th><th className="p-3">Phone Number</th><th className="p-3">Question</th></tr></thead>
+                <tbody>{leads.filter(l => !!l.phone && !!l.message).map(lead => <tr key={lead.id} className="border-b last:border-0">
+                  <td className="p-3 whitespace-nowrap">{new Date(lead.created_at).toLocaleString()}</td>
+                  <td className="p-3 font-semibold whitespace-nowrap">{lead.phone}</td>
+                  <td className="p-3 max-w-[520px] break-words">{lead.message}</td>
+                </tr>)}</tbody>
+              </table>
+            </div>
+          )}
+        </div>}
 
         {adminPage === 'requests' && <div className="min-w-0 rounded-3xl bg-white p-4 shadow-sm sm:p-6">
           <div className="mb-4 flex items-center gap-2">

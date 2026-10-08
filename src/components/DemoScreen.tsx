@@ -23,12 +23,13 @@ export const DemoScreen: React.FC<DemoScreenProps> = ({
   const [detectedIntent, setDetectedIntent] = useState('General Inbound');
   const [lastLatency, setLastLatency] = useState(148);
   const [isChatbotOpen, setIsChatbotOpen] = useState(false);
+  const countdownTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       id: 'd1',
       sender: 'bot',
-      text: 'Welcome to the interactive ChatBot sandbox! I am operating in Customer Support mode. Test my speed, knowledge, and our Zero Robot Lock-in human handoff.',
+      text: 'Hi! 👋 Welcome to the AI Chatbot demo. I’m ready to help—ask me anything about support, sales, or technical questions.',
       time: '12:00 PM',
       options: [
         'How do I process a refund?',
@@ -51,13 +52,13 @@ export const DemoScreen: React.FC<DemoScreenProps> = ({
     let options: string[] = [];
 
     if (mode === 'support') {
-      greeting = 'Customer Support Mode active. Ask me about troubleshooting, policies, order tracking, or warranty claims.';
+      greeting = 'Hi! 👋 Customer Support Mode is active. Ask me about troubleshooting, policies, order tracking, or warranty claims.';
       options = ['Where is my shipment #4928?', 'What is your refund policy?', 'Transfer to a human rep'];
     } else if (mode === 'sales') {
-      greeting = 'Sales & Lead Qualification Mode active. I proactively identify buyer intent, evaluate budget & timeline, and schedule sales calls.';
+      greeting = 'Hi! 👋 Sales & Lead Qualification Mode is active. Ask me about pricing, pilots, or sales calls.';
       options = ['What does enterprise pricing look like?', 'Do you offer a pilot period?', 'Connect me with Taylor in Sales'];
     } else {
-      greeting = 'Technical Architect Mode active. Ask me about latency benchmarks, vector embeddings, webhook events, and SOC-2 data residency.';
+      greeting = 'Hi! 👋 Technical Architect Mode is active. Ask me about latency, webhooks, security, or data residency.';
       options = ['What is your p99 latency?', 'How do webhooks fire during handoff?', 'Is customer data kept isolated?'];
     }
 
@@ -90,8 +91,21 @@ export const DemoScreen: React.FC<DemoScreenProps> = ({
     setCountdown(3);
 
     const startTime = performance.now();
+    if (countdownTimerRef.current) clearInterval(countdownTimerRef.current);
+    countdownTimerRef.current = setInterval(() => {
+      setCountdown((current) => {
+        if (current === null || current <= 1) {
+          if (countdownTimerRef.current) clearInterval(countdownTimerRef.current);
+          countdownTimerRef.current = null;
+          return null;
+        }
+        return current - 1;
+      });
+    }, 1000);
 
     setTimeout(() => {
+      if (countdownTimerRef.current) clearInterval(countdownTimerRef.current);
+      countdownTimerRef.current = null;
       setIsTyping(false);
       setCountdown(null);
       const latency = Math.round(performance.now() - startTime + 90);
@@ -156,8 +170,14 @@ export const DemoScreen: React.FC<DemoScreenProps> = ({
       };
 
       setMessages((prev) => [...prev, botMsg]);
-    }, 600);
+    }, 3000);
   };
+
+  useEffect(() => {
+    return () => {
+      if (countdownTimerRef.current) clearInterval(countdownTimerRef.current);
+    };
+  }, []);
 
   const handleResetSandbox = () => {
     setIsLiveHandoff(false);

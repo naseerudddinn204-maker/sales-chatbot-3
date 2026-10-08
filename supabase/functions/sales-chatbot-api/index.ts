@@ -73,11 +73,7 @@ Deno.serve(async (req) => {
       const { data: userData, error: userError } = await userClient.auth.getUser(token);
       if (userError || !userData.user) return json({ error: "Your admin session is invalid. Please sign in again." }, 401);
 
-      const adminClient = createClient(
-        Deno.env.get("SUPABASE_URL")!,
-        Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
-      );
-      const { data: adminUser, error: adminError } = await adminClient
+      const { data: adminUser, error: adminError } = await userClient
         .from("admin_users")
         .select("user_id")
         .eq("user_id", userData.user.id)
@@ -155,7 +151,7 @@ Deno.serve(async (req) => {
 
       if (!extracted) return json({ error: "No readable business information was found in this file." }, 400);
 
-      const { data: bot, error: botError } = await adminClient
+      const { data: bot, error: botError } = await userClient
         .from("chatbots")
         .select("id")
         .eq("slug", uploadSlug)
@@ -163,7 +159,7 @@ Deno.serve(async (req) => {
 
       if (botError || !bot) return json({ error: "Chatbot not found." }, 404);
 
-      const { error: saveError } = await adminClient
+      const { error: saveError } = await userClient
         .from("chatbots")
         .update({ knowledge_text: extracted })
         .eq("id", bot.id);

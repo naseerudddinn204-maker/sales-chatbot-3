@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { X } from 'lucide-react';
-import { Bot, ExternalLink, ShoppingCart, Headphones, Target, Building2, Package, Wrench, LifeBuoy, CalendarCheck, CircleHelp, Store, ShoppingCart as CartIcon, House, Hotel, Plane, Utensils, Stethoscope, GraduationCap, WalletCards, ShieldCheck, Laptop, CloudCog, BriefcaseBusiness, Megaphone, UsersRound, Truck, CarFront, Scale, Dumbbell, UtensilsCrossed } from 'lucide-react';
+import { X, Bot, ExternalLink, ShoppingCart, Headphones, Target, Building2, Package, Wrench, LifeBuoy, CalendarCheck, CircleHelp, Store, ShoppingCart as CartIcon, House, Hotel, Plane, Utensils, Stethoscope, GraduationCap, WalletCards, ShieldCheck, Laptop, CloudCog, BriefcaseBusiness, Megaphone, UsersRound, Truck, CarFront, Scale, Dumbbell, UtensilsCrossed } from 'lucide-react';
 
 const SUPABASE_URL = 'https://tlkmcfpzfdokcnyyvkov.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_-gNvioLExBonu8hGuWa8lQ_eIWmhMn6';
@@ -31,5 +31,22 @@ export const ChatbotCatalog:React.FC<{onNavigateToContact?:()=>void}>=({onNaviga
    </div>
    {botPrices.length>0&&<div className="mt-4 pt-4 border-t text-xs text-gray-500 flex flex-wrap gap-2">{botPrices.slice(0,3).map(p=><span key={p.plan_name} className={p.highlighted?'font-bold text-blue-700':''}>{p.plan_name}: {'$'}{p.monthly_price}/mo</span>)}</div>}
   </article>})}</div>
+ 
+  {selectedDemo&&<div className="fixed inset-0 z-[100] bg-black/50 backdrop-blur-sm flex items-center justify-center p-4" onClick={()=>setSelectedDemo(null)}>
+    <div className="w-full max-w-xl max-h-[90vh] overflow-y-auto rounded-2xl bg-white shadow-2xl p-6" onClick={e=>e.stopPropagation()}>
+      <div className="flex items-start justify-between gap-4">
+        <div><h2 className="text-xl font-extrabold text-gray-900">How to use chatbot for your business</h2><p className="text-sm text-gray-500 mt-1">Follow these steps before starting the demo.</p></div>
+        <button onClick={()=>setSelectedDemo(null)} className="rounded-lg p-2 text-gray-500 hover:bg-gray-100" aria-label="Close"><X size={18}/></button>
+      </div>
+      <div className="mt-5 space-y-4 text-sm text-gray-700">
+        <div><b>1. Add your business information</b><p className="mt-1">Click <b>Add information</b> and enter your business description, products, services, prices, policies, FAQs, and other important details.</p></div>
+        <div><b>2. Upload your business file</b><p className="mt-1">You can upload a PDF, TXT, MD, CSV, JSON, HTML, or XML file containing your business information.</p></div>
+        <div><b>3. Use your knowledge</b><p className="mt-1">After adding your information, click <b>Use knowledge</b>. The information section will hide and the chatbot will use it for the current chat session.</p></div>
+        <div><b>4. Start chatting</b><p className="mt-1">Ask questions by typing or use the microphone button to ask by voice.</p></div>
+        <div><b>5. Manager follow-up</b><p className="mt-1">If the chatbot cannot answer or the question is unrelated, it will ask for a phone number so the manager can follow up.</p></div>
+      </div>
+      <button onClick={()=>{window.location.href='/embed/'+encodeURIComponent(selectedDemo)}} className="mt-6 w-full rounded-xl bg-gray-950 text-white py-3 text-sm font-bold hover:bg-gray-800">Start</button>
+    </div>
+  </div>
  </section>;
 };

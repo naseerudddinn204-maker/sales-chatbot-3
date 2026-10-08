@@ -401,7 +401,7 @@ export function EmbedChat({ slug }: { slug: string }) {
             </div>
           )}
 
-          <div className="shrink-0 border-b bg-slate-50 px-3 py-2>
+          <div className="shrink-0 border-b bg-slate-50 px-3 py-2">
             <div className="flex items-center justify-end">
               <button type="button" onClick={() => setShowKnowledge(v => !v)} className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-[11px] font-semibold text-slate-600 shadow-sm hover:bg-slate-50" aria-expanded={showKnowledge}>
                 {showKnowledge ? <ChevronUp size={14} /> : <ChevronDown size={14} />}

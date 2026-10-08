@@ -102,7 +102,7 @@ Deno.serve(async (req) => {
       }
 
       const ar = await fetch(
-        "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=" + encodeURIComponent(key),
+        "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key=" + encodeURIComponent(key),
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -184,7 +184,7 @@ Deno.serve(async (req) => {
           "Return plain text only, organized with clear headings and bullet points where useful.";
 
         const ar = await fetch(
-          "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=" +
+          "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key=" +
             encodeURIComponent(key),
           {
             method: "POST",
@@ -322,7 +322,7 @@ Deno.serve(async (req) => {
         "\n\nVisitor question:\n" + message;
 
       const ar = await fetch(
-        "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=" +
+        "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key=" +
           encodeURIComponent(key),
         {
           method: "POST",

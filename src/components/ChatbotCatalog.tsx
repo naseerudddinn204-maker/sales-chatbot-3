@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { X, Bot, ExternalLink, ShoppingCart, Headphones, Target, Building2, Package, Wrench, LifeBuoy, CalendarCheck, CircleHelp, Store, ShoppingCart as CartIcon, House, Hotel, Plane, Utensils, Stethoscope, GraduationCap, WalletCards, ShieldCheck, Laptop, CloudCog, BriefcaseBusiness, Megaphone, UsersRound, Truck, CarFront, Scale, Dumbbell, UtensilsCrossed } from 'lucide-react';
+import { Bot, ExternalLink, ShoppingCart, Headphones, Target, Building2, Package, Wrench, LifeBuoy, CalendarCheck, CircleHelp, Store, ShoppingCart as CartIcon, House, Hotel, Plane, Utensils, Stethoscope, GraduationCap, WalletCards, ShieldCheck, Laptop, CloudCog, BriefcaseBusiness, Megaphone, UsersRound, Truck, CarFront, Scale, Dumbbell, UtensilsCrossed } from 'lucide-react';
 
 const SUPABASE_URL = 'https://tlkmcfpzfdokcnyyvkov.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_-gNvioLExBonu8hGuWa8lQ_eIWmhMn6';
@@ -14,7 +14,6 @@ const iconMap:Record<string,any>={'Customer Care Pro':Headphones,'Sales Assistan
 const iconColors:Record<string,string>={'Customer Care Pro':'#2563eb','Sales Assistant':'#16a34a','LeadGen AI':'#7c3aed','Business Advisor':'#0f766e','Product Expert':'#ea580c','Service Desk AI':'#475569','Support Hero':'#0284c7','Booking Assistant':'#db2777','FAQ Master':'#4f46e5','Retail Assistant':'#c2410c','Ecommerce Guide':'#0891b2','Real Estate Advisor':'#059669','Hotel Concierge':'#9333ea','Travel Planner':'#2563eb','Restaurant Host':'#dc2626','Healthcare Reception':'#0d9488','Education Advisor':'#4f46e5','Finance Support':'#15803d','Insurance Assistant':'#0369a1','Tech Support AI':'#334155','SaaS Sales Bot':'#7c3aed','Agency Consultant':'#b45309','Marketing Assistant':'#e11d48','HR Helpdesk':'#4f46e5','Logistics Assistant':'#ca8a04','Automotive Advisor':'#475569','Legal Reception':'#1e40af','Fitness Coach':'#16a34a','Restaurant Sales Bot':'#dc2626'};
 
 export const ChatbotCatalog:React.FC<{onNavigateToContact?:()=>void}>=({onNavigateToContact})=>{
- const [selectedDemo,setSelectedDemo]=useState<string|null>(null);
  const[bots,setBots]=useState<Chatbot[]>([]),[prices,setPrices]=useState<Price[]>([]),[loading,setLoading]=useState(true),[error,setError]=useState('');
  useEffect(()=>{const load=async()=>{try{const headers={apikey:SUPABASE_KEY,Authorization:'Bearer '+SUPABASE_KEY};const[botRes,priceRes]=await Promise.all([fetch(SUPABASE_URL+'/rest/v1/chatbots?select=id,name,slug,description,enabled,embed_code,logo_url,brand_color&enabled=eq.true&order=created_at.desc',{headers}),fetch(SUPABASE_URL+'/rest/v1/chatbot_prices?select=chatbot_id,plan_name,monthly_price,annual_price,highlighted,enabled&enabled=eq.true&order=sort_order.asc',{headers})]);if(!botRes.ok||!priceRes.ok)throw new Error('Could not load chatbots');setBots(await botRes.json());setPrices(await priceRes.json());}catch{setError('Chatbots could not be loaded right now.')}finally{setLoading(false)}};load()},[]);
  return <section className="px-4 sm:px-6 pt-5 pb-7">
@@ -26,26 +25,9 @@ export const ChatbotCatalog:React.FC<{onNavigateToContact?:()=>void}>=({onNaviga
    <div className="flex items-start justify-between gap-3"><div className="w-14 h-14 rounded-2xl flex items-center justify-center overflow-hidden bg-white border-2 shadow-sm" style={{color:iconColor,borderColor:iconColor+"33",backgroundColor:iconColor+"0D"}}>{bot.logo_url?<img src={bot.logo_url} alt={bot.name} className="w-full h-full object-contain bg-white p-2"/>:<Icon size={30} strokeWidth={2.4}/>}</div><span className="text-[10px] font-bold uppercase tracking-wide text-emerald-600 bg-emerald-50 px-2 py-1 rounded-full">Live Demo</span></div>
    <h3 className="font-bold text-lg text-gray-900 mt-4">{bot.name}</h3><p className="text-sm text-gray-600 mt-1 min-h-[40px]">{bot.description||'AI chatbot for sales and customer support.'}</p>
    <div className="mt-4 flex items-end justify-between gap-3"><div>{cheapest!==null?<><span className="text-xs text-gray-500">Starting from</span><div className="font-extrabold text-xl text-gray-900">{'$'}{cheapest}<span className="text-xs font-medium text-gray-500">/mo</span></div></>:<span className="text-sm text-gray-500">Pricing available on request</span>}</div>
-    <div className="flex gap-2"><button onClick={()=>setSelectedDemo(demoSlug)} className="h-9 px-3 rounded-lg bg-gray-950 text-white text-xs font-bold flex items-center gap-1.5 hover:bg-gray-800"><ExternalLink size={14}/> Demo</button><button onClick={onNavigateToContact} className="h-9 px-3 rounded-lg bg-blue-600 text-white text-xs font-bold flex items-center gap-1.5 hover:bg-blue-700"><ShoppingCart size={14}/> Get Started</button></div>
+    <div className="flex gap-2"><a href={`/embed/${encodeURIComponent(demoSlug)}`} className="h-9 px-3 rounded-lg bg-gray-950 text-white text-xs font-bold flex items-center gap-1.5 hover:bg-gray-800"><ExternalLink size={14}/> Demo</a><button onClick={onNavigateToContact} className="h-9 px-3 rounded-lg bg-blue-600 text-white text-xs font-bold flex items-center gap-1.5 hover:bg-blue-700"><ShoppingCart size={14}/> Get Started</button></div>
    </div>
    {botPrices.length>0&&<div className="mt-4 pt-4 border-t text-xs text-gray-500 flex flex-wrap gap-2">{botPrices.slice(0,3).map(p=><span key={p.plan_name} className={p.highlighted?'font-bold text-blue-700':''}>{p.plan_name}: {'$'}{p.monthly_price}/mo</span>)}</div>}
   </article>})}</div>
- 
-  {selectedDemo&&<div className="fixed inset-0 z-[100] bg-black/50 backdrop-blur-sm flex items-center justify-center p-4" onClick={()=>setSelectedDemo(null)}>
-    <div className="w-full max-w-xl max-h-[90vh] overflow-y-auto rounded-2xl bg-white shadow-2xl p-6" onClick={e=>e.stopPropagation()}>
-      <div className="flex items-start justify-between gap-4">
-        <div><h2 className="text-xl font-extrabold text-gray-900">How to use chatbot for your business</h2><p className="text-sm text-gray-500 mt-1">Follow these steps before starting the demo.</p></div>
-        <button onClick={()=>setSelectedDemo(null)} className="rounded-lg p-2 text-gray-500 hover:bg-gray-100" aria-label="Close"><X size={18}/></button>
-      </div>
-      <div className="mt-5 space-y-4 text-sm text-gray-700">
-        <div><b>1. Add your business information</b><p className="mt-1">Click <b>Add information</b> and enter your business description, products, services, prices, policies, FAQs, and other important details.</p></div>
-        <div><b>2. Upload your business file</b><p className="mt-1">You can upload a PDF, TXT, MD, CSV, JSON, HTML, or XML file containing your business information.</p></div>
-        <div><b>3. Use your knowledge</b><p className="mt-1">After adding your information, click <b>Use knowledge</b>. The information section will hide and the chatbot will use it for the current chat session.</p></div>
-        <div><b>4. Start chatting</b><p className="mt-1">Ask questions by typing or use the microphone button to ask by voice.</p></div>
-        <div><b>5. Manager follow-up</b><p className="mt-1">If the chatbot cannot answer or the question is unrelated, it will ask for a phone number so the manager can follow up.</p></div>
-      </div>
-      <button onClick={()=>{window.location.href='/embed/'+encodeURIComponent(selectedDemo)}} className="mt-6 w-full rounded-xl bg-gray-950 text-white py-3 text-sm font-bold hover:bg-gray-800">Start</button>
-    </div>
-  </div>
  </section>;
 };

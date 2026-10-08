@@ -188,7 +188,7 @@ export const DemoScreen: React.FC<DemoScreenProps> = ({
         suggestions = ['What are the prices?', 'How do I use a chatbot?'];
       } else {
         intent = 'Manager Handoff';
-        if (awaitingManagerContact && /(?:\\+?\\d[\\d\\s().-]{7,})/.test(text)) {
+        if (awaitingManagerContact && /(?:\+?\d[\d\s().-]{7,})/.test(text)) {
           setAwaitingManagerContact(false);
           try {
             await saveClientQuestion(text, awaitingManagerContactQuestion);

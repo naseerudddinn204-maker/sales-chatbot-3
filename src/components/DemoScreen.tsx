@@ -19,6 +19,7 @@ export const DemoScreen: React.FC<DemoScreenProps> = ({
   const [isLiveHandoff, setIsLiveHandoff] = useState(false);
   const [inputText, setInputText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const [countdown, setCountdown] = useState<number | null>(null);
   const [detectedIntent, setDetectedIntent] = useState('General Inbound');
   const [lastLatency, setLastLatency] = useState(148);
   const [isChatbotOpen, setIsChatbotOpen] = useState(false);
@@ -86,11 +87,13 @@ export const DemoScreen: React.FC<DemoScreenProps> = ({
     setMessages((prev) => [...prev, userMsg]);
     setInputText('');
     setIsTyping(true);
+    setCountdown(3);
 
     const startTime = performance.now();
 
     setTimeout(() => {
       setIsTyping(false);
+      setCountdown(null);
       const latency = Math.round(performance.now() - startTime + 90);
       setLastLatency(latency);
 
@@ -241,7 +244,7 @@ export const DemoScreen: React.FC<DemoScreenProps> = ({
                       {msg.options && <div className="flex flex-wrap gap-1.5 mt-2 max-w-[90%]">{msg.options.map((opt, i) => <button key={i} onClick={() => handleSend(opt)} className="text-[11px] font-medium bg-white hover:bg-gray-50 text-gray-700 border border-gray-200 rounded-lg px-2.5 py-1.5 cursor-pointer">{opt}</button>)}</div>}
                     </div>;
                   })}
-                  {isTyping && <div className="flex items-center gap-1.5 p-2.5 bg-white border border-gray-200 rounded-xl w-14"><span className="w-1.5 h-1.5 rounded-full bg-gray-400 animate-bounce" /><span className="w-1.5 h-1.5 rounded-full bg-gray-400 animate-bounce [animation-delay:0.2s]" /><span className="w-1.5 h-1.5 rounded-full bg-gray-400 animate-bounce [animation-delay:0.4s]" /></div>}
+                  {isTyping && <div className="flex items-center justify-center w-14 h-10 bg-blue-50 border border-blue-200 rounded-xl text-blue-700 font-extrabold text-lg">{countdown}</div>}
                 </div>
                 <div className="p-3 border-t border-gray-200 bg-white">
                   <form onSubmit={(e) => { e.preventDefault(); handleSend(); }} className="flex items-center gap-2">

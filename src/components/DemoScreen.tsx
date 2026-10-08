@@ -23,6 +23,7 @@ export const DemoScreen: React.FC<DemoScreenProps> = ({
   const [detectedIntent, setDetectedIntent] = useState('General Inbound');
   const [lastLatency, setLastLatency] = useState(148);
   const [isChatbotOpen, setIsChatbotOpen] = useState(false);
+  const [awaitingManagerContact, setAwaitingManagerContact] = useState(false);
   const countdownTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const [messages, setMessages] = useState<ChatMessage[]>([
@@ -168,9 +169,16 @@ export const DemoScreen: React.FC<DemoScreenProps> = ({
         reply = 'This website provides AI chatbots for customer support, sales, lead generation, bookings, FAQs, and other business use cases. Chatbots can use your business knowledge, support human handoff, and selected plans include integrations.';
         suggestions = ['What are the prices?', 'How do I use a chatbot?'];
       } else {
-        intent = 'Out Of Scope';
-        reply = 'Sorry, I can only answer questions about this website, its AI chatbots, features, pricing, demos, and how to get started. Please ask me something related to the website.';
-        suggestions = ['What are the chatbot prices?', 'How do I use a chatbot?', 'How do I get started?'];
+        intent = 'Manager Handoff';
+        if (awaitingManagerContact && /(?:\\+?\\d[\\d\\s().-]{7,})/.test(text)) {
+          setAwaitingManagerContact(false);
+          reply = 'Thank you! Your phone number has been recorded. Our manager will follow up with you.';
+          suggestions = [];
+        } else {
+          setAwaitingManagerContact(true);
+          reply = 'I can only answer questions about this website and its AI chatbots. For your question, I can connect you with our manager. Please share your phone number so the manager can contact you.';
+          suggestions = [];
+        }
       }
 
 

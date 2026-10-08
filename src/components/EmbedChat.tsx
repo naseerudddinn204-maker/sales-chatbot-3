@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { FileText, MessageCircle, Send, Upload, X, ChevronDown, ChevronUp } from 'lucide-react';
+import { FileText, MessageCircle, Send, Upload, X, ChevronDown, ChevronUp, Mic, MicOff } from 'lucide-react';
 import { Header } from './Header';
 import { HomeScreen } from './HomeScreen';
 import { ScreenTab } from '../types';
@@ -29,6 +29,60 @@ export function EmbedChat({ slug }: { slug: string }) {
   const [knowledgeFile, setKnowledgeFile] = useState('');
   const [knowledgeLoading, setKnowledgeLoading] = useState(false);
   const [showKnowledge, setShowKnowledge] = useState(false);
+  const [listening, setListening] = useState(false);
+
+  function toggleVoiceInput() {
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      setBackendError('Voice input is not supported in this browser. Please use Chrome or Edge.');
+      return;
+    }
+    if (listening) {
+      (window as any).__salesChatRecognition?.stop();
+      return;
+    }
+    const recognition = new SpeechRecognition();
+    recognition.lang = 'en-US';
+    recognition.continuous = false;
+    recognition.interimResults = false;
+    recognition.onstart = () => setListening(true);
+    recognition.onresult = (event: any) => {
+      const transcript = event.results?.[0]?.[0]?.transcript || '';
+      setInput(transcript);
+      if (transcript.trim()) sendVoiceMessage(transcript.trim());
+    };
+    recognition.onerror = () => { setListening(false); setBackendError('Could not hear your voice. Please try again.'); };
+    recognition.onend = () => { setListening(false); (window as any).__salesChatRecognition = null; };
+    (window as any).__salesChatRecognition = recognition;
+    setBackendError('');
+    recognition.start();
+  }
+
+  async function sendVoiceMessage(text: string) {
+    if (!text || loading) return;
+    setInput('');
+    setMessages(m => [...m, { role: 'user', text }]);
+    setLoading(true);
+    try {
+      const r = await fetch(API, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ message: text, session_id: session, slug, business_description: config?.knowledge_description || '', knowledge_text: [config?.knowledge_text || '', visitorDescription.trim(), visitorKnowledge].filter(Boolean).join('\n\n') }) });
+      const d = await r.json().catch(() => ({}));
+      if (d.session_id) setSession(d.session_id);
+      if (!r.ok || !d.reply) throw new Error(d?.error || 'Backend returned no chatbot reply.');
+      setMessages(m => [...m, { role: 'assistant', text: d.reply }]);
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(String(d.reply));
+        utterance.lang = 'en-US';
+        window.speechSynthesis.speak(utterance);
+      }
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Connection error.';
+      setBackendError(message);
+      setMessages(m => [...m, { role: 'assistant', text: message }]);
+    } finally {
+      setLoading(false);
+    }
+  }
 
   useEffect(() => {
     let cancelled = false;
@@ -221,6 +275,7 @@ export function EmbedChat({ slug }: { slug: string }) {
 
         <form onSubmit={e => { e.preventDefault(); send(); }} className="shrink-0 border-t p-3 bg-white flex gap-2">
           <input value={input} onChange={e => setInput(e.target.value)} className="flex-1 min-w-0 rounded-xl border px-3 py-2.5 outline-none" placeholder="Ask about this business…" aria-label="Ask the chatbot" />
+          <button type="button" onClick={toggleVoiceInput} disabled={loading} className="rounded-xl px-3 text-white disabled:opacity-50" style={{ backgroundColor: listening ? '#dc2626' : (config?.brand_color || '#020617') }} aria-label={listening ? 'Stop voice input' : 'Ask by voice'}>{listening ? <MicOff size={18} /> : <Mic size={18} />}</button>
           <button type="submit" disabled={loading} className="rounded-xl px-4 text-white disabled:opacity-50" style={{ backgroundColor: config?.brand_color || '#020617' }}><Send size={18} /></button>
         </form>
         </div>

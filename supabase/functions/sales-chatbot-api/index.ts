@@ -31,7 +31,18 @@ Deno.serve(async (req) => {
   if (req.method !== "POST") return json({ error: "POST required" }, 405);
 
   try {
-    const body = await req.json();
+    const contentType = req.headers.get("content-type") || "";
+    let body: any = {};
+    let form: FormData | null = null;
+    if (contentType.includes("multipart/form-data")) {
+      form = await req.formData();
+      body = {
+        action: clean(form.get("action")) || "visitor_knowledge",
+        slug: clean(form.get("slug")) || "sales-chatbot",
+      };
+    } else {
+      body = await req.json();
+    }
     const action = clean(body?.action) || "chat";
     const slug = clean(body?.slug) || "sales-chatbot";
 
@@ -59,6 +70,59 @@ Deno.serve(async (req) => {
 
       if (priceError) throw priceError;
       return json({ chatbot: bot, prices: prices || [] });
+    }
+
+    if (action === "visitor_knowledge") {
+      const file = form?.get("file");
+      if (!(file instanceof File)) return json({ error: "Please select a file." }, 400);
+      if (file.size > 20 * 1024 * 1024) return json({ error: "File is too large. Please use a file smaller than 20MB." }, 400);
+
+      const name = file.name.toLowerCase();
+      const mime = clean(file.type).toLowerCase();
+      const isPdf = mime === "application/pdf" || name.endsWith(".pdf");
+      const isText = /\.(txt|md|csv|json|html?|xml)$/i.test(name) ||
+        ["text/plain","text/markdown","text/csv","application/json","text/html","text/xml","application/xml"].includes(mime);
+
+      if (isText && !isPdf) {
+        const extracted = (await file.text()).trim();
+        if (!extracted) return json({ error: "No readable information was found in this file." }, 400);
+        return json({ ok: true, knowledge_text: extracted.slice(0, 30000), file_name: file.name });
+      }
+
+      if (!isPdf) return json({ error: "Supported files: PDF, TXT, MD, CSV, JSON, HTML or XML." }, 400);
+
+      const key = Deno.env.get("GEMINI_API_KEY");
+      if (!key) return json({ error: "File reading service is not configured." }, 503);
+
+      const bytes = new Uint8Array(await file.arrayBuffer());
+      let binary = "";
+      const chunkSize = 0x8000;
+      for (let i = 0; i < bytes.length; i += chunkSize) {
+        binary += String.fromCharCode(...bytes.subarray(i, i + chunkSize));
+      }
+
+      const ar = await fetch(
+        "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=" + encodeURIComponent(key),
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            contents: [{
+              parts: [
+                { text: "Extract the complete factual business/product/service information from this PDF for a temporary visitor chatbot session. Preserve prices, features, policies, instructions, FAQs and important details. Do not invent anything. Return plain text only." },
+                { inlineData: { mimeType: "application/pdf", data: btoa(binary) } }
+              ]
+            }],
+            generationConfig: { temperature: 0.1, maxOutputTokens: 8192 }
+          })
+        }
+      );
+
+      const data = await ar.json().catch(() => ({}));
+      if (!ar.ok) return json({ error: "Could not read this PDF." }, 502);
+      const extracted = clean(data?.candidates?.[0]?.content?.parts?.[0]?.text);
+      if (!extracted) return json({ error: "No readable information was found in this PDF." }, 400);
+      return json({ ok: true, knowledge_text: extracted.slice(0, 30000), file_name: file.name });
     }
 
     if (action === "upload_knowledge") {

@@ -176,23 +176,7 @@ export function EmbedChat({ slug }: { slug: string }) {
           </div>
         </div>
 
-        <div className="flex-1 min-h-0 overflow-y-auto p-4 space-y-3">
-          {backendError && (
-            <div className="rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-700">
-              {backendError}
-            </div>
-          )}
-          {messages.map((m, i) => (
-            <div key={i} className={'flex ' + (m.role === 'user' ? 'justify-end' : 'justify-start')}>
-              <div className={'max-w-[82%] rounded-2xl px-4 py-3 text-sm ' + (m.role === 'user' ? 'text-white bg-slate-950' : 'bg-slate-100 text-slate-800')}>
-                {m.text}
-              </div>
-            </div>
-          ))}
-          {loading && <div className="text-xs text-slate-400">Typing…</div>}
-        </div>
-
-        <div className="shrink-0 border-t bg-slate-50 px-3 pt-3">
+        <div className="shrink-0 border-b bg-slate-50 px-3 pt-3 pb-3">
           <div className="rounded-xl border border-slate-200 bg-white p-3">
             <div className="flex items-center justify-between gap-2">
               <div>
@@ -225,6 +209,22 @@ export function EmbedChat({ slug }: { slug: string }) {
             </div>
             <div className="mt-2 text-[11px] text-slate-400">Supported: PDF, TXT, MD, CSV, JSON, HTML, XML. This information is used for this chat session.</div>
           </div>
+        </div>
+
+        <div className="flex-1 min-h-0 overflow-y-auto p-4 space-y-3">
+          {backendError && (
+            <div className="rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-700">
+              {backendError}
+            </div>
+          )}
+          {messages.map((m, i) => (
+            <div key={i} className={'flex ' + (m.role === 'user' ? 'justify-end' : 'justify-start')}>
+              <div className={'max-w-[82%] rounded-2xl px-4 py-3 text-sm ' + (m.role === 'user' ? 'text-white bg-slate-950' : 'bg-slate-100 text-slate-800')}>
+                {m.text}
+              </div>
+            </div>
+          ))}
+          {loading && <div className="text-xs text-slate-400">Typing…</div>}
         </div>
 
         <form onSubmit={e => { e.preventDefault(); send(); }} className="shrink-0 border-t p-3 bg-white flex gap-2">

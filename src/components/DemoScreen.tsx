@@ -3,6 +3,23 @@ import { ChatMessage } from '../types';
 import { ChatbotCatalog } from './ChatbotCatalog';
 import { X } from 'lucide-react';
 
+const SUPABASE_URL = 'https://tlkmcfpzfdokcnyyvkov.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_-gNvioLExBonu8hGuWa8lQ_eIWmhMn6';
+
+async function saveClientQuestion(phone: string, question: string) {
+  const response = await fetch(`${SUPABASE_URL}/rest/v1/leads`, {
+    method: 'POST',
+    headers: {
+      apikey: SUPABASE_KEY,
+      Authorization: `Bearer ${SUPABASE_KEY}`,
+      'Content-Type': 'application/json',
+      Prefer: 'return=minimal',
+    },
+    body: JSON.stringify({ phone, message: question, company: 'Website Chatbot' }),
+  });
+  if (!response.ok) throw new Error('Could not save client question');
+}
+
 interface DemoScreenProps {
   onNavigateToContact: () => void;
   onShowToast: (title: string, message: string) => void;
@@ -24,6 +41,7 @@ export const DemoScreen: React.FC<DemoScreenProps> = ({
   const [lastLatency, setLastLatency] = useState(148);
   const [isChatbotOpen, setIsChatbotOpen] = useState(false);
   const [awaitingManagerContact, setAwaitingManagerContact] = useState(false);
+  const [awaitingManagerContactQuestion, setAwaitingManagerContactQuestion] = useState('');
   const countdownTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const [messages, setMessages] = useState<ChatMessage[]>([
@@ -172,10 +190,16 @@ export const DemoScreen: React.FC<DemoScreenProps> = ({
         intent = 'Manager Handoff';
         if (awaitingManagerContact && /(?:\\+?\\d[\\d\\s().-]{7,})/.test(text)) {
           setAwaitingManagerContact(false);
-          reply = 'Thank you! Your phone number has been recorded. Our manager will follow up with you.';
+          try {
+            await saveClientQuestion(text, awaitingManagerContactQuestion);
+            reply = 'Thank you! Your phone number has been recorded. Our manager will follow up with you.';
+          } catch {
+            reply = 'Sorry, I could not record your details right now. Please try again.';
+          }
           suggestions = [];
         } else {
           setAwaitingManagerContact(true);
+          setAwaitingManagerContactQuestion(text);
           reply = 'I can only answer questions about this website and its AI chatbots. For your question, I can connect you with our manager. Please share your phone number so the manager can contact you.';
           suggestions = [];
         }

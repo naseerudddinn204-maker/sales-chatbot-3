@@ -29,6 +29,7 @@ export function EmbedChat({ slug }: { slug: string }) {
   const [knowledgeFile, setKnowledgeFile] = useState('');
   const [knowledgeLoading, setKnowledgeLoading] = useState(false);
   const [showKnowledge, setShowKnowledge] = useState(false);
+  const [showHowToUse, setShowHowToUse] = useState(false);
   const [listening, setListening] = useState(false);
   const [voiceCountdown, setVoiceCountdown] = useState<number | null>(null);
   const recognitionRef = useRef<any>(null);
@@ -363,9 +364,44 @@ export function EmbedChat({ slug }: { slug: string }) {
               <div className="font-bold truncate">{config?.name || 'AI Chatbot'}</div>
               <div className="text-xs text-white/60">Online assistant</div>
             </div>
+            <button
+              type="button"
+              onClick={() => setShowHowToUse(true)}
+              className="shrink-0 rounded-lg border border-white/25 bg-white/10 px-2.5 py-1.5 text-[11px] font-semibold text-white hover:bg-white/20"
+            >
+              How to use chatbot for your business
+            </button>
           </div>
 
-          <div className="shrink-0 border-b bg-slate-50 px-3 py-2">
+          {showHowToUse && (
+            <div className="absolute inset-0 z-[100] flex items-center justify-center bg-slate-950/45 p-4">
+              <div className="w-full max-w-[520px] rounded-2xl bg-white p-5 shadow-2xl">
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <h2 className="text-base font-bold text-slate-900">How to use chatbot for your business</h2>
+                    <p className="mt-1 text-xs text-slate-500">Follow these simple steps before starting a customer chat.</p>
+                  </div>
+                  <button type="button" onClick={() => setShowHowToUse(false)} className="rounded-lg p-1.5 text-slate-500 hover:bg-slate-100" aria-label="Close instructions">
+                    <X size={18} />
+                  </button>
+                </div>
+                <div className="mt-4 space-y-3 text-sm text-slate-700">
+                  <div><span className="font-bold">1. Add your business information:</span> Click <span className="font-semibold">Add information</span> and enter your business description, products, services, prices, policies, FAQs, and other important details.</div>
+                  <div><span className="font-bold">2. Upload a file (optional):</span> Click <span className="font-semibold">Upload information file</span> and select your business information file. Supported formats are PDF, TXT, MD, CSV, JSON, HTML, and XML.</div>
+                  <div><span className="font-bold">3. Use the knowledge:</span> After adding a description or uploading a file, click <span className="font-semibold">Use knowledge</span>. The information section will automatically hide and the chatbot will use the supplied information for this chat session.</div>
+                  <div><span className="font-bold">4. Ask questions:</span> Type a question in the message box and click Send. The chatbot will answer using the available business information.</div>
+                  <div><span className="font-bold">5. Ask by voice:</span> Click the microphone button, speak your question, and pause. After the silence countdown, your voice message will be sent automatically.</div>
+                  <div><span className="font-bold">6. Listen to answers:</span> Click the speaker button on any chatbot answer to have the answer read aloud.</div>
+                  <div><span className="font-bold">7. Manager follow-up:</span> If the chatbot does not have the answer or the question is unrelated, it will ask for a phone number so the manager can follow up.</div>
+                </div>
+                <button type="button" onClick={() => setShowHowToUse(false)} className="mt-5 w-full rounded-xl bg-slate-950 px-4 py-2.5 text-sm font-semibold text-white hover:bg-slate-800">
+                  Got it
+                </button>
+              </div>
+            </div>
+          )}
+
+          <div className="shrink-0 border-b bg-slate-50 px-3 py-2>
             <div className="flex items-center justify-end">
               <button type="button" onClick={() => setShowKnowledge(v => !v)} className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-[11px] font-semibold text-slate-600 shadow-sm hover:bg-slate-50" aria-expanded={showKnowledge}>
                 {showKnowledge ? <ChevronUp size={14} /> : <ChevronDown size={14} />}

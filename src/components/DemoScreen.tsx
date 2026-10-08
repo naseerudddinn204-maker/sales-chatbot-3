@@ -216,7 +216,7 @@ export const DemoScreen: React.FC<DemoScreenProps> = ({
               <div className="pointer-events-auto absolute bottom-5 right-5 w-[calc(100vw-2rem)] max-w-md h-[min(720px,calc(100vh-2rem))] overflow-hidden rounded-3xl bg-white shadow-2xl border border-gray-200 flex flex-col">
                 <div className="p-4 border-b border-gray-200 flex items-center justify-between gap-3 bg-white">
                   <div className="flex items-center gap-3 min-w-0">
-                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-white shrink-0 ${isLiveHandoff ? 'bg-[#d61616]' : 'bg-[#111827]'}`}>
+                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-white shrink-0 ${isLiveHandoff ? 'bg-[#2563eb]' : 'bg-[#111827]'}`}>
                       <span className="material-symbols-outlined text-[20px]">{isLiveHandoff ? 'support_agent' : 'smart_toy'}</span>
                     </div>
                     <div className="min-w-0">
@@ -226,7 +226,7 @@ export const DemoScreen: React.FC<DemoScreenProps> = ({
                   </div>
                   <div className="flex items-center gap-2 shrink-0">
                     <button onClick={handleResetSandbox} className="px-3 py-2 rounded-lg bg-gray-50 border border-gray-200 text-xs font-semibold text-gray-600 cursor-pointer">Reset</button>
-                    <button onClick={() => handleSend('Transfer to a human specialist')} className="px-3 py-2 rounded-lg bg-[#fee2e2] text-[#991b1b] text-xs font-bold cursor-pointer">Handoff</button>
+                    <button onClick={() => handleSend('Transfer to a human specialist')} className="px-3 py-2 rounded-lg bg-blue-50 text-blue-700 border border-blue-200 text-xs font-bold cursor-pointer">Handoff</button>
                     <button type="button" onClick={() => setIsChatbotOpen(false)} className="p-2 rounded-lg hover:bg-gray-100 cursor-pointer" aria-label="Close AI Chatbot"><X size={18} /></button>
                   </div>
                 </div>
@@ -235,8 +235,8 @@ export const DemoScreen: React.FC<DemoScreenProps> = ({
                     const isUser = msg.sender === 'user';
                     const isAgent = msg.sender === 'agent';
                     return <div key={msg.id} className={`flex flex-col ${isUser ? 'items-end' : 'items-start'}`}>
-                      {msg.agentName && <span className="text-[10px] font-bold text-[#d61616] mb-1 px-1">{msg.agentName}</span>}
-                      <div className={`max-w-[85%] rounded-2xl px-3.5 py-2.5 text-xs sm:text-sm leading-relaxed ${isUser ? 'bg-[#111827] text-white rounded-br-sm' : isAgent ? 'bg-[#fff7ed] border border-orange-200 text-gray-900 rounded-bl-sm' : 'bg-white border border-gray-200 text-gray-900 rounded-bl-sm'}`}>{msg.text}</div>
+                      {msg.agentName && <span className="text-[10px] font-bold text-[#2563eb] mb-1 px-1">{msg.agentName}</span>}
+                      <div className={`max-w-[85%] rounded-2xl px-3.5 py-2.5 text-xs sm:text-sm leading-relaxed ${isUser ? 'bg-[#111827] text-white rounded-br-sm' : isAgent ? 'bg-blue-50 border border-blue-200 text-gray-900 rounded-bl-sm' : 'bg-white border border-gray-200 text-gray-900 rounded-bl-sm'}`}>{msg.text}</div>
                       <span className="text-[10px] text-gray-400 mt-1 px-1">{msg.time}</span>
                       {msg.options && <div className="flex flex-wrap gap-1.5 mt-2 max-w-[90%]">{msg.options.map((opt, i) => <button key={i} onClick={() => handleSend(opt)} className="text-[11px] font-medium bg-white hover:bg-gray-50 text-gray-700 border border-gray-200 rounded-lg px-2.5 py-1.5 cursor-pointer">{opt}</button>)}</div>}
                     </div>;
@@ -246,7 +246,7 @@ export const DemoScreen: React.FC<DemoScreenProps> = ({
                 <div className="p-3 border-t border-gray-200 bg-white">
                   <form onSubmit={(e) => { e.preventDefault(); handleSend(); }} className="flex items-center gap-2">
                     <input type="text" value={inputText} onChange={(e) => setInputText(e.target.value)} placeholder="Ask the AI chatbot anything..." className="flex-1 h-11 px-3.5 bg-gray-50 border border-gray-200 rounded-xl text-xs sm:text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:bg-white focus:ring-2 focus:ring-gray-900/10" />
-                    <button type="submit" disabled={!inputText.trim()} className="w-11 h-11 rounded-xl bg-[#d61616] disabled:opacity-40 text-white flex items-center justify-center cursor-pointer" aria-label="Send message"><span className="material-symbols-outlined text-[18px]">send</span></button>
+                    <button type="submit" disabled={!inputText.trim()} className="w-11 h-11 rounded-xl bg-[#2563eb] disabled:opacity-40 text-white flex items-center justify-center cursor-pointer" aria-label="Send message"><span className="material-symbols-outlined text-[18px]">send</span></button>
                   </form>
                 </div>
               </div>

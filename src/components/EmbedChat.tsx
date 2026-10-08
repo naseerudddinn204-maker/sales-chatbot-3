@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { MessageCircle, Send } from 'lucide-react';
+import { FileText, MessageCircle, Send, Upload, X } from 'lucide-react';
 
 const SUPABASE_URL = 'https://tlkmcfpzfdokcnyyvkov.supabase.co';
 const SUPABASE_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY || 'sb_publishable_-gNvioLExBonu8hGuWa8lQ_eIWmhMn6';
@@ -24,6 +24,10 @@ export function EmbedChat({ slug }: { slug: string }) {
   const [loading, setLoading] = useState(false);
   const [session, setSession] = useState('');
   const [backendError, setBackendError] = useState('');
+  const [visitorDescription, setVisitorDescription] = useState('');
+  const [visitorKnowledge, setVisitorKnowledge] = useState('');
+  const [knowledgeFile, setKnowledgeFile] = useState('');
+  const [knowledgeLoading, setKnowledgeLoading] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -74,6 +78,33 @@ export function EmbedChat({ slug }: { slug: string }) {
     }
   }
 
+  async function handleKnowledgeFile(file?: File) {
+    if (!file) return;
+    setKnowledgeLoading(true);
+    setBackendError('');
+    try {
+      const form = new FormData();
+      form.append('action', 'visitor_knowledge');
+      form.append('slug', slug);
+      form.append('file', file);
+      const r = await fetch(API, { method: 'POST', headers: { apikey: SUPABASE_KEY }, body: form });
+      const d = await r.json().catch(() => ({}));
+      if (!r.ok) throw new Error(d?.error || 'Could not read the file.');
+      setVisitorKnowledge(String(d.knowledge_text || ''));
+      setKnowledgeFile(file.name);
+    } catch (error) {
+      setBackendError(error instanceof Error ? error.message : 'Could not read the file.');
+    } finally {
+      setKnowledgeLoading(false);
+    }
+  }
+
+  function clearVisitorKnowledge() {
+    setVisitorDescription('');
+    setVisitorKnowledge('');
+    setKnowledgeFile('');
+  }
+
   async function send() {
     const text = input.trim();
     if (!text || loading) return;
@@ -105,7 +136,7 @@ export function EmbedChat({ slug }: { slug: string }) {
           slug,
           // The saved admin knowledge is sent to the backend on every message.
           business_description: config?.knowledge_description || '',
-          knowledge_text: config?.knowledge_text || '',
+          knowledge_text: [config?.knowledge_text || '', visitorDescription.trim(), visitorKnowledge].filter(Boolean).join('\n\n'),
         }),
       });
 
@@ -161,6 +192,41 @@ export function EmbedChat({ slug }: { slug: string }) {
             </div>
           ))}
           {loading && <div className="text-xs text-slate-400">Typing…</div>}
+        </div>
+
+        <div className="shrink-0 border-t bg-slate-50 px-3 pt-3">
+          <div className="rounded-xl border border-slate-200 bg-white p-3">
+            <div className="flex items-center justify-between gap-2">
+              <div>
+                <div className="text-sm font-bold text-slate-900">How to use this chatbot</div>
+                <div className="text-xs text-slate-500">Apni business information yahan dein, phir chatbot usi information se jawab dega.</div>
+              </div>
+              {(visitorDescription || visitorKnowledge) && (
+                <button type="button" onClick={clearVisitorKnowledge} className="text-xs text-slate-500 hover:text-red-600"><X size={15}/></button>
+              )}
+            </div>
+            <textarea
+              value={visitorDescription}
+              onChange={e => setVisitorDescription(e.target.value)}
+              rows={2}
+              className="mt-2 w-full resize-none rounded-lg border px-3 py-2 text-sm outline-none"
+              placeholder="Business description, products, services, prices, policies, FAQs..."
+            />
+            <div className="mt-2 flex items-center gap-2">
+              <input
+                id={"knowledge-file-" + slug}
+                type="file"
+                accept=".pdf,.txt,.md,.csv,.json,.html,.htm,.xml,text/plain,text/markdown,text/csv,application/json,application/pdf,text/html,text/xml"
+                className="hidden"
+                onChange={e => handleKnowledgeFile(e.target.files?.[0])}
+              />
+              <label htmlFor={"knowledge-file-" + slug} className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-semibold text-slate-700">
+                <Upload size={14}/> {knowledgeLoading ? 'Reading…' : 'Upload information file'}
+              </label>
+              {knowledgeFile && <span className="flex min-w-0 items-center gap-1 text-xs text-emerald-700"><FileText size={13}/><span className="truncate">{knowledgeFile}</span></span>}
+            </div>
+            <div className="mt-2 text-[11px] text-slate-400">Supported: PDF, TXT, MD, CSV, JSON, HTML, XML. This information is used for this chat session.</div>
+          </div>
         </div>
 
         <form onSubmit={e => { e.preventDefault(); send(); }} className="shrink-0 border-t p-3 bg-white flex gap-2">

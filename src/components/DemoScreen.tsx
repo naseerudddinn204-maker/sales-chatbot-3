@@ -84,14 +84,14 @@ export const DemoScreen: React.FC<DemoScreenProps> = ({
     let options: string[] = [];
 
     if (mode === 'support') {
-      greeting = 'Hi! 👋 Customer Support Mode is active. Ask me about troubleshooting, policies, order tracking, or warranty claims.';
-      options = ['Where is my shipment #4928?', 'What is your refund policy?', 'Transfer to a human rep'];
+      greeting = 'Hi! 👋 Customer Support Mode is active. Ask me about this website, AI chatbot features, pricing, demos, or getting started.';
+      options = [];
     } else if (mode === 'sales') {
       greeting = 'Hi! 👋 Sales & Lead Qualification Mode is active. Ask me about pricing, pilots, or sales calls.';
-      options = ['What does enterprise pricing look like?', 'Do you offer a pilot period?', 'Connect me with Taylor in Sales'];
+      options = [];
     } else {
       greeting = 'Hi! 👋 Technical Architect Mode is active. Ask me about latency, webhooks, security, or data residency.';
-      options = ['What is your p99 latency?', 'How do webhooks fire during handoff?', 'Is customer data kept isolated?'];
+      options = [];
     }
 
     setMessages([
@@ -190,6 +190,16 @@ export const DemoScreen: React.FC<DemoScreenProps> = ({
       // or unrelated questions.
       const greeting = /^(hi|hello|hey|salam|assalamualaikum|aoa|good morning|good afternoon|good evening)[!.\\s]*$/i.test(text);
 
+      // Keep this demo strictly website-focused. Suggestions are generated only after a real question,
+      // and never use unrelated preset prompts.
+      const makeRelatedSuggestions = (topic: string): string[] => {
+        if (/pricing|price|cost|plan/i.test(topic)) return ['What is included in Starter?', 'What is included in Growth?', 'What is Enterprise?'];
+        if (/use|demo|test|chatbot/i.test(topic)) return ['What chatbots are available?', 'How do I get started?', 'What features do the chatbots have?'];
+        if (/started|buy|purchase|request|contact/i.test(topic)) return ['What are the chatbot prices?', 'How do I test a chatbot?', 'What information do you need?'];
+        if (/feature|integration|knowledge|upload|human handoff|security|gdpr|soc 2/i.test(topic)) return ['What are the chatbot prices?', 'How do I use a chatbot?', 'How do I get started?'];
+        return ['What are the chatbot prices?', 'What chatbots are available?', 'How do I get started?'];
+      };
+
       if (greeting) {
         intent = 'Website Greeting';
         reply = 'Hi! 👋 Welcome! I can help you with this website, AI chatbot features, chatbot pricing, how to use the demos, and how to get started.';
@@ -197,7 +207,7 @@ export const DemoScreen: React.FC<DemoScreenProps> = ({
       } else if (/(price|pricing|cost|plan|plans|monthly|annual|yearly|subscription|fee)/i.test(lower)) {
         intent = 'Chatbot Pricing';
         reply = 'Our chatbot plans are Starter $49/month ($39/month billed annually), Growth $149/month ($119/month annually), and Enterprise $499/month ($399/month annually). Annual billing saves 20%.';
-        suggestions = ['What is included in Starter?', 'What is included in Growth?', 'What is Enterprise?'];
+        suggestions = makeRelatedSuggestions(lower);
       } else if (/(starter|growth|enterprise)/i.test(lower)) {
         intent = 'Plan Information';
         if (/starter/i.test(lower)) {
@@ -207,7 +217,7 @@ export const DemoScreen: React.FC<DemoScreenProps> = ({
         } else {
           reply = 'Enterprise is $499/month or $399/month billed annually with unlimited conversations and seats, custom grounding/fine-tuning, a dedicated Solutions Architect, SOC 2 Type II/GDPR support, SLA support, SSO, and audit logs.';
         }
-        suggestions = ['Compare the plans', 'How do I get started?'];
+        suggestions = makeRelatedSuggestions(lower);
       } else if (/(how.*(use|work)|use.*chatbot|test.*chatbot|demo|try|choose a chatbot|available chatbot)/i.test(lower)) {
         intent = 'How To Use';
         reply = 'To use a chatbot, choose one from the Available AI Chatbots section and click Demo to test it. Use Get Started when you want to request that chatbot for your business.';
@@ -215,11 +225,11 @@ export const DemoScreen: React.FC<DemoScreenProps> = ({
       } else if (/(get started|buy|purchase|request|contact|sign up|signup|launch|own chatbot)/i.test(lower)) {
         intent = 'Getting Started';
         reply = 'Choose the chatbot you want, click Get Started, and submit your business details through the contact form. Enterprise customers can contact us directly from the pricing page.';
-        suggestions = ['What are the prices?', 'How do I test a chatbot?'];
+        suggestions = makeRelatedSuggestions(lower);
       } else if (/(chatbot|ai assistant|ai bot|feature|features|human handoff|shopify|slack|zendesk|knowledge|upload|website content|security|gdpr|soc 2|integration|integrations)/i.test(lower)) {
         intent = 'Website Features';
         reply = 'This website provides AI chatbots for customer support, sales, lead generation, bookings, FAQs, and other business use cases. Chatbots can use your business knowledge, support human handoff, and selected plans include integrations.';
-        suggestions = ['What are the prices?', 'How do I use a chatbot?'];
+        suggestions = makeRelatedSuggestions(lower);
       } else if (lower.includes('transfer') || lower.includes('human specialist') || lower.includes('human rep') || lower.includes('talk to a human') || lower.includes('speak to a human')) {
         intent = 'Human Handoff';
         setIsLiveHandoff(true);

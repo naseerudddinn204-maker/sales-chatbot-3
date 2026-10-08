@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { FileText, MessageCircle, Send, Upload, X } from 'lucide-react';
+import { FileText, MessageCircle, Send, Upload, X, ChevronDown, ChevronUp } from 'lucide-react';
 import { Header } from './Header';
 import { HomeScreen } from './HomeScreen';
 import { ScreenTab } from '../types';
@@ -28,6 +28,7 @@ export function EmbedChat({ slug }: { slug: string }) {
   const [visitorKnowledge, setVisitorKnowledge] = useState('');
   const [knowledgeFile, setKnowledgeFile] = useState('');
   const [knowledgeLoading, setKnowledgeLoading] = useState(false);
+  const [showKnowledge, setShowKnowledge] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -167,8 +168,19 @@ export function EmbedChat({ slug }: { slug: string }) {
           </div>
         </div>
 
-        <div className="shrink-0 border-b bg-slate-50 px-3 pt-3 pb-3">
-          <div className="rounded-xl border border-slate-200 bg-white p-3">
+        <div className="shrink-0 border-b bg-slate-50 px-3 py-2">
+          <div className="flex items-center justify-end">
+            <button
+              type="button"
+              onClick={() => setShowKnowledge(v => !v)}
+              className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-[11px] font-semibold text-slate-600 shadow-sm hover:bg-slate-50"
+              aria-expanded={showKnowledge}
+            >
+              {showKnowledge ? <ChevronUp size={14}/> : <ChevronDown size={14}/>}
+              {showKnowledge ? 'Hide information' : 'Add information'}
+            </button>
+          </div>
+          {showKnowledge && <div className="mt-2 rounded-xl border border-slate-200 bg-white p-3">
             <div className="flex items-center justify-between gap-2">
               <div>
                 <div className="text-sm font-bold text-slate-900">How to use this chatbot</div>
@@ -187,7 +199,7 @@ export function EmbedChat({ slug }: { slug: string }) {
               {knowledgeFile && <span className="flex min-w-0 items-center gap-1 text-xs text-emerald-700"><FileText size={13}/><span className="truncate">{knowledgeFile}</span></span>}
             </div>
             <div className="mt-2 text-[11px] text-slate-400">Supported: PDF, TXT, MD, CSV, JSON, HTML, XML. This information is used for this chat session.</div>
-          </div>
+          </div>}
         </div>
 
         <div className="flex-1 min-h-0 overflow-y-auto p-4 space-y-3">

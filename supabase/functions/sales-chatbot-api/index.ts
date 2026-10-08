@@ -61,6 +61,123 @@ Deno.serve(async (req) => {
       return json({ chatbot: bot, prices: prices || [] });
     }
 
+    if (action === "upload_knowledge") {
+      const auth = req.headers.get("Authorization") || "";
+      const token = auth.startsWith("Bearer ") ? auth.slice(7) : "";
+      if (!token) return json({ error: "Admin login required." }, 401);
+
+      const userClient = createClient(
+        Deno.env.get("SUPABASE_URL")!,
+        Deno.env.get("SUPABASE_ANON_KEY")!
+      );
+      const { data: userData, error: userError } = await userClient.auth.getUser(token);
+      if (userError || !userData.user) return json({ error: "Your admin session is invalid. Please sign in again." }, 401);
+
+      const adminClient = createClient(
+        Deno.env.get("SUPABASE_URL")!,
+        Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
+      );
+      const { data: adminUser, error: adminError } = await adminClient
+        .from("admin_users")
+        .select("user_id")
+        .eq("user_id", userData.user.id)
+        .maybeSingle();
+
+      if (adminError || !adminUser) return json({ error: "You are not authorized to upload chatbot knowledge." }, 403);
+
+      const form = await req.formData();
+      const file = form.get("file");
+      const uploadSlug = clean(form.get("slug")) || "sales-chatbot";
+
+      if (!(file instanceof File)) return json({ error: "Please select an information file." }, 400);
+      if (file.size > 50 * 1024 * 1024) return json({ error: "File is too large. Please upload a file smaller than 50MB." }, 400);
+
+      const name = file.name.toLowerCase();
+      const mime = clean(file.type).toLowerCase();
+      const textTypes = new Set([
+        "text/plain", "text/markdown", "text/csv", "application/json",
+        "text/html", "text/xml", "application/xml"
+      ]);
+      const isPdf = mime === "application/pdf" || name.endsWith(".pdf");
+      const isText = textTypes.has(mime) ||
+        /\.(txt|md|csv|json|html?|xml)$/i.test(name);
+
+      let extracted = "";
+
+      if (isText && !isPdf) {
+        extracted = (await file.text()).trim();
+      } else if (isPdf) {
+        const bytes = new Uint8Array(await file.arrayBuffer());
+        let binary = "";
+        const chunkSize = 0x8000;
+        for (let i = 0; i < bytes.length; i += chunkSize) {
+          binary += String.fromCharCode(...bytes.subarray(i, i + chunkSize));
+        }
+        const base64 = btoa(binary);
+        const key = Deno.env.get("GEMINI_API_KEY");
+        if (!key) return json({ error: "Gemini API key is not configured on the server." }, 500);
+
+        const extractionPrompt =
+          "Extract the complete business knowledge from this PDF for a customer-support chatbot. " +
+          "Preserve names, services, features, prices, plans, policies, instructions, FAQs, contact details, URLs and other factual information. " +
+          "Do not summarize away important details. Do not add facts that are not in the document. " +
+          "Return plain text only, organized with clear headings and bullet points where useful.";
+
+        const ar = await fetch(
+          "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=" +
+            encodeURIComponent(key),
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              contents: [{
+                parts: [
+                  { text: extractionPrompt },
+                  { inlineData: { mimeType: "application/pdf", data: base64 } }
+                ]
+              }],
+              generationConfig: { temperature: 0.1, maxOutputTokens: 8192 }
+            })
+          }
+        );
+
+        if (!ar.ok) {
+          const detail = await ar.text();
+          console.error("Gemini document extraction error", ar.status, detail);
+          return json({ error: ar.status === 429 ? "Gemini rate limit reached. Please retry shortly." : "Could not read this PDF." }, 502);
+        }
+
+        const data = await ar.json();
+        extracted = clean(data?.candidates?.[0]?.content?.parts?.[0]?.text);
+      } else {
+        return json({ error: "Unsupported file. Please upload PDF, TXT, MD, CSV, JSON, HTML or XML." }, 400);
+      }
+
+      if (!extracted) return json({ error: "No readable business information was found in this file." }, 400);
+
+      const { data: bot, error: botError } = await adminClient
+        .from("chatbots")
+        .select("id")
+        .eq("slug", uploadSlug)
+        .single();
+
+      if (botError || !bot) return json({ error: "Chatbot not found." }, 404);
+
+      const { error: saveError } = await adminClient
+        .from("chatbots")
+        .update({ knowledge_text: extracted })
+        .eq("id", bot.id);
+
+      if (saveError) throw saveError;
+
+      return json({
+        ok: true,
+        file_name: file.name,
+        knowledge_text: extracted,
+        message: `Knowledge loaded from ${file.name}. Click Save to publish any additional dashboard instructions.`
+      });
+    }
+
     const message = clean(body?.message);
     if (!message) return json({ error: "message is required" }, 400);
 

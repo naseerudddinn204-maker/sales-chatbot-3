@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { FileText, MessageCircle, Send, Upload, X } from 'lucide-react';
+import { Header } from './Header';
+import { HomeScreen } from './HomeScreen';
+import { ScreenTab } from '../types';
 
 const SUPABASE_URL = 'https://tlkmcfpzfdokcnyyvkov.supabase.co';
 const SUPABASE_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY || 'sb_publishable_-gNvioLExBonu8hGuWa8lQ_eIWmhMn6';
@@ -134,8 +137,28 @@ export function EmbedChat({ slug }: { slug: string }) {
   }
 
   return (
-    <div className="w-full min-h-screen bg-white flex items-center justify-center p-4">
-      <div className="w-full max-w-2xl h-[min(760px,calc(100vh-2rem))] overflow-hidden rounded-2xl bg-white shadow-xl border border-slate-200 flex flex-col">
+    <div className="relative w-full min-h-screen overflow-hidden bg-[#f9f9ff]">
+      <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
+        <div className="min-h-screen scale-[1.02] blur-[7px] opacity-75">
+          <Header
+            currentTab={'home' as ScreenTab}
+            onTabChange={() => {}}
+            isFramedView={false}
+            onToggleFrameView={() => {}}
+          />
+          <main className="pt-16">
+            <HomeScreen
+              onNavigateToDemo={() => {}}
+              onNavigateToContact={() => {}}
+              onOpenLiveChat={() => {}}
+            />
+          </main>
+        </div>
+        <div className="absolute inset-0 bg-white/45" />
+      </div>
+
+      <div className="relative z-50 w-full min-h-screen flex items-center justify-center p-4 sm:p-6">
+        <div className="w-full max-w-2xl h-[min(760px,calc(100vh-2rem))] overflow-hidden rounded-2xl bg-white shadow-2xl border border-slate-200 flex flex-col">
         <div className="shrink-0 bg-slate-950 px-5 py-3.5 text-white flex items-center gap-3">
           <MessageCircle />
           <div className="min-w-0 flex-1">
@@ -183,6 +206,7 @@ export function EmbedChat({ slug }: { slug: string }) {
           <input value={input} onChange={e => setInput(e.target.value)} className="flex-1 min-w-0 rounded-xl border px-3 py-2.5 outline-none" placeholder="Ask about this business…" aria-label="Ask the chatbot" />
           <button type="submit" disabled={loading} className="rounded-xl px-4 text-white disabled:opacity-50" style={{ backgroundColor: config?.brand_color || '#020617' }}><Send size={18} /></button>
         </form>
+        </div>
       </div>
     </div>
   );

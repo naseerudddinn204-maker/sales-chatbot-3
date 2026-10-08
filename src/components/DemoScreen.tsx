@@ -122,7 +122,7 @@ export const DemoScreen: React.FC<DemoScreenProps> = ({
       });
     }, 1000);
 
-    setTimeout(() => {
+    setTimeout(async () => {
       if (countdownTimerRef.current) clearInterval(countdownTimerRef.current);
       countdownTimerRef.current = null;
       setIsTyping(false);

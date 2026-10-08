@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { X } from 'lucide-react';
 import { X, Bot, ExternalLink, ShoppingCart, Headphones, Target, Building2, Package, Wrench, LifeBuoy, CalendarCheck, CircleHelp, Store, ShoppingCart as CartIcon, House, Hotel, Plane, Utensils, Stethoscope, GraduationCap, WalletCards, ShieldCheck, Laptop, CloudCog, BriefcaseBusiness, Megaphone, UsersRound, Truck, CarFront, Scale, Dumbbell, UtensilsCrossed } from 'lucide-react';
 
 const SUPABASE_URL = 'https://tlkmcfpzfdokcnyyvkov.supabase.co';

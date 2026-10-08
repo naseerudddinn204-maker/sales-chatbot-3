@@ -131,19 +131,39 @@ export const DemoScreen: React.FC<DemoScreenProps> = ({
       setLastLatency(latency);
 
       const lower = text.toLowerCase();
+      const phoneMatch = text.match(/(?:\+?\d[\d\s().-]{7,})/);
 
-      if (lower.includes('human') || lower.includes('rep') || lower.includes('agent') || lower.includes('transfer') || lower.includes('specialist')) {
-        setIsLiveHandoff(true);
-        setDetectedIntent('High-Value Deal / Human Escalate');
-        const agentMsg: ChatMessage = {
-          id: (Date.now() + 1).toString(),
-          sender: 'agent',
-          agentName: 'Taylor · Senior Support Lead',
-          text: 'Hello! Taylor here. I have seamlessly intercepted the chat. The bot transferred your full context with zero repeat questions needed. How can I assist you?',
-          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        };
-        setMessages((prev) => [...prev, agentMsg]);
-        onShowToast('Seamless Takeover', 'Human rep Taylor assumed control of the conversation.');
+      // If the bot has asked for a phone number, treat the next phone-like
+      // message as the contact response before running any topic/handoff rules.
+      if (awaitingManagerContact && phoneMatch) {
+        const phone = phoneMatch[0].trim();
+        const question = awaitingManagerContactQuestion.trim();
+        setAwaitingManagerContact(false);
+        setAwaitingManagerContactQuestion('');
+        setDetectedIntent('Client Contact Captured');
+        try {
+          await saveClientQuestion(phone, question);
+          const botMsg: ChatMessage = {
+            id: (Date.now() + 1).toString(),
+            sender: 'bot',
+            text: 'Thank you! Your phone number has been recorded. Our manager will follow up with you.',
+            time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+            options: [],
+          };
+          setMessages((prev) => [...prev, botMsg]);
+        } catch (error) {
+          console.error('Client question save failed:', error);
+          setAwaitingManagerContact(true);
+          setAwaitingManagerContactQuestion(question);
+          const botMsg: ChatMessage = {
+            id: (Date.now() + 1).toString(),
+            sender: 'bot',
+            text: 'Sorry, I could not record your details right now. Please try again.',
+            time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+            options: [],
+          };
+          setMessages((prev) => [...prev, botMsg]);
+        }
         return;
       }
 
@@ -186,23 +206,25 @@ export const DemoScreen: React.FC<DemoScreenProps> = ({
         intent = 'Website Features';
         reply = 'This website provides AI chatbots for customer support, sales, lead generation, bookings, FAQs, and other business use cases. Chatbots can use your business knowledge, support human handoff, and selected plans include integrations.';
         suggestions = ['What are the prices?', 'How do I use a chatbot?'];
+      } else if (lower.includes('transfer') || lower.includes('human specialist') || lower.includes('human rep') || lower.includes('talk to a human') || lower.includes('speak to a human')) {
+        intent = 'Human Handoff';
+        setIsLiveHandoff(true);
+        const agentMsg: ChatMessage = {
+          id: (Date.now() + 1).toString(),
+          sender: 'agent',
+          agentName: 'Taylor · Senior Support Lead',
+          text: 'Hello! Taylor here. I have seamlessly intercepted the chat. The bot transferred your full context with zero repeat questions needed. How can I assist you?',
+          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        };
+        setMessages((prev) => [...prev, agentMsg]);
+        onShowToast('Seamless Takeover', 'Human rep Taylor assumed control of the conversation.');
+        return;
       } else {
         intent = 'Manager Handoff';
-        if (awaitingManagerContact && /(?:\+?\d[\d\s().-]{7,})/.test(text)) {
-          setAwaitingManagerContact(false);
-          try {
-            await saveClientQuestion(text, awaitingManagerContactQuestion);
-            reply = 'Thank you! Your phone number has been recorded. Our manager will follow up with you.';
-          } catch {
-            reply = 'Sorry, I could not record your details right now. Please try again.';
-          }
-          suggestions = [];
-        } else {
-          setAwaitingManagerContact(true);
-          setAwaitingManagerContactQuestion(text);
-          reply = 'I can only answer questions about this website and its AI chatbots. For your question, I can connect you with our manager. Please share your phone number so the manager can contact you.';
-          suggestions = [];
-        }
+        setAwaitingManagerContact(true);
+        setAwaitingManagerContactQuestion(text);
+        reply = 'I can only answer questions about this website and its AI chatbots. For your question, I can connect you with our manager. Please share your phone number so the manager can contact you.';
+        suggestions = [];
       }
 
 
@@ -229,6 +251,8 @@ export const DemoScreen: React.FC<DemoScreenProps> = ({
 
   const handleResetSandbox = () => {
     setIsLiveHandoff(false);
+    setAwaitingManagerContact(false);
+    setAwaitingManagerContactQuestion('');
     setDetectedIntent('General Inbound');
     handleModeChange(botMode);
   };

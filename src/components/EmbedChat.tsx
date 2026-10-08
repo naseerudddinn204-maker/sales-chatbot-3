@@ -170,8 +170,12 @@ export function EmbedChat({ slug }: { slug: string }) {
   return (
     <div className="w-full min-h-screen bg-white flex items-center justify-center p-4">
       <div className="w-full max-w-2xl h-[min(760px,calc(100vh-2rem))] overflow-hidden rounded-2xl bg-white shadow-xl border border-slate-200 flex flex-col">
-        <div className="shrink-0 bg-slate-950 px-5 py-3.5 text-white flex items-center gap-3">
-          <MessageCircle />
+        <div className="shrink-0 px-5 py-3.5 text-white flex items-center gap-3" style={{ backgroundColor: config?.brand_color || '#020617' }}>
+          {config?.logo_url ? (
+            <img src={config.logo_url} alt={config?.name || 'Chatbot'} className="h-9 w-9 rounded-lg object-contain bg-white p-1" />
+          ) : (
+            <MessageCircle />
+          )}
           <div className="min-w-0 flex-1">
             <div className="font-bold truncate">{config?.name || 'AI Chatbot'}</div>
             <div className="text-xs text-white/60">Online assistant</div>

@@ -15,7 +15,7 @@ export const Header: React.FC<HeaderProps> = ({
 }) => {
   return (
     <header
-      className="fixed top-0 left-0 right-0 w-full z-40 pt-safe bg-[#f9f9ff]/95 backdrop-blur-xl border-b border-gray-200/60 select-none transform translate-z-0 will-change-transform"
+      className="fixed top-0 left-0 right-0 w-full z-40 pt-safe bg-black/95 backdrop-blur-xl border-b border-white/10 select-none transform translate-z-0 will-change-transform"
       style={{ WebkitTransform: 'translateZ(0)' }}
     >
       <div className="max-w-4xl mx-auto h-16 px-4 sm:px-6 flex items-center justify-between gap-3">
@@ -24,7 +24,7 @@ export const Header: React.FC<HeaderProps> = ({
           className="flex items-center gap-2.5 group text-left cursor-pointer focus:outline-none"
           aria-label="Orken AI home"
         >
-          <div className="w-9 h-9 rounded-xl bg-white border border-gray-200 flex items-center justify-center shadow-sm overflow-hidden transition-transform group-hover:scale-105 shrink-0">
+          <div className="w-9 h-9 rounded-xl bg-black border border-white/10 flex items-center justify-center shadow-sm overflow-hidden transition-transform group-hover:scale-105 shrink-0">
             <img
               src="https://www.orken.us/favicon.ico"
               alt="Orken AI"
@@ -35,25 +35,25 @@ export const Header: React.FC<HeaderProps> = ({
             />
           </div>
           <div className="flex flex-col">
-            <span className="font-headline text-[19px] text-[#111827] tracking-tight font-extrabold leading-none">
+            <span className="font-headline text-[19px] text-white tracking-tight font-extrabold leading-none">
               Orken AI
             </span>
-            <span className="text-[10px] text-gray-500 uppercase tracking-widest font-semibold mt-0.5">
+            <span className="text-[10px] text-white/50 uppercase tracking-widest font-semibold mt-0.5">
               AI Automation
             </span>
           </div>
         </button>
 
-        <nav className="hidden md:flex items-center gap-1 bg-gray-100/80 p-1 rounded-xl">
-          <button onClick={() => onTabChange('home')} className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${currentTab === 'home' ? 'bg-white text-gray-900 shadow-xs' : 'text-gray-600 hover:text-gray-900'}`}>Home</button>
-          <button onClick={() => onTabChange('demo')} className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${currentTab === 'demo' ? 'bg-white text-gray-900 shadow-xs' : 'text-gray-600 hover:text-gray-900'}`}>Free Demo</button>
-          <button onClick={() => onTabChange('pricing')} className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${currentTab === 'pricing' ? 'bg-white text-gray-900 shadow-xs' : 'text-gray-600 hover:text-gray-900'}`}>Pricing & ROI</button>
-          <button onClick={() => onTabChange('contact')} className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${currentTab === 'contact' ? 'bg-white text-gray-900 shadow-xs' : 'text-gray-600 hover:text-gray-900'}`}>Contact Experts</button>
+        <nav className="hidden md:flex items-center gap-1 bg-black/5 p-1 rounded-xl">
+          <button onClick={() => onTabChange('home')} className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${currentTab === 'home' ? 'bg-black/10 text-white shadow-sm' : 'text-white/60 hover:text-white'}`}>Home</button>
+          <button onClick={() => onTabChange('demo')} className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${currentTab === 'demo' ? 'bg-black/10 text-white shadow-sm' : 'text-white/60 hover:text-white'}`}>Free Demo</button>
+          <button onClick={() => onTabChange('pricing')} className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${currentTab === 'pricing' ? 'bg-black/10 text-white shadow-sm' : 'text-white/60 hover:text-white'}`}>Pricing & ROI</button>
+          <button onClick={() => onTabChange('contact')} className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${currentTab === 'contact' ? 'bg-black/10 text-white shadow-sm' : 'text-white/60 hover:text-white'}`}>Contact Experts</button>
         </nav>
 
         <button
           onClick={() => onTabChange('demo')}
-          className="h-9 px-3.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold flex items-center justify-center shadow-sm active:scale-95 transition-all whitespace-nowrap cursor-pointer"
+          className="h-9 px-3.5 rounded-lg bg-emerald-500/100 hover:bg-emerald-400 text-white text-xs font-bold flex items-center justify-center shadow-sm active:scale-95 transition-all whitespace-nowrap cursor-pointer"
         >
           <span className="material-symbols-outlined text-[16px] mr-1">bolt</span>
           <span>Try Free</span>

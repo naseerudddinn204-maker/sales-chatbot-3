@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Bot, Code2, LogOut, Plus, Save, Trash2, DollarSign, Copy, Check, ClipboardList } from 'lucide-react';
 import { createChatbot, createPrice, deleteChatbot, deletePrice, getAdminUser, getSession, listChatbots, listLeads, listPrices, signOut, updateChatbot, updatePrice } from '../lib/supabaseAdmin';
 import { AdminLogin } from './AdminLogin';
-import { KnowledgeUploader } from './KnowledgeUploader';
 
 type Bot = { id:string; name:string; slug:string; description:string; system_prompt:string; welcome_message:string; enabled:boolean; embed_code?:string; logo_url?:string; brand_color?:string; knowledge_description?:string; knowledge_text?:string };
 type Price = { id:string; plan_name:string; monthly_price:number; annual_price:number; description:string; features:string[]; highlighted:boolean; enabled:boolean; sort_order:number };
@@ -228,11 +227,6 @@ export function AdminDashboard() {
                       value={selected.knowledge_description||''}
                       onChange={e=>setSelected({...selected,knowledge_description:e.target.value})}
                       placeholder={"Example:\nBusiness name: ...\nWhat we offer: ...\nServices: ...\nPricing: ...\nHow to use: ...\nContact details: ...\nFAQs and approved answers: ..."}
-                    />
-
-                    <KnowledgeUploader
-                      slug={selected.slug}
-                      onUploaded={(knowledgeText) => setSelected({...selected, knowledge_text: knowledgeText})}
                     />
 
                     <label className="mt-4 mb-1 block text-sm font-semibold">Additional knowledge / instructions</label>

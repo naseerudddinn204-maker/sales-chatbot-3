@@ -6,7 +6,10 @@ import { X } from 'lucide-react';
 const SUPABASE_URL = 'https://tlkmcfpzfdokcnyyvkov.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_-gNvioLExBonu8hGuWa8lQ_eIWmhMn6';
 
-async function saveClientQuestion(phone: string, question: string) {
+async function saveClientQuestion(contact: string, question: string, contactType: ContactType) {
+  const payload = contactType === 'email'
+    ? { email: contact, message: question, company: 'Website Chatbot' }
+    : { phone: contact, message: question, company: 'Website Chatbot' };
   const response = await fetch(`${SUPABASE_URL}/rest/v1/leads`, {
     method: 'POST',
     headers: {
@@ -15,7 +18,7 @@ async function saveClientQuestion(phone: string, question: string) {
       'Content-Type': 'application/json',
       Prefer: 'return=minimal',
     },
-    body: JSON.stringify({ phone, message: question, company: 'Website Chatbot' }),
+    body: JSON.stringify(payload),
   });
   if (!response.ok) throw new Error('Could not save client question');
 }
@@ -26,6 +29,19 @@ interface DemoScreenProps {
 }
 
 type BotMode = 'support' | 'sales' | 'technical';
+
+type ContactType = 'phone' | 'email';
+
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
+const PHONE_RE = /(?:\+?\d[\d\s().-]{7,})/;
+
+function extractContact(text: string): { type: ContactType; value: string } | null {
+  const email = text.match(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i)?.[0];
+  if (email && EMAIL_RE.test(email)) return { type: 'email', value: email.trim() };
+  const phone = text.match(PHONE_RE)?.[0]?.trim();
+  if (phone) return { type: 'phone', value: phone };
+  return null;
+}
 
 export const DemoScreen: React.FC<DemoScreenProps> = ({
   onNavigateToContact,
@@ -42,6 +58,7 @@ export const DemoScreen: React.FC<DemoScreenProps> = ({
   const [isChatbotOpen, setIsChatbotOpen] = useState(false);
   const [awaitingManagerContact, setAwaitingManagerContact] = useState(false);
   const [awaitingManagerContactQuestion, setAwaitingManagerContactQuestion] = useState('');
+  const [awaitingContactType, setAwaitingContactType] = useState<ContactType | null>(null);
   const countdownTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const [messages, setMessages] = useState<ChatMessage[]>([
@@ -131,18 +148,18 @@ export const DemoScreen: React.FC<DemoScreenProps> = ({
       setLastLatency(latency);
 
       const lower = text.toLowerCase();
-      const phoneMatch = text.match(/(?:\+?\d[\d\s().-]{7,})/);
+      const contact = extractContact(text);
 
       // If the bot has asked for a phone number, treat the next phone-like
       // message as the contact response before running any topic/handoff rules.
-      if (awaitingManagerContact && phoneMatch) {
-        const phone = phoneMatch[0].trim();
+      if (awaitingManagerContact && contact) {
         const question = awaitingManagerContactQuestion.trim();
         setAwaitingManagerContact(false);
         setAwaitingManagerContactQuestion('');
+        setAwaitingContactType(null);
         setDetectedIntent('Client Contact Captured');
         try {
-          await saveClientQuestion(phone, question);
+          await saveClientQuestion(contact.value, question, contact.type);
           const botMsg: ChatMessage = {
             id: (Date.now() + 1).toString(),
             sender: 'bot',
@@ -155,6 +172,7 @@ export const DemoScreen: React.FC<DemoScreenProps> = ({
           console.error('Client question save failed:', error);
           setAwaitingManagerContact(true);
           setAwaitingManagerContactQuestion(question);
+          setAwaitingContactType(contact.type);
           const botMsg: ChatMessage = {
             id: (Date.now() + 1).toString(),
             sender: 'bot',
@@ -223,7 +241,8 @@ export const DemoScreen: React.FC<DemoScreenProps> = ({
         intent = 'Manager Handoff';
         setAwaitingManagerContact(true);
         setAwaitingManagerContactQuestion(text);
-        reply = 'I can only answer questions about this website and its AI chatbots. For your question, I can connect you with our manager. Please share your phone number so the manager can contact you.';
+        setAwaitingContactType(null);
+        reply = 'I can only answer questions about this website and its AI chatbots. Please share your contact number or email address so our manager can follow up with you.';
         suggestions = [];
       }
 
@@ -253,6 +272,7 @@ export const DemoScreen: React.FC<DemoScreenProps> = ({
     setIsLiveHandoff(false);
     setAwaitingManagerContact(false);
     setAwaitingManagerContactQuestion('');
+    setAwaitingContactType(null);
     setDetectedIntent('General Inbound');
     handleModeChange(botMode);
   };

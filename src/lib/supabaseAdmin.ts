@@ -106,3 +106,26 @@ export async function updatePrice(id: string, payload: Record<string, unknown>) 
 export async function deletePrice(id: string) {
   return rest(`chatbot_prices?id=eq.${id}`, { method: 'DELETE' });
 }
+
+export async function uploadKnowledgeFile(slug: string, file: File) {
+  const session = getSession();
+  if (!session) throw new Error('Please login first.');
+
+  const form = new FormData();
+  form.append('action', 'upload_knowledge');
+  form.append('slug', slug);
+  form.append('file', file);
+
+  const res = await fetch(`${SUPABASE_URL}/functions/v1/sales-chatbot-api`, {
+    method: 'POST',
+    headers: {
+      apikey: SUPABASE_KEY,
+      Authorization: `Bearer ${session.access_token}`,
+    },
+    body: form,
+  });
+
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data?.error || 'File upload failed');
+  return data as { ok: boolean; file_name: string; knowledge_text: string; message?: string };
+}

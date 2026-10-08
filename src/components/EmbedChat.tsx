@@ -157,8 +157,8 @@ export function EmbedChat({ slug }: { slug: string }) {
         <div className="absolute inset-0 bg-white/45" />
       </div>
 
-      <div className="relative z-50 w-full min-h-screen flex items-center justify-center p-4 sm:p-6">
-        <div className="w-full max-w-2xl h-[min(760px,calc(100vh-2rem))] overflow-hidden rounded-2xl bg-white shadow-2xl border border-slate-200 flex flex-col">
+      <div className="relative z-50 w-full min-h-screen flex items-center justify-center p-2.5 sm:p-4 md:p-6">
+        <div className="w-full max-w-[720px] h-[calc(100vh-1.25rem)] sm:h-[min(820px,calc(100vh-2rem))] md:h-[min(860px,calc(100vh-3rem))] max-h-[900px] overflow-hidden rounded-xl sm:rounded-2xl bg-white shadow-2xl border border-slate-200 flex flex-col">
         <div className="shrink-0 bg-slate-950 px-5 py-3.5 text-white flex items-center gap-3">
           <MessageCircle />
           <div className="min-w-0 flex-1">

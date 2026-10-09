@@ -72,10 +72,10 @@ async function rest(path: string, options: RequestInit = {}) {
 }
 
 export async function listLeads() {
-  return rest('leads?select=id,name,email,company,phone,company_website,traffic_volume,primary_goal,message,chatbot_name,order_type,created_at&order=created_at.desc');
+  return rest('leads?select=id,name,email,company,phone,company_website,traffic_volume,primary_goal,message,chatbot_name,order_type,order_status,created_at&order=created_at.desc');
 }
 
-export async function listChatbots() {
+export async function updateLeadStatus(id: string, status: string) {\n  const allowed = ['New', 'Contacted', 'Payment Pending', 'In Progress', 'Completed'];\n  if (!allowed.includes(status)) throw new Error('Invalid request status.');\n  return rest(`leads?id=eq.${id}`, { method: 'PATCH', body: JSON.stringify({ order_status: status }) });\n}\n\nexport async function listChatbots() {
   return rest('chatbots?select=*&order=created_at.desc');
 }
 

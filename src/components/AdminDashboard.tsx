@@ -94,6 +94,16 @@ export function AdminDashboard() {
     setNotice('Pricing saved.');
   }
 
+  async function changeLeadStatus(lead: Lead, status: string) {
+    try {
+      await updateLeadStatus(lead.id, status);
+      setLeads(current => current.map(item => item.id === lead.id ? { ...item, order_status: status } : item));
+      setNotice('Request status updated.');
+    } catch (error) {
+      setNotice(error instanceof Error ? error.message : 'Could not update request status.');
+    }
+  }
+
   async function removePrice(id:string) {
     if (!confirm('Delete this pricing plan?')) return;
     await deletePrice(id);
@@ -159,7 +169,17 @@ export function AdminDashboard() {
             <span className="ml-auto rounded-full bg-slate-100 px-3 py-1 text-xs font-bold">{leads.filter(l => (!!l.phone || !!l.email) && !!l.message).length}</span>
           </div>
           {leads.filter(l => (!!l.phone || !!l.email) && !!l.message).length === 0 ? <div className="rounded-2xl bg-slate-50 p-5 text-sm text-slate-500">No client questions yet.</div> : (
-            <div className="overflow-x-auto">
+            <div className="grid gap-3 md:hidden">
+              {leads.filter(l => (!!l.phone || !!l.email) && !!l.message).map(lead => (
+                <article key={lead.id} className="min-w-0 rounded-2xl border border-slate-200 p-4">
+                  <div className="text-xs text-slate-500">{new Date(lead.created_at).toLocaleString()}</div>
+                  <div className="mt-2 break-words font-semibold">{lead.phone || 'Phone not provided'}</div>
+                  <div className="break-all text-sm text-slate-600">{lead.email || '—'}</div>
+                  <p className="mt-3 whitespace-pre-wrap break-words text-sm">{lead.message}</p>
+                </article>
+              ))}
+            </div>
+            <div className="hidden overflow-x-auto md:block">
               <table className="w-full min-w-[900px] text-left text-sm">
                 <thead><tr className="border-b text-xs uppercase text-slate-500"><th className="p-3">Date & Time</th><th className="p-3">Phone Number</th><th className="p-3">Email</th><th className="p-3">Question</th></tr></thead>
                 <tbody>{leads.filter(l => (!!l.phone || !!l.email) && !!l.message).map(lead => <tr key={lead.id} className="border-b last:border-0">
@@ -182,10 +202,34 @@ export function AdminDashboard() {
             <span className="ml-auto rounded-full bg-slate-100 px-3 py-1 text-xs font-bold">{requestLeads.length}</span>
           </div>
           {requestLeads.length === 0 ? <div className="rounded-2xl bg-slate-50 p-5 text-sm text-slate-500">No chatbot requests yet.</div> : (
-            <div className="overflow-x-auto">
+            <div className="grid gap-3 md:hidden">
+              {requestLeads.map(lead => (
+                <article key={lead.id} className="min-w-0 rounded-2xl border border-slate-200 p-4">
+                  <div className="flex flex-wrap items-start justify-between gap-2">
+                    <div className="min-w-0">
+                      <div className="break-words font-bold">{lead.name || 'Client'}{lead.company ? <span className="font-normal text-slate-500"> · {lead.company}</span> : null}</div>
+                      <div className="mt-1 text-xs text-slate-500">{new Date(lead.created_at).toLocaleString()}</div>
+                    </div>
+                    <span className="rounded-full bg-slate-100 px-2 py-1 text-xs font-semibold">{lead.order_type || 'General inquiry'}</span>
+                  </div>
+                  <div className="mt-3 break-all text-sm">{lead.email}</div>
+                  {lead.phone && <div className="text-sm text-slate-500">{lead.phone}</div>}
+                  <div className="mt-3 text-sm"><span className="text-slate-500">Chatbot:</span> <span className="font-semibold">{lead.chatbot_name || 'Not specified'}</span></div>
+                  <div className="mt-3">
+                    <label className="mb-1 block text-xs font-semibold text-slate-500">Request status</label>
+                    <select aria-label={`Status for ${lead.name || 'client request'}`} className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm font-semibold" value={lead.order_status || 'New'} onChange={e => changeLeadStatus(lead, e.target.value)}><option>New</option><option>Contacted</option><option>Payment Pending</option><option>In Progress</option><option>Completed</option></select>
+                  </div>
+                  {lead.company_website && <div className="mt-3 break-all text-sm"><a className="text-blue-600 hover:underline" href={lead.company_website} target="_blank" rel="noreferrer">{lead.company_website}</a></div>}
+                  {lead.primary_goal && <div className="mt-2 text-sm"><span className="text-slate-500">Goal:</span> {lead.primary_goal}</div>}
+                  {lead.traffic_volume && <div className="mt-1 text-sm"><span className="text-slate-500">Traffic:</span> {lead.traffic_volume}</div>}
+                  {lead.message && <p className="mt-3 whitespace-pre-wrap break-words text-sm">{lead.message}</p>}
+                </article>
+              ))}
+            </div>
+            <div className="hidden overflow-x-auto md:block">
               <table className="w-full min-w-[900px] text-left text-sm">
                 <thead><tr className="border-b text-xs uppercase text-slate-500"><th className="p-3">Date</th><th className="p-3">Client</th><th className="p-3">Email</th><th className="p-3">Chatbot ordered</th><th className="p-3">Order type</th><th className="p-3">Status</th><th className="p-3">Website</th><th className="p-3">Goal</th><th className="p-3">Traffic</th><th className="p-3">Message</th></tr></thead>
-                <tbody>{requestLeads.map(lead=><tr key={lead.id} className="border-b last:border-0"><td className="p-3 whitespace-nowrap">{new Date(lead.created_at).toLocaleString()}</td><td className="p-3 font-semibold">{lead.name}{lead.company && <div className="text-xs font-normal text-slate-500">{lead.company}</div>}</td><td className="p-3">{lead.email}{lead.phone && <div className="text-xs text-slate-500">{lead.phone}</div>}</td><td className="p-3 font-semibold">{lead.chatbot_name||'Not specified'}</td><td className="p-3">{lead.order_type||'General inquiry'}</td><td className="p-3"><select aria-label={`Status for ${lead.name || 'client request'}`} className="max-w-[170px] rounded-lg border border-slate-200 bg-white px-2 py-2 text-xs font-semibold" value={lead.order_status || 'New'} onChange={async e => { const nextStatus = e.target.value; try { await updateLeadStatus(lead.id, nextStatus); setLeads(current => current.map(item => item.id === lead.id ? { ...item, order_status: nextStatus } : item)); setNotice('Request status updated.'); } catch (error) { setNotice(error instanceof Error ? error.message : 'Could not update request status.'); } }}><option>New</option><option>Contacted</option><option>Payment Pending</option><option>In Progress</option><option>Completed</option></select></td><td className="p-3"><a className="text-blue-600 hover:underline" href={lead.company_website || undefined} target="_blank" rel="noreferrer">{lead.company_website || '—'}</a></td><td className="p-3">{lead.primary_goal||'—'}</td><td className="p-3">{lead.traffic_volume||'—'}</td><td className="p-3 max-w-[280px]">{lead.message||'—'}</td></tr>)}</tbody>
+                <tbody>{requestLeads.map(lead=><tr key={lead.id} className="border-b last:border-0"><td className="p-3 whitespace-nowrap">{new Date(lead.created_at).toLocaleString()}</td><td className="p-3 font-semibold">{lead.name}{lead.company && <div className="text-xs font-normal text-slate-500">{lead.company}</div>}</td><td className="p-3">{lead.email}{lead.phone && <div className="text-xs text-slate-500">{lead.phone}</div>}</td><td className="p-3 font-semibold">{lead.chatbot_name||'Not specified'}</td><td className="p-3">{lead.order_type||'General inquiry'}</td><td className="p-3"><select aria-label={`Status for ${lead.name || 'client request'}`} className="max-w-[170px] rounded-lg border border-slate-200 bg-white px-2 py-2 text-xs font-semibold" value={lead.order_status || 'New'} onChange={e => changeLeadStatus(lead, e.target.value)}><option>New</option><option>Contacted</option><option>Payment Pending</option><option>In Progress</option><option>Completed</option></select></td><td className="p-3"><a className="text-blue-600 hover:underline" href={lead.company_website || undefined} target="_blank" rel="noreferrer">{lead.company_website || '—'}</a></td><td className="p-3">{lead.primary_goal||'—'}</td><td className="p-3">{lead.traffic_volume||'—'}</td><td className="p-3 max-w-[280px]">{lead.message||'—'}</td></tr>)}</tbody>
               </table>
             </div>
           )}

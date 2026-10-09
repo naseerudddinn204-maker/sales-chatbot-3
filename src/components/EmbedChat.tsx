@@ -165,7 +165,7 @@ export function EmbedChat({ slug }: { slug: string }) {
       utterance.rate = 0.95;
       utterance.pitch = 1;
       utterance.volume = 1;
-      utterance.onerror = () => setBackendError('Could not play the voice answer. Please try again.');
+      utterance.onerror = () => { /* Voice playback is optional; never show speech errors in the chat UI. */ };
       speech.speak(utterance);
     };
 

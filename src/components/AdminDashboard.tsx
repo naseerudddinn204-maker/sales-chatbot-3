@@ -5,7 +5,7 @@ import { AdminLogin } from './AdminLogin';
 
 type Bot = { id:string; name:string; slug:string; description:string; system_prompt:string; welcome_message:string; enabled:boolean; embed_code?:string; logo_url?:string; brand_color?:string; knowledge_description?:string; knowledge_text?:string };
 type Price = { id:string; plan_name:string; monthly_price:number; annual_price:number; description:string; features:string[]; highlighted:boolean; enabled:boolean; sort_order:number };
-type Lead = { id:string; name:string; email:string; company?:string; phone?:string; company_website:string; traffic_volume?:string; primary_goal?:string; message?:string; created_at:string };
+type Lead = { id:string; name:string; email:string; company?:string; phone?:string; company_website?:string | null; traffic_volume?:string; primary_goal?:string; message?:string; created_at:string };
 
 export function AdminDashboard() {
   const [loggedIn, setLoggedIn] = useState(!!getSession());
@@ -53,6 +53,9 @@ export function AdminDashboard() {
   const defaultEmbedCode = selected ? `<script src="${origin}/embed.js" data-chatbot="${selected.slug}" defer></script>` : '';
   const embedCode = selected?.embed_code?.trim() || defaultEmbedCode;
   const liveUrl = selected ? `${origin}/embed/${selected.slug}` : '';
+  // Only form submissions with an email and website belong in Client Requests.
+  // Chatbot manager-follow-up questions belong in Client Questions instead.
+  const requestLeads = leads.filter(lead => !!lead.email && !!lead.company_website && lead.primary_goal !== 'Manager follow-up');
 
   async function addBot() {
     const rows = await createChatbot({ name:'New Chatbot', slug:`chatbot-${Date.now()}`, description:'', system_prompt:'You are a helpful AI sales assistant.', welcome_message:'Hello! How can I help you?', enabled:true, embed_code:'', logo_url:'', brand_color:'#111827', knowledge_description:'', knowledge_text:'' });
@@ -157,13 +160,13 @@ export function AdminDashboard() {
               <h2 className="text-xl font-bold">Chatbot Requests</h2>
               <p className="text-sm text-slate-500">“Request your AI chatbot” forms submitted from the Contact Expert page.</p>
             </div>
-            <span className="ml-auto rounded-full bg-slate-100 px-3 py-1 text-xs font-bold">{leads.length}</span>
+            <span className="ml-auto rounded-full bg-slate-100 px-3 py-1 text-xs font-bold">{requestLeads.length}</span>
           </div>
-          {leads.length === 0 ? <div className="rounded-2xl bg-slate-50 p-5 text-sm text-slate-500">No chatbot requests yet.</div> : (
+          {requestLeads.length === 0 ? <div className="rounded-2xl bg-slate-50 p-5 text-sm text-slate-500">No chatbot requests yet.</div> : (
             <div className="overflow-x-auto">
               <table className="w-full min-w-[900px] text-left text-sm">
                 <thead><tr className="border-b text-xs uppercase text-slate-500"><th className="p-3">Date</th><th className="p-3">Client</th><th className="p-3">Email</th><th className="p-3">Website</th><th className="p-3">Goal</th><th className="p-3">Traffic</th><th className="p-3">Message</th></tr></thead>
-                <tbody>{leads.map(lead=><tr key={lead.id} className="border-b last:border-0"><td className="p-3 whitespace-nowrap">{new Date(lead.created_at).toLocaleString()}</td><td className="p-3 font-semibold">{lead.name}{lead.company && <div className="text-xs font-normal text-slate-500">{lead.company}</div>}</td><td className="p-3">{lead.email}{lead.phone && <div className="text-xs text-slate-500">{lead.phone}</div>}</td><td className="p-3"><a className="text-blue-600 hover:underline" href={lead.company_website} target="_blank" rel="noreferrer">{lead.company_website}</a></td><td className="p-3">{lead.primary_goal||'—'}</td><td className="p-3">{lead.traffic_volume||'—'}</td><td className="p-3 max-w-[280px]">{lead.message||'—'}</td></tr>)}</tbody>
+                <tbody>{requestLeads.map(lead=><tr key={lead.id} className="border-b last:border-0"><td className="p-3 whitespace-nowrap">{new Date(lead.created_at).toLocaleString()}</td><td className="p-3 font-semibold">{lead.name}{lead.company && <div className="text-xs font-normal text-slate-500">{lead.company}</div>}</td><td className="p-3">{lead.email}{lead.phone && <div className="text-xs text-slate-500">{lead.phone}</div>}</td><td className="p-3"><a className="text-blue-600 hover:underline" href={lead.company_website} target="_blank" rel="noreferrer">{lead.company_website}</a></td><td className="p-3">{lead.primary_goal||'—'}</td><td className="p-3">{lead.traffic_volume||'—'}</td><td className="p-3 max-w-[280px]">{lead.message||'—'}</td></tr>)}</tbody>
               </table>
             </div>
           )}

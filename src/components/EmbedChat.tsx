@@ -10,7 +10,7 @@ const API = import.meta.env.VITE_SUPABASE_API_URL || SUPABASE_URL + '/functions/
 
 type Message = { role: 'user' | 'assistant'; text: string };
 
-const headers = { apikey: SUPABASE_KEY, 'Content-Type': 'application/json' };
+const headers = { apikey: SUPABASE_KEY, Authorization: 'Bearer ' + SUPABASE_KEY, 'Content-Type': 'application/json' };
 
 function looksLikePhone(value: string) {
   const digits = value.replace(/\D/g, '');
@@ -190,7 +190,7 @@ export function EmbedChat({ slug }: { slug: string }) {
     try {
       const r = await fetch(API, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers,
         body: JSON.stringify({
           message: text,
           session_id: session,
@@ -265,7 +265,7 @@ export function EmbedChat({ slug }: { slug: string }) {
       form.append('action', 'visitor_knowledge');
       form.append('slug', slug);
       form.append('file', file);
-      const r = await fetch(API, { method: 'POST', headers: { apikey: SUPABASE_KEY }, body: form });
+      const r = await fetch(API, { method: 'POST', headers: { apikey: SUPABASE_KEY, Authorization: 'Bearer ' + SUPABASE_KEY }, body: form });
       const d = await r.json().catch(() => ({}));
       if (!r.ok) throw new Error(d?.error || 'Could not read the file.');
       setVisitorKnowledge(String(d.knowledge_text || ''));
@@ -302,7 +302,7 @@ export function EmbedChat({ slug }: { slug: string }) {
 
       const r = await fetch(API, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers,
         body: JSON.stringify({
           message: text,
           session_id: session,

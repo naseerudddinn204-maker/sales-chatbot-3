@@ -4,8 +4,8 @@ import { createChatbot, createPrice, deleteChatbot, deletePrice, getAdminUser, g
 import { AdminLogin } from './AdminLogin';
 
 type Bot = { id:string; name:string; slug:string; description:string; system_prompt:string; welcome_message:string; enabled:boolean; embed_code?:string; logo_url?:string; brand_color?:string; knowledge_description?:string; knowledge_text?:string };
-type Price = { id:string; plan_name:string; monthly_price:number; annual_price:number; description:string; features:string[]; highlighted:boolean; enabled:boolean; sort_order:number };
-type Lead = { id:string; name:string; email:string; company?:string; phone?:string; company_website?:string | null; traffic_volume?:string; primary_goal?:string; message?:string; chatbot_name?:string | null; order_type?:string | null; order_status?:string | null; created_at:string };
+type Price = { id:string; plan_name:string; one_time_price:number; monthly_price:number; annual_price:number; description:string; features:string[]; highlighted:boolean; enabled:boolean; sort_order:number };
+type Lead = { id:string; name:string; email:string; company?:string; phone?:string; company_website?:string | null; traffic_volume?:string; primary_goal?:string; message?:string; chatbot_name?:string | null; order_type?:string | null; order_status?:string | null; billing_type?:string | null; payment_method?:string | null; payment_status?:string | null; payment_reference?:string | null; plan_name?:string | null; created_at:string };
 
 export function AdminDashboard() {
   const [loggedIn, setLoggedIn] = useState(!!getSession());
@@ -331,10 +331,11 @@ export function AdminDashboard() {
                 </div>
                 <div className="space-y-4">
                   {prices.map(p=><div key={p.id} className="min-w-0 rounded-2xl border p-3 sm:p-4">
-                    <div className="grid min-w-0 gap-3 sm:grid-cols-2 lg:grid-cols-4">
-                      <input className={smallInputClass} value={p.plan_name} onChange={e=>setPrices(prices.map(x=>x.id===p.id?{...x,plan_name:e.target.value}:x))}/>
-                      <input className={smallInputClass} type="number" value={p.monthly_price} onChange={e=>setPrices(prices.map(x=>x.id===p.id?{...x,monthly_price:Number(e.target.value)}:x))}/>
-                      <input className={smallInputClass} type="number" value={p.annual_price} onChange={e=>setPrices(prices.map(x=>x.id===p.id?{...x,annual_price:Number(e.target.value)}:x))}/>
+                    <div className="grid min-w-0 gap-3 sm:grid-cols-2 lg:grid-cols-5">
+                      <input className={smallInputClass} value={p.plan_name} onChange={e=>setPrices(prices.map(x=>x.id===p.id?{...x,plan_name:e.target.value}:x))} placeholder="Plan name"/>
+                      <label className="block text-xs text-slate-500">One-time price<input className={smallInputClass + ' mt-1'} type="number" value={p.one_time_price ?? 0} onChange={e=>setPrices(prices.map(x=>x.id===p.id?{...x,one_time_price:Number(e.target.value)}:x))} placeholder="One-time price"/></label>
+                      <label className="block text-xs text-slate-500">Monthly price<input className={smallInputClass + ' mt-1'} type="number" value={p.monthly_price} onChange={e=>setPrices(prices.map(x=>x.id===p.id?{...x,monthly_price:Number(e.target.value)}:x))}/></label>
+                      <label className="block text-xs text-slate-500">Annual price<input className={smallInputClass + ' mt-1'} type="number" value={p.annual_price} onChange={e=>setPrices(prices.map(x=>x.id===p.id?{...x,annual_price:Number(e.target.value)}:x))}/></label>
                       <div className="flex min-w-0 gap-2"><button onClick={()=>savePrice(p)} className="min-w-0 flex-1 rounded-lg bg-slate-900 px-3 py-2 text-sm text-white">Save</button><button onClick={()=>removePrice(p.id)} className="shrink-0 rounded-lg border p-2"><Trash2 size={16}/></button></div>
                     </div>
                     <input className={smallInputClass + " mt-3"} value={p.description||''} onChange={e=>setPrices(prices.map(x=>x.id===p.id?{...x,description:e.target.value}:x))} placeholder="Plan description"/>

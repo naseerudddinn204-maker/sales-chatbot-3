@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { FileText, MessageCircle, Send, Upload, X, ChevronDown, ChevronUp, Mic, MicOff, Volume2 } from 'lucide-react';
+import { FileText, MessageCircle, Send, Upload, X, ChevronDown, ChevronUp, Mic, MicOff, Volume2, ArrowLeft } from 'lucide-react';
 import { Header } from './Header';
 import { HomeScreen } from './HomeScreen';
 import { ScreenTab } from '../types';
@@ -357,12 +357,17 @@ export function EmbedChat({ slug }: { slug: string }) {
 
       <div className="relative z-50 w-full min-h-screen flex items-center justify-center p-2.5 sm:p-4 md:p-6">
         <div className="w-full max-w-[520px] h-[calc(100vh-1.25rem)] sm:h-[min(820px,calc(100vh-2rem))] md:h-[min(860px,calc(100vh-3rem))] max-h-[900px] overflow-hidden rounded-xl sm:rounded-2xl bg-white shadow-2xl border border-slate-200 flex flex-col">
-          <div className="shrink-0 bg-[#1e3a5f] px-5 py-3.5 text-white flex items-center gap-3">
-            <MessageCircle />
+          <div className="shrink-0 bg-[#1e3a5f] px-4 sm:px-5 py-3.5 text-white flex items-center gap-3">
+            <MessageCircle className="shrink-0" />
             <div className="min-w-0 flex-1">
               <div className="font-bold truncate">{config?.name || 'AI Chatbot'}</div>
               <div className="text-xs text-white/60">Online assistant</div>
             </div>
+            <a href="/" className="shrink-0 inline-flex items-center gap-1.5 rounded-lg border border-white/20 bg-white/10 px-3 py-2 text-xs font-semibold text-white transition hover:bg-white/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white" aria-label="Back to home">
+              <ArrowLeft size={15} />
+              <span className="hidden xs:inline">Back to Home</span>
+              <span className="xs:hidden">Home</span>
+            </a>
           </div>
 
           <div className="shrink-0 border-b bg-slate-50 px-3 py-2">

@@ -59,7 +59,7 @@ export const PricingScreen: React.FC<PricingScreenProps> = ({ onNavigateToContac
         return <article key={plan.plan_name} className={'rounded-2xl bg-white p-6 border ' + (plan.highlighted ? 'border-blue-500 shadow-lg ring-2 ring-blue-500/10' : 'border-gray-200 shadow-sm')}>
           {plan.highlighted && <span className="inline-flex mb-3 rounded-full bg-blue-50 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-blue-700">Most popular</span>}
           <h2 className="text-xl font-bold text-gray-950">{plan.plan_name}</h2><p className="mt-2 min-h-[40px] text-sm text-gray-600">{plan.description}</p>
-          <div className="mt-5"><span className="text-4xl font-extrabold text-gray-950">$ {displayedPrice}</span><span className="text-sm text-gray-500">/mo</span></div>
+          <div className="mt-5"><span className="text-4xl font-extrabold text-gray-950">${displayedPrice}</span><span className="text-sm text-gray-500">/mo</span></div>
           <p className="mt-1 text-[11px] text-gray-400">{annual ? 'Billed yearly · $' + annualTotal + ' total per year' : 'Billed monthly · cancel according to plan terms'}</p>
           <ul className="mt-5 space-y-2.5 border-t pt-5">{(plan.features || []).slice(0, 5).map((f, i) => <li key={i} className="flex gap-2 text-sm text-gray-700"><Check size={16} className="mt-0.5 shrink-0 text-emerald-500"/>{f}</li>)}</ul>
           <button onClick={() => openRequest(plan)} className={'mt-6 w-full h-11 rounded-xl flex items-center justify-center gap-2 text-sm font-bold ' + (plan.highlighted ? 'bg-blue-600 hover:bg-blue-700 text-white' : 'bg-gray-950 hover:bg-gray-800 text-white')}>Get Started <ArrowRight size={15}/></button>

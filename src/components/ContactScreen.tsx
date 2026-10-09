@@ -1,14 +1,16 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { DemoFormData } from '../types';
 import { callBackend } from '../lib/backendApi';
 
 interface ContactScreenProps {
+  selectedChatbotName?: string;
   onOpenLiveChat: () => void;
   onOpenBookDemo: () => void;
   onShowToast: (title: string, message: string) => void;
 }
 
 export const ContactScreen: React.FC<ContactScreenProps> = ({
+  selectedChatbotName = '',
   onOpenLiveChat,
   onOpenBookDemo,
   onShowToast,
@@ -22,6 +24,8 @@ export const ContactScreen: React.FC<ContactScreenProps> = ({
     message: '',
     agreedToTerms: false,
   });
+  const [chatbotName, setChatbotName] = useState(selectedChatbotName);
+  useEffect(() => { if (selectedChatbotName) setChatbotName(selectedChatbotName); }, [selectedChatbotName]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
 
@@ -36,6 +40,8 @@ export const ContactScreen: React.FC<ContactScreenProps> = ({
       await callBackend({
         action: 'lead',
         name: formData.fullName,
+        chatbot_name: chatbotName.trim(),
+        order_type: chatbotName.trim() ? 'Purchase request' : 'General chatbot inquiry',
         email: formData.workEmail,
         company_website: formData.companyWebsite,
         traffic_volume: formData.trafficVolume,
@@ -112,6 +118,7 @@ export const ContactScreen: React.FC<ContactScreenProps> = ({
                 <input required value={formData.fullName} onChange={e => setFormData({...formData, fullName:e.target.value})} placeholder="Full name" className="h-11 rounded-xl bg-[#f5f6fa] px-3.5 text-sm outline-none focus:ring-2 focus:ring-[#3157c8]" />
                 <input required type="email" value={formData.workEmail} onChange={e => setFormData({...formData, workEmail:e.target.value})} placeholder="Work email" className="h-11 rounded-xl bg-[#f5f6fa] px-3.5 text-sm outline-none focus:ring-2 focus:ring-[#3157c8]" />
               </div>
+              <input value={chatbotName} onChange={e => setChatbotName(e.target.value)} readOnly={!!selectedChatbotName} placeholder="Chatbot you want to order (auto-filled from Get Started)" className={`w-full h-11 rounded-xl bg-[#f5f6fa] px-3.5 text-sm outline-none focus:ring-2 focus:ring-[#3157c8] ${selectedChatbotName ? 'font-semibold text-[#3157c8]' : ''}`} />
               <input required type="url" value={formData.companyWebsite} onChange={e => setFormData({...formData, companyWebsite:e.target.value})} placeholder="Company website" className="w-full h-11 rounded-xl bg-[#f5f6fa] px-3.5 text-sm outline-none focus:ring-2 focus:ring-[#3157c8]" />
               <div className="grid sm:grid-cols-2 gap-3.5">
                 <select value={formData.trafficVolume} onChange={e => setFormData({...formData, trafficVolume:e.target.value})} className="h-11 rounded-xl bg-[#f5f6fa] px-3.5 text-sm outline-none">

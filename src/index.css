@@ -65,6 +65,22 @@
   -webkit-font-smoothing: antialiased;
 }
 
+/* Light-blue highlight when selecting text or navigating focus with the keyboard */
+::selection {
+  background: #bfdbfe;
+  color: #1e3a8a;
+}
+
+::-moz-selection {
+  background: #bfdbfe;
+  color: #1e3a8a;
+}
+
+:focus-visible {
+  outline-color: #93c5fd;
+  --tw-ring-color: #93c5fd;
+}
+
 /* Scrollbar styling */
 ::-webkit-scrollbar {
   width: 6px;

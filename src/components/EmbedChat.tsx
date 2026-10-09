@@ -449,9 +449,6 @@ export function EmbedChat({ slug }: { slug: string }) {
 
           <form onSubmit={e => { e.preventDefault(); send(); }} className="shrink-0 border-t p-3 bg-white flex gap-2">
             <input value={input} onChange={e => setInput(e.target.value)} className="flex-1 min-w-0 rounded-xl border px-3 py-2.5 outline-none" placeholder="Ask about this business…" aria-label="Ask the chatbot" />
-            <button type="button" onClick={() => toggleVoicePlayback()} className={'rounded-xl px-3 ' + (voicePlaybackEnabled ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200')} aria-label={voicePlaybackEnabled ? 'Mute chatbot voice answers' : 'Enable chatbot voice answers'} title={voicePlaybackEnabled ? 'Mute voice answers' : 'Enable voice answers'}>
-              {voicePlaybackEnabled ? <Volume2 size={18} /> : <VolumeX size={18} />}
-            </button>
             <button type="button" onClick={toggleVoiceInput} disabled={loading} className="rounded-xl px-3 text-white disabled:opacity-50" style={{ backgroundColor: listening ? '#dc2626' : (config?.brand_color || '#020617') }} aria-label={listening ? 'Stop voice input' : 'Ask by voice'}>
               {listening ? <MicOff size={18} /> : <Mic size={18} />}
             </button>

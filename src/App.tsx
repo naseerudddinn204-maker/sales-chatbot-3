@@ -121,7 +121,11 @@ export default function App() {
 
           {currentTab === 'pricing' && (
             <PricingScreen
-              onNavigateToContact={() => handleTabChange('contact')}
+              onNavigateToContact={(planName, billingType) => {
+                setSelectedPlanName(planName || '');
+                setSelectedBillingType(billingType || 'monthly');
+                handleTabChange('contact');
+              }}
               onOpenLiveChat={() => setIsLiveChatOpen(true)}
               onShowToast={showToast}
             />

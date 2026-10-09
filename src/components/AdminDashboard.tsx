@@ -179,6 +179,7 @@ export function AdminDashboard() {
             <span className="ml-auto rounded-full bg-slate-100 px-3 py-1 text-xs font-bold">{leads.filter(l => (!!l.phone || !!l.email) && !!l.message).length}</span>
           </div>
           {leads.filter(l => (!!l.phone || !!l.email) && !!l.message).length === 0 ? <div className="rounded-2xl bg-slate-50 p-5 text-sm text-slate-500">No client questions yet.</div> : (
+            <>
             <div className="grid gap-3 md:hidden">
               {leads.filter(l => (!!l.phone || !!l.email) && !!l.message).map(lead => (
                 <article key={lead.id} className="min-w-0 rounded-2xl border border-slate-200 p-4">
@@ -199,6 +200,7 @@ export function AdminDashboard() {
                 </tr>)}</tbody>
               </table>
             </div>
+            </>
           )}
         </div>}
 
@@ -212,6 +214,7 @@ export function AdminDashboard() {
             <span className="ml-auto rounded-full bg-slate-100 px-3 py-1 text-xs font-bold">{requestLeads.length}</span>
           </div>
           {requestLeads.length === 0 ? <div className="rounded-2xl bg-slate-50 p-5 text-sm text-slate-500">No chatbot requests yet.</div> : (
+            <>
             <div className="grid gap-3 md:hidden">
               {requestLeads.map(lead => (
                 <article key={lead.id} className="min-w-0 rounded-2xl border border-slate-200 p-4">
@@ -247,6 +250,7 @@ export function AdminDashboard() {
                 <tbody>{requestLeads.map(lead=><tr key={lead.id} className="border-b last:border-0"><td className="p-3 whitespace-nowrap">{new Date(lead.created_at).toLocaleString()}</td><td className="p-3 font-semibold">{lead.name}{lead.company && <div className="text-xs font-normal text-slate-500">{lead.company}</div>}</td><td className="p-3">{lead.email}{lead.phone && <div className="text-xs text-slate-500">{lead.phone}</div>}</td><td className="p-3 font-semibold">{lead.chatbot_name||'Not specified'}</td><td className="p-3">{lead.order_type||'General inquiry'}</td><td className="p-3">{lead.plan_name || '—'}<div className="text-xs text-slate-500">{lead.billing_type === 'one_time' ? 'One-time' : lead.billing_type === 'annual' ? 'Annual' : 'Monthly'}</div></td><td className="p-3"><select aria-label={`Payment status for ${lead.name || 'client request'}`} className="max-w-[170px] rounded-lg border border-slate-200 bg-white px-2 py-2 text-xs" value={lead.payment_status || 'awaiting_instructions'} onChange={e => changeLeadPaymentStatus(lead, e.target.value)}><option value="awaiting_instructions">Awaiting instructions</option><option value="payment_pending">Payment pending</option><option value="paid">Paid</option><option value="rejected">Rejected</option></select>{lead.payment_reference && <div className="mt-1 max-w-[180px] break-all text-xs text-slate-500">Ref: {lead.payment_reference}</div>}</td><td className="p-3"><select aria-label={`Status for ${lead.name || 'client request'}`} className="max-w-[170px] rounded-lg border border-slate-200 bg-white px-2 py-2 text-xs font-semibold" value={lead.order_status || 'New'} onChange={e => changeLeadStatus(lead, e.target.value)}><option>New</option><option>Contacted</option><option>Payment Pending</option><option>In Progress</option><option>Completed</option></select></td><td className="p-3"><a className="text-blue-600 hover:underline" href={lead.company_website || undefined} target="_blank" rel="noreferrer">{lead.company_website || '—'}</a></td><td className="p-3">{lead.primary_goal||'—'}</td><td className="p-3">{lead.traffic_volume||'—'}</td><td className="p-3 max-w-[280px]">{lead.message||'—'}</td></tr>)}</tbody>
               </table>
             </div>
+            </>
           )}
         </div>}
 

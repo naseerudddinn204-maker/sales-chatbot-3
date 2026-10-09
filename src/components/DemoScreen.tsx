@@ -24,7 +24,7 @@ async function saveClientQuestion(contact: string, question: string, contactType
 }
 
 interface DemoScreenProps {
-  onNavigateToContact: () => void;
+  onNavigateToContact: (chatbotName?: string) => void;
   onShowToast: (title: string, message: string) => void;
 }
 

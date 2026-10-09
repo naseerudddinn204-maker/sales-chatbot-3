@@ -85,6 +85,9 @@ Deno.serve(async (req) => {
         message: clean(body?.message) || null,
         chatbot_name: clean(body?.chatbot_name) || null,
         order_type: clean(body?.order_type) || null,
+        ...(clean(body?.plan_name) ? { plan_name: clean(body.plan_name).slice(0, 120) } : {}),
+        ...(clean(body?.billing_type) === 'annual' || clean(body?.billing_type) === 'monthly' ? { billing_type: clean(body.billing_type) } : {}),
+        ...(clean(body?.requested_price) !== '' && Number.isFinite(Number(body.requested_price)) && Number(body.requested_price) >= 0 ? { requested_price: Number(body.requested_price) } : {}),
       });
       if (leadError) throw leadError;
       return json({ ok: true, message: "Your chatbot request has been received." });

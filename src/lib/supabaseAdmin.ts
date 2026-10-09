@@ -72,7 +72,7 @@ async function rest(path: string, options: RequestInit = {}) {
 }
 
 export async function listLeads() {
-  return rest('leads?select=id,name,email,company,phone,company_website,traffic_volume,primary_goal,message,chatbot_name,order_type,created_at&order=created_at.desc');
+  return rest('leads?select=id,name,email,company,phone,company_website,traffic_volume,primary_goal,message,chatbot_name,order_type,plan_name,billing_type,requested_price,order_status,created_at&order=created_at.desc');
 }
 
 export async function listChatbots() {
@@ -128,4 +128,8 @@ export async function uploadKnowledgeFile(slug: string, file: File) {
   const data = await res.json().catch(() => ({}));
   if (!res.ok) throw new Error(data?.error || 'File upload failed');
   return data as { ok: boolean; file_name: string; knowledge_text: string; message?: string };
+}
+
+export async function updateLeadStatus(id: string, status: string) {
+  return rest(`leads?id=eq.${id}`, { method: 'PATCH', body: JSON.stringify({ order_status: status }) });
 }

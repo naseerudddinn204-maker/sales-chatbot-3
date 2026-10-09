@@ -140,7 +140,7 @@ export function AdminDashboard() {
         </div>
       </header>
 
-      <main className="mx-auto w-full max-w-[1500px] box-border px-3 py-5 sm:px-5 sm:py-7 lg:min-h-0 lg:flex-1 lg:overflow-y-auto lg:px-8">
+      <main className={`mx-auto w-full max-w-[1500px] box-border px-3 py-5 sm:px-5 sm:py-7 lg:min-h-0 lg:flex-1 lg:px-8 ${adminPage === 'chatbots' ? 'lg:overflow-hidden' : 'lg:overflow-y-auto'}`}>
         {notice && <div className="mb-4 break-words rounded-xl bg-emerald-50 p-3 text-sm text-emerald-700">{notice}</div>}
 
         {adminPage === 'questions' && <div className="min-w-0 rounded-3xl border border-slate-100 bg-white p-4 shadow-[0_8px_30px_rgba(21,28,39,0.04)] sm:p-6">
@@ -185,8 +185,8 @@ export function AdminDashboard() {
           )}
         </div>}
 
-        {adminPage === 'chatbots' && <div className="grid min-w-0 gap-4 lg:grid-cols-[280px_minmax(0,1fr)] lg:gap-6">
-          <aside className="min-w-0 rounded-3xl border border-slate-100 bg-white p-3 shadow-[0_8px_30px_rgba(21,28,39,0.04)] sm:p-4 lg:h-fit lg:sticky lg:top-24">
+        {adminPage === 'chatbots' && <div className="grid min-w-0 gap-4 lg:h-full lg:min-h-0 lg:grid-cols-[280px_minmax(0,1fr)] lg:gap-6">
+          <aside className="min-w-0 rounded-3xl border border-slate-100 bg-white p-3 shadow-[0_8px_30px_rgba(21,28,39,0.04)] sm:p-4 lg:h-full lg:min-h-0 lg:overflow-y-auto">
             <div className="mb-4 flex items-center justify-between gap-2">
               <h2 className="truncate font-bold">Your Chatbots</h2>
               <button onClick={addBot} className="shrink-0 rounded-xl bg-slate-900 p-2 text-white"><Plus size={17}/></button>
@@ -201,7 +201,7 @@ export function AdminDashboard() {
             </div>
           </aside>
 
-          <section className="min-w-0 space-y-4 sm:space-y-6">
+          <section className="min-w-0 space-y-4 sm:space-y-6 lg:h-full lg:min-h-0 lg:overflow-y-auto">
             {!selected ? (
               <div className="rounded-3xl bg-white p-6 text-center sm:p-10">Create your first chatbot.</div>
             ) : <>

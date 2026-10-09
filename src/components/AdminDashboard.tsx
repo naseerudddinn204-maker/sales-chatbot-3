@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Bot, Code2, LogOut, Plus, Save, Trash2, DollarSign, Copy, Check, ClipboardList, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
-import { createChatbot, createPrice, deleteChatbot, deletePrice, getAdminUser, getSession, listChatbots, listLeads, listPrices, signOut, updateChatbot, updatePrice } from '../lib/supabaseAdmin';
+import { createChatbot, createPrice, deleteChatbot, deletePrice, getAdminUser, getSession, listChatbots, listLeads, listPrices, signOut, updateChatbot, updateLeadStatus, updatePrice } from '../lib/supabaseAdmin';
 import { AdminLogin } from './AdminLogin';
 
 type Bot = { id:string; name:string; slug:string; description:string; system_prompt:string; welcome_message:string; enabled:boolean; embed_code?:string; logo_url?:string; brand_color?:string; knowledge_description?:string; knowledge_text?:string };

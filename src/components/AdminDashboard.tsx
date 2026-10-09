@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Bot, Code2, LogOut, Plus, Save, Trash2, DollarSign, Copy, Check, ClipboardList, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
-import { createChatbot, createPrice, deleteChatbot, deletePrice, getAdminUser, getSession, listChatbots, listLeads, listPrices, signOut, updateChatbot, updatePrice } from '../lib/supabaseAdmin';
+import { createChatbot, createPrice, deleteChatbot, deletePrice, getAdminUser, getSession, listChatbots, listLeads, listPrices, signOut, updateChatbot, updatePrice, updateLeadStatus } from '../lib/supabaseAdmin';
 import { AdminLogin } from './AdminLogin';
 
 type Bot = { id:string; name:string; slug:string; description:string; system_prompt:string; welcome_message:string; enabled:boolean; embed_code?:string; logo_url?:string; brand_color?:string; knowledge_description?:string; knowledge_text?:string };
 type Price = { id:string; plan_name:string; monthly_price:number; annual_price:number; description:string; features:string[]; highlighted:boolean; enabled:boolean; sort_order:number };
-type Lead = { id:string; name:string; email:string; company?:string; phone?:string; company_website?:string | null; traffic_volume?:string; primary_goal?:string; message?:string; chatbot_name?:string | null; order_type?:string | null; created_at:string };
+type Lead = { id:string; name:string; email:string; company?:string; phone?:string; company_website?:string | null; traffic_volume?:string; primary_goal?:string; message?:string; chatbot_name?:string | null; order_type?:string | null; plan_name?:string | null; billing_type?:string | null; requested_price?:number | null; order_status?:string; created_at:string };
 
 export function AdminDashboard() {
   const [loggedIn, setLoggedIn] = useState(!!getSession());
@@ -50,13 +50,14 @@ export function AdminDashboard() {
 
   const origin = window.location.origin;
   const adminPath = window.location.pathname;
-  const adminPage = adminPath.startsWith('/admin/questions') ? 'questions' : adminPath.startsWith('/admin/requests') ? 'requests' : 'chatbots';
+  const adminPage = adminPath.startsWith('/admin/questions') ? 'questions' : adminPath.startsWith('/admin/requests') ? 'requests' : adminPath.startsWith('/admin/pricing') ? 'pricing' : 'chatbots';
   const defaultEmbedCode = selected ? `<script src="${origin}/embed.js" data-chatbot="${selected.slug}" defer></script>` : '';
   const embedCode = selected?.embed_code?.trim() || defaultEmbedCode;
   const liveUrl = selected ? `${origin}/embed/${selected.slug}` : '';
   // Only form submissions with an email and website belong in Client Requests.
   // Chatbot manager-follow-up questions belong in Client Questions instead.
-  const requestLeads = leads.filter(lead => !!lead.email && (!!lead.company_website || !!lead.chatbot_name || !!lead.order_type) && lead.primary_goal !== 'Manager follow-up');
+  const requestLeads = leads.filter(lead => !!lead.email && (!!lead.company_website || !!lead.chatbot_name || !!lead.order_type) && lead.primary_goal !== 'Manager follow-up' && lead.order_type !== 'Pricing request' && lead.primary_goal !== 'Pricing request');
+  const formatRequestedPrice = (value?: number | null) => value == null ? '—' : String.fromCharCode(36) + Number(value).toLocaleString(undefined, { maximumFractionDigits: 2 });
 
   async function addBot() {
     const rows = await createChatbot({ name:'New Chatbot', slug:`chatbot-${Date.now()}`, description:'', system_prompt:'You are a helpful AI sales assistant.', welcome_message:'Hello! How can I help you?', enabled:true, embed_code:'', logo_url:'', brand_color:'#111827', knowledge_description:'', knowledge_text:'' });
@@ -122,6 +123,7 @@ export function AdminDashboard() {
             <a href="/admin/chatbots" className={`flex items-center gap-2 rounded-lg px-2.5 py-2.5 text-xs font-semibold transition-colors ${adminPage==='chatbots'?'bg-[#d61616] text-white shadow-lg shadow-red-950/20':'text-white/70 hover:bg-white/10 hover:text-white'}`}><Bot size={16}/><span>Chatbots</span></a>
             <a href="/admin/requests" className={`flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold transition-colors ${adminPage==='requests'?'bg-[#d61616] text-white shadow-lg shadow-red-950/20':'text-white/70 hover:bg-white/10 hover:text-white'}`}><ClipboardList size={16}/><span>Client Requests</span></a>
             <a href="/admin/questions" className={`flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold transition-colors ${adminPage==='questions'?'bg-[#d61616] text-white shadow-lg shadow-red-950/20':'text-white/70 hover:bg-white/10 hover:text-white'}`}><Code2 size={16}/><span>Client Questions</span></a>
+            <a href="/admin/pricing" className={`flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold transition-colors ${adminPage==='pricing'?'bg-[#d61616] text-white shadow-lg shadow-red-950/20':'text-white/70 hover:bg-white/10 hover:text-white'}`}><DollarSign size={16}/><span>Pricing Requests</span></a>
           </nav>
           <div className="mt-auto hidden rounded-xl border border-white/10 bg-white/5 p-3 lg:block">
             <div className="text-xs font-semibold">Manage smarter</div><p className="mt-1 text-[11px] leading-4 text-white/50">Your chatbot settings, leads and client questions in one place.</p>
@@ -132,7 +134,7 @@ export function AdminDashboard() {
       <header className="sticky top-0 z-20 w-full border-b border-slate-200/80 bg-white/90 backdrop-blur-xl">
         <div className="flex min-h-[76px] w-full items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8">
           <div className="min-w-0">
-            <div className="truncate text-xl font-extrabold tracking-tight text-[#151c27]">{adminPage==='requests'?'Client Requests':adminPage==='questions'?'Client Questions':'Chatbot Workspace'}</div>
+            <div className="truncate text-xl font-extrabold tracking-tight text-[#151c27]">{adminPage==='requests'?'Client Requests':adminPage==='questions'?'Client Questions':adminPage==='pricing'?'Pricing Requests':'Chatbot Workspace'}</div>
             <div className="truncate text-xs text-slate-500">SalesChatbot · Manage your business conversations</div>
           </div>
           <div className="flex shrink-0 items-center gap-2">
@@ -158,7 +160,7 @@ export function AdminDashboard() {
             </div>
             <span className="ml-auto rounded-full bg-slate-100 px-3 py-1 text-xs font-bold">{leads.filter(l => (!!l.phone || !!l.email) && !!l.message).length}</span>
           </div>
-          {leads.filter(l => (!!l.phone || !!l.email) && !!l.message).length === 0 ? <div className="rounded-2xl bg-slate-50 p-5 text-sm text-slate-500">No client questions yet.</div> : (
+          {leads.filter(l => (!!l.phone || !!l.email) && !!l.message && l.order_type !== 'Pricing request' && l.primary_goal !== 'Pricing request').length === 0 ? <div className="rounded-2xl bg-slate-50 p-5 text-sm text-slate-500">No client questions yet.</div> : (
             <div className="overflow-x-auto">
               <table className="w-full min-w-[900px] text-left text-sm">
                 <thead><tr className="border-b text-xs uppercase text-slate-500"><th className="p-3">Date & Time</th><th className="p-3">Phone Number</th><th className="p-3">Email</th><th className="p-3">Question</th></tr></thead>
@@ -191,6 +193,30 @@ export function AdminDashboard() {
           )}
         </div>}
 
+        {adminPage === 'pricing' && (() => {
+          const pricingLeads = leads.filter(lead => lead.order_type === 'Pricing request' || lead.primary_goal === 'Pricing request');
+          return <div className="min-w-0 rounded-3xl border border-slate-100 bg-white p-4 shadow-[0_8px_30px_rgba(21,28,39,0.04)] sm:p-6">
+            <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-center">
+              <div><h2 className="text-xl font-bold">Pricing Requests</h2><p className="text-sm text-slate-500">Plan enquiries submitted through Get Started on the public pricing page.</p></div>
+              <span className="sm:ml-auto rounded-full bg-blue-50 px-3 py-1 text-xs font-bold text-blue-700">{pricingLeads.length} requests</span>
+            </div>
+            {pricingLeads.length === 0 ? <div className="rounded-2xl bg-slate-50 p-5 text-sm text-slate-500">No pricing requests yet. New submissions will appear here.</div> : <div className="overflow-x-auto">
+              <table className="w-full min-w-[1000px] text-left text-sm">
+                <thead><tr className="border-b text-xs uppercase text-slate-500"><th className="p-3">Date &amp; time</th><th className="p-3">Client / business</th><th className="p-3">Contact</th><th className="p-3">Plan</th><th className="p-3">Billing</th><th className="p-3">Requested price</th><th className="p-3">Status</th><th className="p-3">Business needs</th></tr></thead>
+                <tbody>{pricingLeads.map(lead => <tr key={lead.id} className="border-b align-top last:border-0">
+                  <td className="whitespace-nowrap p-3">{new Date(lead.created_at).toLocaleString()}</td>
+                  <td className="p-3 font-semibold">{lead.name || '—'}<div className="mt-1 text-xs font-normal text-slate-500">{lead.company || '—'}</div></td>
+                  <td className="p-3"><div className="break-all">{lead.email || '—'}</div><div className="mt-1 text-xs text-slate-500">{lead.phone || '—'}</div></td>
+                  <td className="p-3 font-semibold">{lead.plan_name || lead.chatbot_name || '—'}</td>
+                  <td className="p-3">{lead.billing_type === 'annual' ? 'Yearly' : 'Monthly'}</td>
+                  <td className="p-3 font-bold">{formatRequestedPrice(lead.requested_price)}</td>
+                  <td className="p-3"><select aria-label={'Status for ' + lead.name} value={lead.order_status || 'New'} onChange={async e => { const status=e.target.value; try { await updateLeadStatus(lead.id,status); setLeads(current => current.map(item => item.id===lead.id ? {...item,order_status:status} : item)); setNotice('Pricing request status updated.'); } catch (error) { setNotice(error instanceof Error ? error.message : 'Could not update status.'); } }} className="rounded-lg border border-slate-200 bg-white p-2 text-xs"><option>New</option><option>Contacted</option><option>Payment Pending</option><option>In Progress</option><option>Completed</option></select></td>
+                  <td className="max-w-[280px] whitespace-pre-wrap break-words p-3">{lead.message || '—'}</td>
+                </tr>)}</tbody>
+              </table>
+            </div>}
+          </div>;
+        })()}
         {adminPage === 'chatbots' && <div className="grid min-w-0 gap-4 lg:h-full lg:min-h-0 lg:grid-cols-[280px_minmax(0,1fr)] lg:gap-6">
           <aside className="min-w-0 rounded-3xl border border-slate-100 bg-white p-3 shadow-[0_8px_30px_rgba(21,28,39,0.04)] sm:p-4 lg:h-full lg:min-h-0 lg:overflow-y-auto">
             <div className="mb-4 flex items-center justify-between gap-2">

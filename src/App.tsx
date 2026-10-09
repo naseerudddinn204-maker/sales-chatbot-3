@@ -22,7 +22,9 @@ export default function App() {
   if (path.startsWith('/admin/')) return <AdminDashboard />;
   if (path.startsWith('/embed/')) return <EmbedChat slug={decodeURIComponent(path.split('/embed/')[1] || 'sales-chatbot')} />;
   if (path === '/chatbots' || path === '/chatbots/') return <ChatbotCatalog />;
-  const [currentTab, setCurrentTab] = useState<ScreenTab>('home');
+  const initialParams = new URLSearchParams(window.location.search);
+  const [currentTab, setCurrentTab] = useState<ScreenTab>(initialParams.get('tab') === 'contact' ? 'contact' : 'home');
+  const [selectedChatbotName, setSelectedChatbotName] = useState(initialParams.get('chatbot') || '');
   const [isFramedView, setIsFramedView] = useState(false);
   const [isLiveChatOpen, setIsLiveChatOpen] = useState(false);
   const [isBookDemoOpen, setIsBookDemoOpen] = useState(false);
@@ -91,6 +93,7 @@ export default function App() {
         >
           {currentTab === 'contact' && (
             <ContactScreen
+              selectedChatbotName={selectedChatbotName}
               onOpenLiveChat={() => setIsLiveChatOpen(true)}
               onOpenBookDemo={() => setIsBookDemoOpen(true)}
               onShowToast={showToast}
@@ -107,7 +110,7 @@ export default function App() {
 
           {currentTab === 'demo' && (
             <DemoScreen
-              onNavigateToContact={() => handleTabChange('contact')}
+              onNavigateToContact={(chatbotName) => { setSelectedChatbotName(chatbotName || ''); handleTabChange('contact'); }}
               onShowToast={showToast}
             />
           )}

@@ -4,6 +4,8 @@ import { callBackend } from '../lib/backendApi';
 
 interface ContactScreenProps {
   selectedChatbotName?: string;
+  selectedPlanName?: string;
+  selectedBillingType?: string;
   onOpenLiveChat: () => void;
   onOpenBookDemo: () => void;
   onShowToast: (title: string, message: string) => void;
@@ -11,6 +13,8 @@ interface ContactScreenProps {
 
 export const ContactScreen: React.FC<ContactScreenProps> = ({
   selectedChatbotName = '',
+  selectedPlanName = '',
+  selectedBillingType = 'monthly',
   onOpenLiveChat,
   onOpenBookDemo,
   onShowToast,
@@ -25,7 +29,12 @@ export const ContactScreen: React.FC<ContactScreenProps> = ({
     agreedToTerms: false,
   });
   const [chatbotName, setChatbotName] = useState(selectedChatbotName);
+  const [planName, setPlanName] = useState(selectedPlanName);
+  const [billingType, setBillingType] = useState(selectedBillingType);
+  const [paymentReference, setPaymentReference] = useState('');
   useEffect(() => { if (selectedChatbotName) setChatbotName(selectedChatbotName); }, [selectedChatbotName]);
+  useEffect(() => { if (selectedPlanName) setPlanName(selectedPlanName); }, [selectedPlanName]);
+  useEffect(() => { if (selectedBillingType) setBillingType(selectedBillingType); }, [selectedBillingType]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
 
@@ -41,7 +50,12 @@ export const ContactScreen: React.FC<ContactScreenProps> = ({
         action: 'lead',
         name: formData.fullName,
         chatbot_name: chatbotName.trim(),
-        order_type: chatbotName.trim() ? 'Purchase request' : 'General chatbot inquiry',
+        order_type: billingType === 'one_time' ? 'One-time purchase request' : billingType === 'annual' ? 'Annual subscription request' : 'Monthly subscription request',
+        plan_name: planName.trim(),
+        billing_type: billingType,
+        payment_method: 'bank_transfer',
+        payment_status: 'awaiting_instructions',
+        payment_reference: paymentReference.trim(),
         email: formData.workEmail,
         company_website: formData.companyWebsite,
         traffic_volume: formData.trafficVolume,
@@ -119,6 +133,15 @@ export const ContactScreen: React.FC<ContactScreenProps> = ({
                 <input required type="email" value={formData.workEmail} onChange={e => setFormData({...formData, workEmail:e.target.value})} placeholder="Work email" className="h-11 rounded-xl bg-[#f5f6fa] px-3.5 text-sm outline-none focus:ring-2 focus:ring-[#3157c8]" />
               </div>
               <input value={chatbotName} onChange={e => setChatbotName(e.target.value)} readOnly={!!selectedChatbotName} placeholder="Chatbot you want to order (auto-filled from Get Started)" className={`w-full h-11 rounded-xl bg-[#f5f6fa] px-3.5 text-sm outline-none focus:ring-2 focus:ring-[#3157c8] ${selectedChatbotName ? 'font-semibold text-[#3157c8]' : ''}`} />
+              <input value={planName} onChange={e => setPlanName(e.target.value)} readOnly={!!selectedPlanName} placeholder="Pricing plan (optional)" className={`w-full h-11 rounded-xl bg-[#f5f6fa] px-3.5 text-sm outline-none focus:ring-2 focus:ring-[#3157c8] ${selectedPlanName ? 'font-semibold text-[#3157c8]' : ''}`} />
+              <div className="grid sm:grid-cols-2 gap-3.5">
+                <select value={billingType} onChange={e => setBillingType(e.target.value)} className="h-11 rounded-xl bg-[#f5f6fa] px-3.5 text-sm outline-none">
+                  <option value="one_time">One-time payment</option><option value="monthly">Monthly subscription</option><option value="annual">Annual subscription</option>
+                </select>
+                <div className="flex h-11 items-center rounded-xl bg-[#f5f6fa] px-3.5 text-sm text-[#596273]">Payment: Bank transfer</div>
+              </div>
+              <input value={paymentReference} onChange={e => setPaymentReference(e.target.value)} placeholder="Payment reference (optional, if already paid)" className="w-full h-11 rounded-xl bg-[#f5f6fa] px-3.5 text-sm outline-none focus:ring-2 focus:ring-[#3157c8]" />
+              <p className="text-xs leading-5 text-[#697386]">We will share bank transfer details after reviewing your request. Your order is not marked as paid until an admin confirms it.</p>
               <input required type="url" value={formData.companyWebsite} onChange={e => setFormData({...formData, companyWebsite:e.target.value})} placeholder="Company website" className="w-full h-11 rounded-xl bg-[#f5f6fa] px-3.5 text-sm outline-none focus:ring-2 focus:ring-[#3157c8]" />
               <div className="grid sm:grid-cols-2 gap-3.5">
                 <select value={formData.trafficVolume} onChange={e => setFormData({...formData, trafficVolume:e.target.value})} className="h-11 rounded-xl bg-[#f5f6fa] px-3.5 text-sm outline-none">

@@ -109,28 +109,41 @@ export function AdminDashboard() {
   const smallInputClass = "box-border w-full min-w-0 max-w-full rounded-lg border border-slate-200 bg-white p-2 text-sm outline-none focus:border-slate-400";
 
   return (
-    <div className="min-h-screen w-full max-w-full overflow-x-hidden bg-slate-50 text-slate-900">
-      <header className="sticky top-0 z-20 w-full max-w-full border-b bg-white/95 backdrop-blur">
-        <div className="mx-auto flex w-full max-w-7xl flex-col gap-3 px-4 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-6 sm:py-4">
+    <div className="min-h-screen w-full max-w-full overflow-x-hidden bg-[#f6f8fc] text-slate-900 lg:flex">
+      <aside className="w-full shrink-0 bg-[#151c27] text-white lg:sticky lg:top-0 lg:h-screen lg:w-[260px]">
+        <div className="flex h-full flex-col px-4 py-4 lg:px-5 lg:py-6">
+          <a href="/admin/chatbots" className="flex items-center gap-3 px-2 py-2">
+            <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#d61616] shadow-lg shadow-red-950/30"><Bot size={24}/></span>
+            <span className="min-w-0"><span className="block text-lg font-extrabold tracking-tight">SalesChatbot</span><span className="block text-xs text-white/55">Admin workspace</span></span>
+          </a>
+          <div className="mt-6 hidden px-3 text-[10px] font-bold uppercase tracking-[.2em] text-white/40 lg:block">Workspace</div>
+          <nav className="mt-4 grid grid-cols-3 gap-2 lg:flex lg:flex-col" aria-label="Dashboard pages">
+            <a href="/admin/chatbots" className={`flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold transition-colors ${adminPage==='chatbots'?'bg-[#d61616] text-white shadow-lg shadow-red-950/20':'text-white/70 hover:bg-white/10 hover:text-white'}`}><Bot size={18}/><span>Chatbots</span></a>
+            <a href="/admin/requests" className={`flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold transition-colors ${adminPage==='requests'?'bg-[#d61616] text-white shadow-lg shadow-red-950/20':'text-white/70 hover:bg-white/10 hover:text-white'}`}><ClipboardList size={18}/><span>Client Requests</span></a>
+            <a href="/admin/questions" className={`flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold transition-colors ${adminPage==='questions'?'bg-[#d61616] text-white shadow-lg shadow-red-950/20':'text-white/70 hover:bg-white/10 hover:text-white'}`}><Code2 size={18}/><span>Client Questions</span></a>
+          </nav>
+          <div className="mt-auto hidden rounded-2xl border border-white/10 bg-white/5 p-4 lg:block">
+            <div className="text-sm font-semibold">Manage smarter</div><p className="mt-1 text-xs leading-5 text-white/50">Your chatbot settings, leads and client questions in one place.</p>
+          </div>
+        </div>
+      </aside>
+      <div className="min-w-0 flex-1">
+      <header className="sticky top-0 z-20 w-full border-b border-slate-200/80 bg-white/90 backdrop-blur-xl">
+        <div className="flex min-h-[76px] w-full items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8">
           <div className="min-w-0">
-            <div className="truncate text-lg font-bold">Chatbot Admin</div>
-            <div className="truncate text-xs text-slate-500">Manage your client requests and chatbots</div>
+            <div className="truncate text-xl font-extrabold tracking-tight text-[#151c27]">{adminPage==='requests'?'Client Requests':adminPage==='questions'?'Client Questions':'Chatbot Workspace'}</div>
+            <div className="truncate text-xs text-slate-500">SalesChatbot · Manage your business conversations</div>
           </div>
-          <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row">
-            <a href="/admin/requests" className={`rounded-xl px-4 py-2 text-center text-sm font-semibold ${adminPage==='requests'?'bg-slate-900 text-white':'border bg-white text-slate-700'}`}>Client Requests</a>
-            <a href="/admin/questions" className={`rounded-xl px-4 py-2 text-center text-sm font-semibold ${adminPage==='questions'?'bg-slate-900 text-white':'border bg-white text-slate-700'}`}>Client Questions</a>
-            <a href="/admin/chatbots" className={`rounded-xl px-4 py-2 text-center text-sm font-semibold ${adminPage==='chatbots'?'bg-slate-900 text-white':'border bg-white text-slate-700'}`}>Chatbots</a>
-            <button onClick={() => { signOut(); setLoggedIn(false); }} className="flex items-center justify-center gap-2 rounded-xl border px-4 py-2 text-sm">
-              <LogOut size={16}/> Sign out
-            </button>
-          </div>
+          <button onClick={() => { signOut(); setLoggedIn(false); }} className="flex shrink-0 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-600 transition hover:border-red-200 hover:bg-red-50 hover:text-[#d61616] sm:px-4">
+            <LogOut size={16}/> <span className="hidden sm:inline">Sign out</span>
+          </button>
         </div>
       </header>
 
-      <main className="mx-auto w-full max-w-7xl box-border px-3 py-4 sm:px-4 sm:py-6 lg:px-6">
+      <main className="mx-auto w-full max-w-[1500px] box-border px-3 py-5 sm:px-5 sm:py-7 lg:px-8">
         {notice && <div className="mb-4 break-words rounded-xl bg-emerald-50 p-3 text-sm text-emerald-700">{notice}</div>}
 
-        {adminPage === 'questions' && <div className="min-w-0 rounded-3xl bg-white p-4 shadow-sm sm:p-6">
+        {adminPage === 'questions' && <div className="min-w-0 rounded-3xl border border-slate-100 bg-white p-4 shadow-[0_8px_30px_rgba(21,28,39,0.04)] sm:p-6">
           <div className="mb-4 flex items-center gap-2">
             <ClipboardList size={20}/>
             <div>
@@ -153,7 +166,7 @@ export function AdminDashboard() {
           )}
         </div>}
 
-        {adminPage === 'requests' && <div className="min-w-0 rounded-3xl bg-white p-4 shadow-sm sm:p-6">
+        {adminPage === 'requests' && <div className="min-w-0 rounded-3xl border border-slate-100 bg-white p-4 shadow-[0_8px_30px_rgba(21,28,39,0.04)] sm:p-6">
           <div className="mb-4 flex items-center gap-2">
             <ClipboardList size={20}/>
             <div>
@@ -173,7 +186,7 @@ export function AdminDashboard() {
         </div>}
 
         {adminPage === 'chatbots' && <div className="grid min-w-0 gap-4 lg:grid-cols-[280px_minmax(0,1fr)] lg:gap-6">
-          <aside className="min-w-0 rounded-3xl bg-white p-3 shadow-sm sm:p-4 lg:h-fit lg:sticky lg:top-24">
+          <aside className="min-w-0 rounded-3xl border border-slate-100 bg-white p-3 shadow-[0_8px_30px_rgba(21,28,39,0.04)] sm:p-4 lg:h-fit lg:sticky lg:top-24">
             <div className="mb-4 flex items-center justify-between gap-2">
               <h2 className="truncate font-bold">Your Chatbots</h2>
               <button onClick={addBot} className="shrink-0 rounded-xl bg-slate-900 p-2 text-white"><Plus size={17}/></button>
@@ -302,6 +315,7 @@ export function AdminDashboard() {
           </section>
         </div>}
       </main>
+      </div>
     </div>
   );
 }

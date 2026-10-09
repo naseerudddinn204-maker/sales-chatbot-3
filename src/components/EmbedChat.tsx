@@ -30,6 +30,7 @@ export function EmbedChat({ slug }: { slug: string }) {
   const [knowledgeLoading, setKnowledgeLoading] = useState(false);
   const [showKnowledge, setShowKnowledge] = useState(false);
   const [listening, setListening] = useState(false);
+  const [voicePlaybackEnabled, setVoicePlaybackEnabled] = useState(false);
   const [voiceCountdown, setVoiceCountdown] = useState<number | null>(null);
   const recognitionRef = useRef<any>(null);
   const silenceTimerRef = useRef<number | null>(null);
@@ -143,6 +144,16 @@ export function EmbedChat({ slug }: { slug: string }) {
     }
   }
 
+  function toggleVoicePlayback(text?: string) {
+    if (voicePlaybackEnabled) {
+      if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+      setVoicePlaybackEnabled(false);
+      return;
+    }
+    setVoicePlaybackEnabled(true);
+    if (text) speakAnswer(text);
+  }
+
   function speakAnswer(text: string) {
     if (!('speechSynthesis' in window) || typeof SpeechSynthesisUtterance === 'undefined') {
       setBackendError('Voice playback is not supported in this browser. Please use Chrome or Edge.');
@@ -203,7 +214,7 @@ export function EmbedChat({ slug }: { slug: string }) {
       if (d.session_id) setSession(d.session_id);
       if (!r.ok || !d.reply) throw new Error(d?.error || 'Backend returned no chatbot reply.');
       setMessages(m => [...m, { role: 'assistant', text: d.reply }]);
-      speakAnswer(d.reply);
+      if (voicePlaybackEnabled) speakAnswer(d.reply);
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Connection error.';
       setBackendError(message);
@@ -329,6 +340,7 @@ export function EmbedChat({ slug }: { slug: string }) {
       }
 
       setMessages(m => [...m, { role: 'assistant', text: d.reply }]);
+      if (voicePlaybackEnabled) speakAnswer(d.reply);
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Network error.';
       setBackendError(message);
@@ -415,8 +427,8 @@ export function EmbedChat({ slug }: { slug: string }) {
                   <div className="flex items-end gap-2">
                     <div className="whitespace-pre-wrap">{m.text}</div>
                     {m.role === 'assistant' && (
-                      <button type="button" onClick={() => speakAnswer(m.text)} className="shrink-0 rounded-lg p-1.5 text-slate-500 hover:bg-white hover:text-slate-900" aria-label="Read answer aloud" title="Read answer aloud">
-                        <Volume2 size={15} />
+                      <button type="button" onClick={() => toggleVoicePlayback(m.text)} className={'shrink-0 rounded-lg p-1.5 hover:bg-white ' + (voicePlaybackEnabled ? 'text-blue-600' : 'text-slate-500 hover:text-slate-900')} aria-label={voicePlaybackEnabled ? 'Mute voice answers' : 'Read answer aloud'} title={voicePlaybackEnabled ? 'Mute voice answers' : 'Read answer aloud'}>
+                        {voicePlaybackEnabled ? <Volume2 size={15} /> : <Volume2 size={15} />}
                       </button>
                     )}
                   </div>
@@ -437,6 +449,9 @@ export function EmbedChat({ slug }: { slug: string }) {
 
           <form onSubmit={e => { e.preventDefault(); send(); }} className="shrink-0 border-t p-3 bg-white flex gap-2">
             <input value={input} onChange={e => setInput(e.target.value)} className="flex-1 min-w-0 rounded-xl border px-3 py-2.5 outline-none" placeholder="Ask about this business…" aria-label="Ask the chatbot" />
+            <button type="button" onClick={() => toggleVoicePlayback()} className={'rounded-xl px-3 ' + (voicePlaybackEnabled ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200')} aria-label={voicePlaybackEnabled ? 'Mute chatbot voice answers' : 'Enable chatbot voice answers'} title={voicePlaybackEnabled ? 'Mute voice answers' : 'Enable voice answers'}>
+              {voicePlaybackEnabled ? <Volume2 size={18} /> : <Volume2 size={18} />}
+            </button>
             <button type="button" onClick={toggleVoiceInput} disabled={loading} className="rounded-xl px-3 text-white disabled:opacity-50" style={{ backgroundColor: listening ? '#dc2626' : (config?.brand_color || '#020617') }} aria-label={listening ? 'Stop voice input' : 'Ask by voice'}>
               {listening ? <MicOff size={18} /> : <Mic size={18} />}
             </button>

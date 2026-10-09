@@ -50,7 +50,7 @@ export const ContactScreen: React.FC<ContactScreenProps> = ({
         action: 'lead',
         name: formData.fullName,
         chatbot_name: chatbotName.trim(),
-        order_type: billingType === 'one_time' ? 'One-time purchase request' : billingType === 'annual' ? 'Annual subscription request' : 'Monthly subscription request',
+        order_type: !planName.trim() && !chatbotName.trim() ? 'General chatbot inquiry' : billingType === 'one_time' ? 'One-time purchase request' : billingType === 'annual' ? 'Annual subscription request' : 'Monthly subscription request',
         plan_name: planName.trim(),
         billing_type: billingType,
         payment_method: 'bank_transfer',

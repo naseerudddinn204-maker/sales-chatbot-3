@@ -107,7 +107,7 @@ Deno.serve(async (req) => {
 
       const { data: prices, error: priceError } = await sb
         .from("chatbot_prices")
-        .select("plan_name,monthly_price,annual_price,description,features,highlighted,sort_order")
+        .select("plan_name,one_time_price,monthly_price,annual_price,description,features,highlighted,sort_order")
         .eq("chatbot_id", bot.id)
         .eq("enabled", true)
         .order("sort_order");

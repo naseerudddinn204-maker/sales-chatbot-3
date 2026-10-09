@@ -71,7 +71,7 @@ Deno.serve(async (req) => {
     if (action === "lead") {
       const name = clean(body?.name);
       const email = clean(body?.email).toLowerCase();
-      if (!name || !email || !/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(email)) {
+      if (!name || !email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
         return json({ error: "Please provide your name and a valid email address." }, 400);
       }
       const { error: leadError } = await sb.from("leads").insert({

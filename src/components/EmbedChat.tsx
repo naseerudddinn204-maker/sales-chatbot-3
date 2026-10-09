@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { FileText, MessageCircle, Send, Upload, X, ChevronDown, ChevronUp, Mic, MicOff, Volume2, ArrowLeft } from 'lucide-react';
+import { FileText, MessageCircle, Send, Upload, X, ChevronDown, ChevronUp, Mic, MicOff, Volume2, VolumeX, ArrowLeft } from 'lucide-react';
 import { Header } from './Header';
 import { HomeScreen } from './HomeScreen';
 import { ScreenTab } from '../types';
@@ -428,7 +428,7 @@ export function EmbedChat({ slug }: { slug: string }) {
                     <div className="whitespace-pre-wrap">{m.text}</div>
                     {m.role === 'assistant' && (
                       <button type="button" onClick={() => toggleVoicePlayback(m.text)} className={'shrink-0 rounded-lg p-1.5 hover:bg-white ' + (voicePlaybackEnabled ? 'text-blue-600' : 'text-slate-500 hover:text-slate-900')} aria-label={voicePlaybackEnabled ? 'Mute voice answers' : 'Read answer aloud'} title={voicePlaybackEnabled ? 'Mute voice answers' : 'Read answer aloud'}>
-                        {voicePlaybackEnabled ? <Volume2 size={15} /> : <Volume2 size={15} />}
+                        {voicePlaybackEnabled ? <Volume2 size={15} /> : <VolumeX size={15} />}
                       </button>
                     )}
                   </div>
@@ -450,7 +450,7 @@ export function EmbedChat({ slug }: { slug: string }) {
           <form onSubmit={e => { e.preventDefault(); send(); }} className="shrink-0 border-t p-3 bg-white flex gap-2">
             <input value={input} onChange={e => setInput(e.target.value)} className="flex-1 min-w-0 rounded-xl border px-3 py-2.5 outline-none" placeholder="Ask about this business…" aria-label="Ask the chatbot" />
             <button type="button" onClick={() => toggleVoicePlayback()} className={'rounded-xl px-3 ' + (voicePlaybackEnabled ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200')} aria-label={voicePlaybackEnabled ? 'Mute chatbot voice answers' : 'Enable chatbot voice answers'} title={voicePlaybackEnabled ? 'Mute voice answers' : 'Enable voice answers'}>
-              {voicePlaybackEnabled ? <Volume2 size={18} /> : <Volume2 size={18} />}
+              {voicePlaybackEnabled ? <Volume2 size={18} /> : <VolumeX size={18} />}
             </button>
             <button type="button" onClick={toggleVoiceInput} disabled={loading} className="rounded-xl px-3 text-white disabled:opacity-50" style={{ backgroundColor: listening ? '#dc2626' : (config?.brand_color || '#020617') }} aria-label={listening ? 'Stop voice input' : 'Ask by voice'}>
               {listening ? <MicOff size={18} /> : <Mic size={18} />}

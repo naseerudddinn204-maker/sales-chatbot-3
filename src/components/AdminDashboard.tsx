@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Bot, Code2, LogOut, Plus, Save, Trash2, DollarSign, Copy, Check, ClipboardList, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
-import { createChatbot, createPrice, deleteChatbot, deletePrice, getAdminUser, getSession, listChatbots, listLeads, listPrices, signOut, updateChatbot, updatePrice } from '../lib/supabaseAdmin';
+import { createChatbot, createPrice, deleteChatbot, deletePrice, getAdminUser, getSession, listChatbots, listLeads, listPrices, signOut, updateChatbot, updatePrice, updateLeadStatus } from '../lib/supabaseAdmin';
 import { AdminLogin } from './AdminLogin';
 
 type Bot = { id:string; name:string; slug:string; description:string; system_prompt:string; welcome_message:string; enabled:boolean; embed_code?:string; logo_url?:string; brand_color?:string; knowledge_description?:string; knowledge_text?:string };
 type Price = { id:string; plan_name:string; monthly_price:number; annual_price:number; description:string; features:string[]; highlighted:boolean; enabled:boolean; sort_order:number };
-type Lead = { id:string; name:string; email:string; company?:string; phone?:string; company_website?:string | null; traffic_volume?:string; primary_goal?:string; message?:string; chatbot_name?:string | null; order_type?:string | null; created_at:string };
+type Lead = { id:string; name:string; email:string; company?:string; phone?:string; company_website?:string | null; traffic_volume?:string; primary_goal?:string; message?:string; chatbot_name?:string | null; order_type?:string | null; plan_name?:string | null; billing_type?:string | null; requested_price?:number | null; order_status?:string; created_at:string };
 
 export function AdminDashboard() {
   const [loggedIn, setLoggedIn] = useState(!!getSession());
@@ -50,7 +50,7 @@ export function AdminDashboard() {
 
   const origin = window.location.origin;
   const adminPath = window.location.pathname;
-  const adminPage = adminPath.startsWith('/admin/questions') ? 'questions' : adminPath.startsWith('/admin/requests') ? 'requests' : 'chatbots';
+  const adminPage = adminPath.startsWith('/admin/questions') ? 'questions' : adminPath.startsWith('/admin/requests') ? 'requests' : adminPath.startsWith('/admin/pricing') ? 'pricing' : 'chatbots';
   const defaultEmbedCode = selected ? `<script src="${origin}/embed.js" data-chatbot="${selected.slug}" defer></script>` : '';
   const embedCode = selected?.embed_code?.trim() || defaultEmbedCode;
   const liveUrl = selected ? `${origin}/embed/${selected.slug}` : '';
@@ -122,6 +122,7 @@ export function AdminDashboard() {
             <a href="/admin/chatbots" className={`flex items-center gap-2 rounded-lg px-2.5 py-2.5 text-xs font-semibold transition-colors ${adminPage==='chatbots'?'bg-[#d61616] text-white shadow-lg shadow-red-950/20':'text-white/70 hover:bg-white/10 hover:text-white'}`}><Bot size={16}/><span>Chatbots</span></a>
             <a href="/admin/requests" className={`flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold transition-colors ${adminPage==='requests'?'bg-[#d61616] text-white shadow-lg shadow-red-950/20':'text-white/70 hover:bg-white/10 hover:text-white'}`}><ClipboardList size={16}/><span>Client Requests</span></a>
             <a href="/admin/questions" className={`flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold transition-colors ${adminPage==='questions'?'bg-[#d61616] text-white shadow-lg shadow-red-950/20':'text-white/70 hover:bg-white/10 hover:text-white'}`}><Code2 size={16}/><span>Client Questions</span></a>
+            <a href="/admin/pricing" className={`flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold transition-colors ${adminPage==='pricing'?'bg-[#d61616] text-white shadow-lg shadow-red-950/20':'text-white/70 hover:bg-white/10 hover:text-white'}`}><DollarSign size={16}/><span>Pricing Requests</span></a>
           </nav>
           <div className="mt-auto hidden rounded-xl border border-white/10 bg-white/5 p-3 lg:block">
             <div className="text-xs font-semibold">Manage smarter</div><p className="mt-1 text-[11px] leading-4 text-white/50">Your chatbot settings, leads and client questions in one place.</p>
@@ -132,7 +133,7 @@ export function AdminDashboard() {
       <header className="sticky top-0 z-20 w-full border-b border-slate-200/80 bg-white/90 backdrop-blur-xl">
         <div className="flex min-h-[76px] w-full items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8">
           <div className="min-w-0">
-            <div className="truncate text-xl font-extrabold tracking-tight text-[#151c27]">{adminPage==='requests'?'Client Requests':adminPage==='questions'?'Client Questions':'Chatbot Workspace'}</div>
+            <div className="truncate text-xl font-extrabold tracking-tight text-[#151c27]">{adminPage==='requests'?'Client Requests':adminPage==='questions'?'Client Questions':adminPage==='pricing'?'Pricing Requests':'Chatbot Workspace'}</div>
             <div className="truncate text-xs text-slate-500">SalesChatbot · Manage your business conversations</div>
           </div>
           <div className="flex shrink-0 items-center gap-2">
@@ -190,6 +191,165 @@ export function AdminDashboard() {
             </div>
           )}
         </div>}
+
+        {adminPage === 'pricing' && (() => {
+          const pricingLeads = leads.filter(lead => lead.order_type === 'Pricing request' || lead.primary_goal === 'Pricing request');
+          return <div className="min-w-0 rounded-3xl border border-slate-100 bg-white p-4 shadow-[0_8px_30px_rgba(21,28,39,0.04)] sm:p-6">
+            <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-center">
+              <div><h2 className="text-xl font-bold">Pricing Requests</h2><p className="text-sm text-slate-500">Plan enquiries submitted through Get Started on the public pricing page.</p></div>
+              <span className="sm:ml-auto rounded-full bg-blue-50 px-3 py-1 text-xs font-bold text-blue-700">{pricingLeads.length} requests</span>
+            </div>
+            {pricingLeads.length === 0 ? <div className="rounded-2xl bg-slate-50 p-5 text-sm text-slate-500">No pricing requests yet. New submissions will appear here.</div> : <div className="overflow-x-auto">
+              <table className="w-full min-w-[1000px] text-left text-sm">
+                <thead><tr className="border-b text-xs uppercase text-slate-500"><th className="p-3">Date &amp; time</th><th className="p-3">Client / business</th><th className="p-3">Contact</th><th className="p-3">Plan</th><th className="p-3">Billing</th><th className="p-3">Requested price</th><th className="p-3">Status</th><th className="p-3">Business needs</th></tr></thead>
+                <tbody>{pricingLeads.map(lead => <tr key={lead.id} className="border-b align-top last:border-0">
+                  <td className="whitespace-nowrap p-3">{new Date(lead.created_at).toLocaleString()}</td>
+                  <td className="p-3 font-semibold">{lead.name || '—'}<div className="mt-1 text-xs font-normal text-slate-500">{lead.company || '—'}</div></td>
+                  <td className="p-3"><div className="break-all">{lead.email || '—'}</div><div className="mt-1 text-xs text-slate-500">{lead.phone || '—'}</div></td>
+                  <td className="p-3 font-semibold">{lead.plan_name || lead.chatbot_name || '—'}</td>
+                  <td className="p-3">{lead.billing_type === 'annual' ? 'Yearly' : 'Monthly'}</td>
+                  <td className="p-3 font-bold">{lead.requested_price == null ? '—' : '
+          <aside className="min-w-0 rounded-3xl border border-slate-100 bg-white p-3 shadow-[0_8px_30px_rgba(21,28,39,0.04)] sm:p-4 lg:h-full lg:min-h-0 lg:overflow-y-auto">
+            <div className="mb-4 flex items-center justify-between gap-2">
+              <h2 className="truncate font-bold">Your Chatbots</h2>
+              <button onClick={addBot} className="shrink-0 rounded-xl bg-slate-900 p-2 text-white"><Plus size={17}/></button>
+            </div>
+            <div className="grid gap-2">
+              {bots.map(bot => (
+                <button key={bot.id} onClick={() => setSelected(bot)} className={`w-full min-w-0 overflow-hidden rounded-2xl p-3 text-left ${selected?.id===bot.id?'bg-slate-900 text-white':'bg-slate-50'}`}>
+                  <div className="flex min-w-0 items-center gap-2">{bot.logo_url ? <img src={bot.logo_url} alt="" className="h-7 w-7 shrink-0 rounded-lg object-contain"/> : <Bot className="shrink-0" size={17}/>}<span className="truncate font-semibold">{bot.name}</span></div>
+                  <div className="mt-1 truncate text-xs opacity-70">/{bot.slug}</div>
+                </button>
+              ))}
+            </div>
+          </aside>
+
+          <section className="min-w-0 space-y-4 sm:space-y-6 lg:h-full lg:min-h-0 lg:overflow-y-auto">
+            {!selected ? (
+              <div className="rounded-3xl bg-white p-6 text-center sm:p-10">Create your first chatbot.</div>
+            ) : <>
+              <div className="min-w-0 rounded-3xl bg-white p-4 shadow-sm sm:p-6">
+                <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                  <div className="min-w-0"><h2 className="text-xl font-bold">Chatbot settings</h2><p className="text-sm text-slate-500">These settings control the public chatbot.</p></div>
+                  <button onClick={saveBot} className="flex w-full shrink-0 items-center justify-center gap-2 rounded-xl bg-slate-900 px-4 py-2 text-white sm:w-auto"><Save size={16}/> Save</button>
+                </div>
+                <div className="grid min-w-0 gap-4 md:grid-cols-2">
+                  <input className={inputClass} value={selected.name} onChange={e=>setSelected({...selected,name:e.target.value})} placeholder="Chatbot name"/>
+                  <input className={inputClass} value={selected.slug} onChange={e=>setSelected({...selected,slug:e.target.value})} placeholder="slug"/>
+                  <textarea className={inputClass} value={selected.description||''} onChange={e=>setSelected({...selected,description:e.target.value})} placeholder="Description"/>
+                  <textarea className={inputClass} rows={5} value={selected.system_prompt||''} onChange={e=>setSelected({...selected,system_prompt:e.target.value})} placeholder="System prompt"/>
+                  <textarea className={inputClass + " md:col-span-2"} rows={3} value={selected.welcome_message||''} onChange={e=>setSelected({...selected,welcome_message:e.target.value})} placeholder="Welcome message"/>
+                  <div className="md:col-span-2 grid gap-4 md:grid-cols-2">
+                    <div>
+                      <label className="mb-1 block text-sm font-semibold">Chatbot Logo</label>
+                      <input className={inputClass} value={selected.logo_url||''} onChange={e=>setSelected({...selected,logo_url:e.target.value})} placeholder="Logo image URL (https://...)" />
+                      {selected.logo_url && <img src={selected.logo_url} alt={selected.name} className="mt-3 h-14 w-14 rounded-2xl object-contain border p-1" />}
+                    </div>
+                    <div>
+                      <label className="mb-1 block text-sm font-semibold">Brand Color</label>
+                      <div className="flex gap-2">
+                        <input type="color" className="h-11 w-14 rounded-lg border" value={selected.brand_color||'#111827'} onChange={e=>setSelected({...selected,brand_color:e.target.value})} />
+                        <input className={inputClass} value={selected.brand_color||'#111827'} onChange={e=>setSelected({...selected,brand_color:e.target.value})} placeholder="#111827" />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="md:col-span-2 border-t pt-5">
+                    <div className="flex flex-col gap-1">
+                      <h3 className="font-bold">Client Business Information</h3>
+                      <p className="text-sm text-slate-500">Client yahan apne business ki information, FAQs, products, services aur approved answers de. Save karne ke baad chatbot isi information se visitors ko jawab dega.</p>
+                    </div>
+
+                    <label className="mt-4 mb-1 block text-sm font-semibold">Business information</label>
+                    <textarea
+                      className={inputClass}
+                      rows={8}
+                      value={selected.knowledge_description||''}
+                      onChange={e=>setSelected({...selected,knowledge_description:e.target.value})}
+                      placeholder={"Example:\nBusiness name: ...\nWhat we offer: ...\nServices: ...\nPricing: ...\nHow to use: ...\nContact details: ...\nFAQs and approved answers: ..."}
+                    />
+
+                    <label className="mt-4 mb-1 block text-sm font-semibold">Additional knowledge / instructions</label>
+                    <textarea
+                      className={inputClass + " font-mono text-xs"}
+                      rows={8}
+                      value={selected.knowledge_text||''}
+                      onChange={e=>setSelected({...selected,knowledge_text:e.target.value})}
+                      placeholder={"Add extra approved information here.\n\nChatbot instructions:\n- Answer only about this business.\n- Use only the information supplied above.\n- Never guess or invent facts.\n- If the answer is not available, ask for the visitor's phone number so the manager can follow up.\n- Do not answer unrelated questions."}
+                    />
+
+                    <div className="mt-4 rounded-2xl border border-blue-100 bg-blue-50 p-4">
+                      <h4 className="font-bold text-sm text-blue-950">How to use this chatbot</h4>
+                      <ol className="mt-2 list-decimal pl-5 space-y-1 text-xs leading-5 text-blue-900">
+                        <li>Enter the client's business information and FAQs above.</li>
+                        <li>Add accurate pricing, features, services and usage instructions.</li>
+                        <li>Click <b>Save</b>. The information is stored in Supabase and remains after refresh.</li>
+                        <li>Open the chatbot Demo and ask questions about the business.</li>
+                        <li>The chatbot must answer only from the saved information; it should not invent answers.</li>
+                        <li>For an unrelated or unknown question, it asks for the visitor's phone number for manager follow-up.</li>
+                      </ol>
+                    </div>
+
+                    <div className="mt-4 rounded-2xl border border-amber-100 bg-amber-50 p-4 text-xs text-amber-900">
+                      <b>Important:</b> Do not put passwords, API keys, private customer data or other secrets in the business knowledge.
+                    </div>
+                  </div>
+                  <label className="flex min-w-0 items-center gap-2 text-sm"><input type="checkbox" checked={selected.enabled} onChange={e=>setSelected({...selected,enabled:e.target.checked})}/> Public chatbot enabled</label>
+                </div>
+              </div>
+
+              <div className="min-w-0 rounded-3xl bg-white p-4 shadow-sm sm:p-6">
+                <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                  <div className="min-w-0"><h2 className="flex items-center gap-2 text-xl font-bold"><DollarSign size={20}/> Pricing</h2><p className="text-sm text-slate-500">Change pricing here; the public site reads it from Supabase.</p></div>
+                  <button onClick={addPrice} className="flex w-full shrink-0 items-center justify-center gap-2 rounded-xl bg-slate-900 px-4 py-2 text-white sm:w-auto"><Plus size={16}/> Add plan</button>
+                </div>
+                <div className="space-y-4">
+                  {prices.map(p=><div key={p.id} className="min-w-0 rounded-2xl border p-3 sm:p-4">
+                    <div className="grid min-w-0 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                      <input className={smallInputClass} value={p.plan_name} onChange={e=>setPrices(prices.map(x=>x.id===p.id?{...x,plan_name:e.target.value}:x))}/>
+                      <input className={smallInputClass} type="number" value={p.monthly_price} onChange={e=>setPrices(prices.map(x=>x.id===p.id?{...x,monthly_price:Number(e.target.value)}:x))}/>
+                      <input className={smallInputClass} type="number" value={p.annual_price} onChange={e=>setPrices(prices.map(x=>x.id===p.id?{...x,annual_price:Number(e.target.value)}:x))}/>
+                      <div className="flex min-w-0 gap-2"><button onClick={()=>savePrice(p)} className="min-w-0 flex-1 rounded-lg bg-slate-900 px-3 py-2 text-sm text-white">Save</button><button onClick={()=>removePrice(p.id)} className="shrink-0 rounded-lg border p-2"><Trash2 size={16}/></button></div>
+                    </div>
+                    <input className={smallInputClass + " mt-3"} value={p.description||''} onChange={e=>setPrices(prices.map(x=>x.id===p.id?{...x,description:e.target.value}:x))} placeholder="Plan description"/>
+                    <textarea className={smallInputClass + " mt-3"} rows={2} value={(p.features||[]).join(', ')} onChange={e=>setPrices(prices.map(x=>x.id===p.id?{...x,features:e.target.value.split(',').map(v=>v.trim()).filter(Boolean)}:x))} placeholder="Features, comma separated"/>
+                  </div>)}
+                </div>
+              </div>
+
+              <div className="min-w-0 rounded-3xl bg-white p-4 shadow-sm sm:p-6">
+                <div className="mb-4 flex min-w-0 items-center gap-2"><Code2 className="shrink-0" size={20}/><h2 className="truncate text-xl font-bold">Embed this chatbot</h2></div>
+                <p className="break-words text-sm text-slate-500">Har chatbot ka apna embed code yahan save karein. Agar aap kuch paste nahi karte, default code automatically use hoga.</p>
+                <textarea
+                  className={inputClass + " mt-4 font-mono text-xs sm:text-sm"}
+                  rows={5}
+                  value={selected.embed_code || defaultEmbedCode}
+                  onChange={e=>setSelected({...selected,embed_code:e.target.value})}
+                  placeholder="Paste your chatbot embed code here"
+                />
+                <p className="mt-2 break-words text-xs text-slate-500">Custom code save karne ke liye upar <b>Save</b> button dabayein. Neeche wala code sirf copy/use ke liye hai; dashboard custom HTML ko execute nahi karta.</p>
+                <pre className="mt-4 max-w-full overflow-hidden whitespace-pre-wrap break-all rounded-2xl bg-slate-950 p-3 text-xs text-slate-100 sm:p-4 sm:text-sm">{embedCode}</pre>
+                <div className="mt-4 grid gap-3 sm:flex sm:flex-wrap">
+                  <button onClick={copyEmbed} className="flex w-full items-center justify-center gap-2 rounded-xl bg-slate-900 px-4 py-2 text-white sm:w-auto">{embedCopied?<Check size={16}/>:<Copy size={16}/>} {embedCopied?'Copied':'Copy embed code'}</button>
+                  <a href={liveUrl} target="_blank" rel="noreferrer" className="flex w-full items-center justify-center rounded-xl border px-4 py-2 sm:w-auto">Open live chatbot</a>
+                  <button onClick={removeBot} className="flex w-full items-center justify-center gap-2 rounded-xl border border-red-200 px-4 py-2 text-red-600 sm:w-auto"><Trash2 size={16}/> Delete chatbot</button>
+                </div>
+              </div>
+            </>}
+          </section>
+        </div>}
+      </main>
+      </div>
+    </div>
+  );
+}
+ + Number(lead.requested_price).toLocaleString(undefined, { maximumFractionDigits: 2 })}</td>
+                  <td className="p-3"><select aria-label={'Status for ' + lead.name} value={lead.order_status || 'New'} onChange={async e => { const status=e.target.value; try { await updateLeadStatus(lead.id,status); setLeads(current => current.map(item => item.id===lead.id ? {...item,order_status:status} : item)); setNotice('Pricing request status updated.'); } catch (error) { setNotice(error instanceof Error ? error.message : 'Could not update status.'); } }} className="rounded-lg border border-slate-200 bg-white p-2 text-xs"><option>New</option><option>Contacted</option><option>Payment Pending</option><option>In Progress</option><option>Completed</option></select></td>
+                  <td className="max-w-[280px] whitespace-pre-wrap break-words p-3">{lead.message || '—'}</td>
+                </tr>)}</tbody>
+              </table>
+            </div>}
+          </div>;
+        })()}
 
         {adminPage === 'chatbots' && <div className="grid min-w-0 gap-4 lg:h-full lg:min-h-0 lg:grid-cols-[280px_minmax(0,1fr)] lg:gap-6">
           <aside className="min-w-0 rounded-3xl border border-slate-100 bg-white p-3 shadow-[0_8px_30px_rgba(21,28,39,0.04)] sm:p-4 lg:h-full lg:min-h-0 lg:overflow-y-auto">

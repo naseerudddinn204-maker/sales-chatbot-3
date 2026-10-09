@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Bot, Code2, LogOut, Plus, Save, Trash2, DollarSign, Copy, Check, ClipboardList, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
-import { createChatbot, createPrice, deleteChatbot, deletePrice, getAdminUser, getSession, listChatbots, listLeads, listPrices, signOut, updateChatbot, updateLeadStatus, updatePrice } from '../lib/supabaseAdmin';
+import { createChatbot, createPrice, deleteChatbot, deletePrice, getAdminUser, getSession, listChatbots, listLeads, listPrices, signOut, updateChatbot, updateLeadPaymentStatus, updateLeadStatus, updatePrice } from '../lib/supabaseAdmin';
 import { AdminLogin } from './AdminLogin';
 
 type Bot = { id:string; name:string; slug:string; description:string; system_prompt:string; welcome_message:string; enabled:boolean; embed_code?:string; logo_url?:string; brand_color?:string; knowledge_description?:string; knowledge_text?:string };
@@ -92,6 +92,16 @@ export function AdminDashboard() {
     const rows = await updatePrice(price.id, price);
     setPrices(prices.map(p => p.id === price.id ? rows[0] : p));
     setNotice('Pricing saved.');
+  }
+
+  async function changeLeadPaymentStatus(lead: Lead, status: string) {
+    try {
+      await updateLeadPaymentStatus(lead.id, status);
+      setLeads(current => current.map(item => item.id === lead.id ? { ...item, payment_status: status } : item));
+      setNotice('Payment status updated.');
+    } catch (error) {
+      setNotice(error instanceof Error ? error.message : 'Could not update payment status.');
+    }
   }
 
   async function changeLeadStatus(lead: Lead, status: string) {
@@ -215,6 +225,11 @@ export function AdminDashboard() {
                   <div className="mt-3 break-all text-sm">{lead.email}</div>
                   {lead.phone && <div className="text-sm text-slate-500">{lead.phone}</div>}
                   <div className="mt-3 text-sm"><span className="text-slate-500">Chatbot:</span> <span className="font-semibold">{lead.chatbot_name || 'Not specified'}</span></div>
+                  <div className="mt-2 text-sm"><span className="text-slate-500">Plan:</span> {lead.plan_name || 'Not specified'} · {lead.billing_type === 'one_time' ? 'One-time' : lead.billing_type === 'annual' ? 'Annual' : 'Monthly'}</div>
+                  <div className="mt-2 text-sm"><span className="text-slate-500">Payment:</span> Bank transfer · <span className="font-medium">{(lead.payment_status || 'awaiting_instructions').replaceAll('_', ' ')}</span></div>
+                  {lead.payment_reference && <div className="mt-1 break-all text-xs text-slate-500">Reference: {lead.payment_reference}</div>}
+                  <label className="mt-3 block text-xs font-semibold text-slate-500">Confirm payment status</label>
+                  <select aria-label={`Payment status for ${lead.name || 'client request'}`} className="mt-1 w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm" value={lead.payment_status || 'awaiting_instructions'} onChange={e => changeLeadPaymentStatus(lead, e.target.value)}><option value="awaiting_instructions">Awaiting instructions</option><option value="payment_pending">Payment pending</option><option value="paid">Paid (admin confirmed)</option><option value="rejected">Rejected / not received</option></select>
                   <div className="mt-3">
                     <label className="mb-1 block text-xs font-semibold text-slate-500">Request status</label>
                     <select aria-label={`Status for ${lead.name || 'client request'}`} className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm font-semibold" value={lead.order_status || 'New'} onChange={e => changeLeadStatus(lead, e.target.value)}><option>New</option><option>Contacted</option><option>Payment Pending</option><option>In Progress</option><option>Completed</option></select>
@@ -228,8 +243,8 @@ export function AdminDashboard() {
             </div>
             <div className="hidden overflow-x-auto md:block">
               <table className="w-full min-w-[900px] text-left text-sm">
-                <thead><tr className="border-b text-xs uppercase text-slate-500"><th className="p-3">Date</th><th className="p-3">Client</th><th className="p-3">Email</th><th className="p-3">Chatbot ordered</th><th className="p-3">Order type</th><th className="p-3">Status</th><th className="p-3">Website</th><th className="p-3">Goal</th><th className="p-3">Traffic</th><th className="p-3">Message</th></tr></thead>
-                <tbody>{requestLeads.map(lead=><tr key={lead.id} className="border-b last:border-0"><td className="p-3 whitespace-nowrap">{new Date(lead.created_at).toLocaleString()}</td><td className="p-3 font-semibold">{lead.name}{lead.company && <div className="text-xs font-normal text-slate-500">{lead.company}</div>}</td><td className="p-3">{lead.email}{lead.phone && <div className="text-xs text-slate-500">{lead.phone}</div>}</td><td className="p-3 font-semibold">{lead.chatbot_name||'Not specified'}</td><td className="p-3">{lead.order_type||'General inquiry'}</td><td className="p-3"><select aria-label={`Status for ${lead.name || 'client request'}`} className="max-w-[170px] rounded-lg border border-slate-200 bg-white px-2 py-2 text-xs font-semibold" value={lead.order_status || 'New'} onChange={e => changeLeadStatus(lead, e.target.value)}><option>New</option><option>Contacted</option><option>Payment Pending</option><option>In Progress</option><option>Completed</option></select></td><td className="p-3"><a className="text-blue-600 hover:underline" href={lead.company_website || undefined} target="_blank" rel="noreferrer">{lead.company_website || '—'}</a></td><td className="p-3">{lead.primary_goal||'—'}</td><td className="p-3">{lead.traffic_volume||'—'}</td><td className="p-3 max-w-[280px]">{lead.message||'—'}</td></tr>)}</tbody>
+                <thead><tr className="border-b text-xs uppercase text-slate-500"><th className="p-3">Date</th><th className="p-3">Client</th><th className="p-3">Email</th><th className="p-3">Chatbot ordered</th><th className="p-3">Order type</th><th className="p-3">Plan / billing</th><th className="p-3">Payment status</th><th className="p-3">Order status</th><th className="p-3">Website</th><th className="p-3">Goal</th><th className="p-3">Traffic</th><th className="p-3">Message</th></tr></thead>
+                <tbody>{requestLeads.map(lead=><tr key={lead.id} className="border-b last:border-0"><td className="p-3 whitespace-nowrap">{new Date(lead.created_at).toLocaleString()}</td><td className="p-3 font-semibold">{lead.name}{lead.company && <div className="text-xs font-normal text-slate-500">{lead.company}</div>}</td><td className="p-3">{lead.email}{lead.phone && <div className="text-xs text-slate-500">{lead.phone}</div>}</td><td className="p-3 font-semibold">{lead.chatbot_name||'Not specified'}</td><td className="p-3">{lead.order_type||'General inquiry'}</td><td className="p-3">{lead.plan_name || '—'}<div className="text-xs text-slate-500">{lead.billing_type === 'one_time' ? 'One-time' : lead.billing_type === 'annual' ? 'Annual' : 'Monthly'}</div></td><td className="p-3"><select aria-label={`Payment status for ${lead.name || 'client request'}`} className="max-w-[170px] rounded-lg border border-slate-200 bg-white px-2 py-2 text-xs" value={lead.payment_status || 'awaiting_instructions'} onChange={e => changeLeadPaymentStatus(lead, e.target.value)}><option value="awaiting_instructions">Awaiting instructions</option><option value="payment_pending">Payment pending</option><option value="paid">Paid</option><option value="rejected">Rejected</option></select>{lead.payment_reference && <div className="mt-1 max-w-[180px] break-all text-xs text-slate-500">Ref: {lead.payment_reference}</div>}</td><td className="p-3"><select aria-label={`Status for ${lead.name || 'client request'}`} className="max-w-[170px] rounded-lg border border-slate-200 bg-white px-2 py-2 text-xs font-semibold" value={lead.order_status || 'New'} onChange={e => changeLeadStatus(lead, e.target.value)}><option>New</option><option>Contacted</option><option>Payment Pending</option><option>In Progress</option><option>Completed</option></select></td><td className="p-3"><a className="text-blue-600 hover:underline" href={lead.company_website || undefined} target="_blank" rel="noreferrer">{lead.company_website || '—'}</a></td><td className="p-3">{lead.primary_goal||'—'}</td><td className="p-3">{lead.traffic_volume||'—'}</td><td className="p-3 max-w-[280px]">{lead.message||'—'}</td></tr>)}</tbody>
               </table>
             </div>
           )}

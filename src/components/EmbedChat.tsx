@@ -363,10 +363,9 @@ export function EmbedChat({ slug }: { slug: string }) {
               <div className="font-bold truncate">{config?.name || 'AI Chatbot'}</div>
               <div className="text-xs text-white/60">Online assistant</div>
             </div>
-            <a href="/" className="shrink-0 inline-flex items-center gap-1.5 rounded-lg border border-white/20 bg-white/10 px-3 py-2 text-xs font-semibold text-white transition hover:bg-white/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white" aria-label="Back to home">
+            <a href="/" className="shrink-0 inline-flex items-center gap-1 rounded-lg border border-white/20 bg-white/10 px-2.5 py-2 text-[11px] font-semibold text-white transition hover:bg-white/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white" aria-label="Back to home">
               <ArrowLeft size={15} />
-              <span className="hidden xs:inline">Back to Home</span>
-              <span className="xs:hidden">Home</span>
+              <span>Back to Home</span>
             </a>
           </div>
 

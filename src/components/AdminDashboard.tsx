@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Bot, Code2, LogOut, Plus, Save, Trash2, DollarSign, Copy, Check, ClipboardList } from 'lucide-react';
+import { Bot, Code2, LogOut, Plus, Save, Trash2, DollarSign, Copy, Check, ClipboardList, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
 import { createChatbot, createPrice, deleteChatbot, deletePrice, getAdminUser, getSession, listChatbots, listLeads, listPrices, signOut, updateChatbot, updatePrice } from '../lib/supabaseAdmin';
 import { AdminLogin } from './AdminLogin';
 
@@ -17,6 +17,7 @@ export function AdminDashboard() {
   const [loading, setLoading] = useState(true);
   const [notice, setNotice] = useState('');
   const [embedCopied, setEmbedCopied] = useState(false);
+  const [sidebarVisible, setSidebarVisible] = useState(true);
 
   async function load() {
     setLoading(true);
@@ -110,7 +111,7 @@ export function AdminDashboard() {
 
   return (
     <div className="min-h-screen w-full max-w-full overflow-x-hidden bg-[#f6f8fc] text-slate-900 lg:flex lg:h-screen lg:min-h-0 lg:overflow-hidden">
-      <aside className="w-full shrink-0 bg-[#151c27] text-white lg:h-screen lg:w-[220px] lg:overflow-y-auto">
+      {sidebarVisible && <aside className="w-full shrink-0 bg-[#151c27] text-white lg:h-screen lg:w-[220px] lg:overflow-y-auto">
         <div className="flex h-full flex-col px-3 py-3 lg:px-4 lg:py-5">
           <a href="/admin/chatbots" className="flex items-center gap-2 px-2 py-1.5">
             <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#d61616] shadow-lg shadow-red-950/30"><Bot size={20}/></span>
@@ -126,7 +127,7 @@ export function AdminDashboard() {
             <div className="text-xs font-semibold">Manage smarter</div><p className="mt-1 text-[11px] leading-4 text-white/50">Your chatbot settings, leads and client questions in one place.</p>
           </div>
         </div>
-      </aside>
+      </aside>}
       <div className="min-w-0 flex-1 lg:flex lg:h-screen lg:min-h-0 lg:flex-col">
       <header className="sticky top-0 z-20 w-full border-b border-slate-200/80 bg-white/90 backdrop-blur-xl">
         <div className="flex min-h-[76px] w-full items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8">
@@ -134,9 +135,14 @@ export function AdminDashboard() {
             <div className="truncate text-xl font-extrabold tracking-tight text-[#151c27]">{adminPage==='requests'?'Client Requests':adminPage==='questions'?'Client Questions':'Chatbot Workspace'}</div>
             <div className="truncate text-xs text-slate-500">SalesChatbot · Manage your business conversations</div>
           </div>
-          <button onClick={() => { signOut(); setLoggedIn(false); }} className="flex shrink-0 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-600 transition hover:border-red-200 hover:bg-red-50 hover:text-[#d61616] sm:px-4">
-            <LogOut size={16}/> <span className="hidden sm:inline">Sign out</span>
-          </button>
+          <div className="flex shrink-0 items-center gap-2">
+            <button onClick={() => setSidebarVisible(v => !v)} aria-label={sidebarVisible ? "Hide sidebar" : "Show sidebar"} title={sidebarVisible ? "Hide sidebar" : "Show sidebar"} className="flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-600 transition hover:bg-slate-50">
+              {sidebarVisible ? <PanelLeftClose size={17}/> : <PanelLeftOpen size={17}/>} <span className="hidden md:inline">{sidebarVisible ? "Hide sidebar" : "Show sidebar"}</span>
+            </button>
+            <button onClick={() => { signOut(); setLoggedIn(false); }} className="flex shrink-0 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-600 transition hover:border-red-200 hover:bg-red-50 hover:text-[#d61616] sm:px-4">
+              <LogOut size={16}/> <span className="hidden sm:inline">Sign out</span>
+            </button>
+          </div>
         </div>
       </header>
 

@@ -81,7 +81,13 @@ export async function updateLeadPaymentStatus(id: string, status: string) {
   return rest(`leads?id=eq.${id}`, { method: 'PATCH', body: JSON.stringify({ payment_status: status }) });
 }
 
-export async function updateLeadStatus(id: string, status: string) {\n  const allowed = ['New', 'Contacted', 'Payment Pending', 'In Progress', 'Completed'];\n  if (!allowed.includes(status)) throw new Error('Invalid request status.');\n  return rest(`leads?id=eq.${id}`, { method: 'PATCH', body: JSON.stringify({ order_status: status }) });\n}\n\nexport async function listChatbots() {
+export async function updateLeadStatus(id: string, status: string) {
+  const allowed = ['New', 'Contacted', 'Payment Pending', 'In Progress', 'Completed'];
+  if (!allowed.includes(status)) throw new Error('Invalid request status.');
+  return rest(`leads?id=eq.${id}`, { method: 'PATCH', body: JSON.stringify({ order_status: status }) });
+}
+
+export async function listChatbots() {
   return rest('chatbots?select=*&order=created_at.desc');
 }
 

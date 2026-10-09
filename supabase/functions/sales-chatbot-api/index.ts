@@ -68,6 +68,28 @@ Deno.serve(async (req) => {
       Deno.env.get("SUPABASE_ANON_KEY")!
     );
 
+    if (action === "lead") {
+      const name = clean(body?.name);
+      const email = clean(body?.email).toLowerCase();
+      if (!name || !email || !/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(email)) {
+        return json({ error: "Please provide your name and a valid email address." }, 400);
+      }
+      const { error: leadError } = await sb.from("leads").insert({
+        name,
+        email,
+        company: clean(body?.company) || null,
+        phone: clean(body?.phone) || null,
+        company_website: clean(body?.company_website) || null,
+        traffic_volume: clean(body?.traffic_volume) || null,
+        primary_goal: clean(body?.primary_goal) || null,
+        message: clean(body?.message) || null,
+        chatbot_name: clean(body?.chatbot_name) || null,
+        order_type: clean(body?.order_type) || null,
+      });
+      if (leadError) throw leadError;
+      return json({ ok: true, message: "Your chatbot request has been received." });
+    }
+
     if (action === "config") {
       const { data: bot, error } = await sb
         .from("chatbots")

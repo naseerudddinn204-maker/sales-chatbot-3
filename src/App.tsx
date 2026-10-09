@@ -25,6 +25,8 @@ export default function App() {
   const initialParams = new URLSearchParams(window.location.search);
   const [currentTab, setCurrentTab] = useState<ScreenTab>(initialParams.get('tab') === 'contact' ? 'contact' : 'home');
   const [selectedChatbotName, setSelectedChatbotName] = useState(initialParams.get('chatbot') || '');
+  const [selectedPlanName, setSelectedPlanName] = useState(initialParams.get('plan') || '');
+  const [selectedBillingType, setSelectedBillingType] = useState(initialParams.get('billing') || 'monthly');
   const [isFramedView, setIsFramedView] = useState(false);
   const [isLiveChatOpen, setIsLiveChatOpen] = useState(false);
   const [isBookDemoOpen, setIsBookDemoOpen] = useState(false);
@@ -94,6 +96,8 @@ export default function App() {
           {currentTab === 'contact' && (
             <ContactScreen
               selectedChatbotName={selectedChatbotName}
+              selectedPlanName={selectedPlanName}
+              selectedBillingType={selectedBillingType}
               onOpenLiveChat={() => setIsLiveChatOpen(true)}
               onOpenBookDemo={() => setIsBookDemoOpen(true)}
               onShowToast={showToast}
@@ -103,7 +107,7 @@ export default function App() {
           {currentTab === 'home' && (
             <HomeScreen
               onNavigateToDemo={() => handleTabChange('demo')}
-              onNavigateToContact={() => handleTabChange('contact')}
+              onNavigateToContact={(planName, billingType) => { setSelectedPlanName(planName || ''); setSelectedBillingType(billingType || 'monthly'); handleTabChange('contact'); }}
               onOpenLiveChat={() => setIsLiveChatOpen(true)}
             />
           )}

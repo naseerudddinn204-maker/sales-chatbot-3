@@ -25,6 +25,23 @@ function isPhone(value: string) {
   return PHONE_RE.test(value) && compact.replace("+", "").length >= 7;
 }
 
+async function fetchWithRetry(url: string | URL | Request, init?: RequestInit) {
+  // Retry transient Gemini service overloads once. Quota (429) is not blindly retried.
+  let response = await fetch(url, init);
+  if ([500, 502, 503, 504].includes(response.status)) {
+    await new Promise(resolve => setTimeout(resolve, 700));
+    response = await fetch(url, init);
+  }
+  return response;
+}
+
+function geminiError(status: number) {
+  if (status === 429) return "Gemini free-tier quota/rate limit reached. Please wait for the quota to reset or check Google AI Studio usage limits.";
+  if (status === 401 || status === 403) return "Gemini API key is invalid or does not have access. Check the server-side GEMINI_API_KEY.";
+  if ([500, 502, 503, 504].includes(status)) return "Gemini is temporarily busy. Please try again in a short while.";
+  return "Gemini request failed. Check the server-side API key and model configuration.";
+}
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: cors });
   if (req.method === "GET") return json({ ok: true, service: "sales-chatbot-api" });
@@ -101,8 +118,8 @@ Deno.serve(async (req) => {
         binary += String.fromCharCode(...bytes.subarray(i, i + chunkSize));
       }
 
-      const ar = await fetch(
-        "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key=" + encodeURIComponent(key),
+      const ar = await fetchWithRetry(
+        "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent?key=" + encodeURIComponent(key),
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -119,7 +136,7 @@ Deno.serve(async (req) => {
       );
 
       const data = await ar.json().catch(() => ({}));
-      if (!ar.ok) return json({ error: "Could not read this PDF." }, 502);
+      if (!ar.ok) return json({ error: geminiError(ar.status) }, ar.status === 429 ? 503 : (ar.status >= 500 ? 503 : 502));
       const extracted = clean(data?.candidates?.[0]?.content?.parts?.[0]?.text);
       if (!extracted) return json({ error: "No readable information was found in this PDF." }, 400);
       return json({ ok: true, knowledge_text: extracted.slice(0, 30000), file_name: file.name });
@@ -183,8 +200,8 @@ Deno.serve(async (req) => {
           "Do not summarize away important details. Do not add facts that are not in the document. " +
           "Return plain text only, organized with clear headings and bullet points where useful.";
 
-        const ar = await fetch(
-          "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key=" +
+        const ar = await fetchWithRetry(
+          "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent?key=" +
             encodeURIComponent(key),
           {
             method: "POST",
@@ -204,7 +221,7 @@ Deno.serve(async (req) => {
         if (!ar.ok) {
           const detail = await ar.text();
           console.error("Gemini document extraction error", ar.status, detail);
-          return json({ error: ar.status === 429 ? "Gemini rate limit reached. Please retry shortly." : "Could not read this PDF." }, 502);
+          return json({ error: geminiError(ar.status) }, ar.status === 429 ? 503 : (ar.status >= 500 ? 503 : 502));
         }
 
         const data = await ar.json();
@@ -321,8 +338,8 @@ Deno.serve(async (req) => {
         "\n\nChatbot configuration/instructions:\n" + clean(bot.system_prompt) +
         "\n\nVisitor question:\n" + message;
 
-      const ar = await fetch(
-        "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key=" +
+      const ar = await fetchWithRetry(
+        "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent?key=" +
           encodeURIComponent(key),
         {
           method: "POST",
@@ -337,14 +354,7 @@ Deno.serve(async (req) => {
       if (!ar.ok) {
         const detail = await ar.text();
         console.error("Gemini API error", ar.status, detail);
-        return json({
-          error:
-            ar.status === 401 || ar.status === 403
-              ? "Gemini API key is invalid or does not have access."
-              : ar.status === 429
-                ? "Gemini rate limit reached. Please retry shortly."
-                : "Gemini request failed. Check the Gemini API key and model configuration.",
-        }, 502);
+        return json({ error: geminiError(ar.status) }, ar.status === 429 ? 503 : (ar.status >= 500 ? 503 : 502));
       }
 
       const data = await ar.json();

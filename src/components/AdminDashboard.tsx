@@ -109,8 +109,8 @@ export function AdminDashboard() {
   const smallInputClass = "box-border w-full min-w-0 max-w-full rounded-lg border border-slate-200 bg-white p-2 text-sm outline-none focus:border-slate-400";
 
   return (
-    <div className="min-h-screen w-full max-w-full overflow-x-hidden bg-[#f6f8fc] text-slate-900 lg:flex">
-      <aside className="w-full shrink-0 bg-[#151c27] text-white lg:sticky lg:top-0 lg:h-screen lg:w-[220px]">
+    <div className="min-h-screen w-full max-w-full overflow-x-hidden bg-[#f6f8fc] text-slate-900 lg:flex lg:h-screen lg:min-h-0 lg:overflow-hidden">
+      <aside className="w-full shrink-0 bg-[#151c27] text-white lg:h-screen lg:w-[220px] lg:overflow-y-auto">
         <div className="flex h-full flex-col px-3 py-3 lg:px-4 lg:py-5">
           <a href="/admin/chatbots" className="flex items-center gap-2 px-2 py-1.5">
             <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#d61616] shadow-lg shadow-red-950/30"><Bot size={20}/></span>
@@ -127,7 +127,7 @@ export function AdminDashboard() {
           </div>
         </div>
       </aside>
-      <div className="min-w-0 flex-1">
+      <div className="min-w-0 flex-1 lg:flex lg:h-screen lg:min-h-0 lg:flex-col">
       <header className="sticky top-0 z-20 w-full border-b border-slate-200/80 bg-white/90 backdrop-blur-xl">
         <div className="flex min-h-[76px] w-full items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8">
           <div className="min-w-0">
@@ -140,7 +140,7 @@ export function AdminDashboard() {
         </div>
       </header>
 
-      <main className="mx-auto w-full max-w-[1500px] box-border px-3 py-5 sm:px-5 sm:py-7 lg:px-8">
+      <main className="mx-auto w-full max-w-[1500px] box-border px-3 py-5 sm:px-5 sm:py-7 lg:min-h-0 lg:flex-1 lg:overflow-y-auto lg:px-8">
         {notice && <div className="mb-4 break-words rounded-xl bg-emerald-50 p-3 text-sm text-emerald-700">{notice}</div>}
 
         {adminPage === 'questions' && <div className="min-w-0 rounded-3xl border border-slate-100 bg-white p-4 shadow-[0_8px_30px_rgba(21,28,39,0.04)] sm:p-6">

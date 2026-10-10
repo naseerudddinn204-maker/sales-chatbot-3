@@ -1,5 +1,5 @@
-import React from 'react';
-import { ArrowRight, Bot, Check, MessageSquare, Zap, ShieldCheck, BarChart3 } from 'lucide-react';
+import React, { useState } from 'react';
+import { ArrowRight, Bot, Check, MessageSquare, Zap, ShieldCheck, BarChart3, Calculator, Globe, FileText, Users, TrendingUp } from 'lucide-react';
 import { ChatbotCatalog } from './ChatbotCatalog';
 
 interface HomeScreenProps {
@@ -181,6 +181,91 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
               <h3 className="mt-4 font-bold">Custom AI Automation</h3>
               <p className="mt-1 text-sm text-gray-600">Connect your AI assistant to the workflows and information your business needs.</p>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Sales-focused features */}
+      <section className="px-5 sm:px-8 lg:px-12 py-12 bg-white">
+        <div className="max-w-6xl mx-auto">
+          <div className="max-w-2xl">
+            <div className="text-[11px] font-bold uppercase tracking-wider text-blue-600">Built to help you sell</div>
+            <h2 className="mt-2 font-headline text-2xl sm:text-3xl font-extrabold text-gray-950">More than a chat box. A helpful sales assistant.</h2>
+            <p className="mt-2 text-sm sm:text-base leading-6 text-gray-600">Give visitors answers, make it easier to contact your team, and let customers explore your services even when you are away.</p>
+          </div>
+          <div className="mt-7 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="rounded-2xl border border-gray-200 bg-white p-5 transition hover:-translate-y-1 hover:shadow-lg">
+              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-50 text-blue-600"><FileText size={21}/></div>
+              <h3 className="mt-4 font-bold text-gray-950">Business knowledge</h3>
+              <p className="mt-2 text-sm leading-6 text-gray-600">Configure approved information about your products, services, prices, and FAQs.</p>
+            </div>
+            <div className="rounded-2xl border border-gray-200 bg-white p-5 transition hover:-translate-y-1 hover:shadow-lg">
+              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-50 text-emerald-700"><Users size={21}/></div>
+              <h3 className="mt-4 font-bold text-gray-950">Lead capture</h3>
+              <p className="mt-2 text-sm leading-6 text-gray-600">Give interested visitors a clear way to send their contact details and enquiry to your team.</p>
+            </div>
+            <div className="rounded-2xl border border-gray-200 bg-white p-5 transition hover:-translate-y-1 hover:shadow-lg">
+              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-purple-50 text-purple-700"><Globe size={21}/></div>
+              <h3 className="mt-4 font-bold text-gray-950">Website integration</h3>
+              <p className="mt-2 text-sm leading-6 text-gray-600">Use the chatbot embed code to add your assistant to a compatible website.</p>
+            </div>
+            <div className="rounded-2xl border border-gray-200 bg-white p-5 transition hover:-translate-y-1 hover:shadow-lg">
+              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-amber-50 text-amber-700"><TrendingUp size={21}/></div>
+              <h3 className="mt-4 font-bold text-gray-950">Sales enquiries</h3>
+              <p className="mt-2 text-sm leading-6 text-gray-600">Help customers understand your offer and send a request when they are ready to buy.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Interactive value estimator */}
+      <section className="px-5 sm:px-8 lg:px-12 py-12 bg-blue-50/70 border-y border-blue-100">
+        <div className="max-w-6xl mx-auto grid lg:grid-cols-[0.9fr_1.1fr] gap-8 lg:gap-12 items-center">
+          <div>
+            <div className="inline-flex items-center gap-2 rounded-full bg-white border border-blue-100 px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider text-blue-700"><Calculator size={14}/> Free calculator</div>
+            <h2 className="mt-4 font-headline text-2xl sm:text-3xl font-extrabold text-gray-950">Estimate your chatbot sales opportunity.</h2>
+            <p className="mt-3 text-sm sm:text-base leading-6 text-gray-600">Adjust the numbers to explore what a small improvement in conversions could mean for your business.</p>
+            <p className="mt-3 text-xs leading-5 text-gray-500">This is a planning estimate only. Actual results depend on your business, traffic, offer, and customer behaviour.</p>
+          </div>
+          <div className="rounded-3xl border border-blue-100 bg-white p-5 sm:p-7 shadow-sm">
+            {(() => {
+              const [visitors, setVisitors] = useState(1000);
+              const [conversion, setConversion] = useState(1);
+              const [orderValue, setOrderValue] = useState(50);
+              const estimatedSales = Math.round(visitors * conversion / 100);
+              const estimatedValue = estimatedSales * orderValue;
+              const money = (value: number) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(value);
+              return (
+                <>
+                  <div className="grid gap-5 sm:grid-cols-2">
+                    <label className="block text-sm font-semibold text-gray-800">
+                      Monthly website visitors
+                      <input type="number" min="0" max="10000000" value={visitors} onChange={e => setVisitors(Math.max(0, Math.min(10000000, Number(e.target.value) || 0)))} className="mt-2 w-full rounded-xl border border-gray-200 px-3 py-3 text-base font-medium outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"/>
+                    </label>
+                    <label className="block text-sm font-semibold text-gray-800">
+                      Average order value (USD)
+                      <input type="number" min="0" max="10000000" value={orderValue} onChange={e => setOrderValue(Math.max(0, Math.min(10000000, Number(e.target.value) || 0)))} className="mt-2 w-full rounded-xl border border-gray-200 px-3 py-3 text-base font-medium outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"/>
+                    </label>
+                  </div>
+                  <div className="mt-5">
+                    <div className="flex items-center justify-between gap-3 text-sm font-semibold text-gray-800"><label htmlFor="conversion-uplift">Hypothetical additional conversion rate</label><span className="rounded-lg bg-blue-50 px-2.5 py-1 text-blue-700">{conversion}%</span></div>
+                    <input id="conversion-uplift" type="range" min="0" max="5" step="0.5" value={conversion} onChange={e => setConversion(Number(e.target.value))} className="mt-3 w-full accent-blue-600"/>
+                    <div className="flex justify-between text-xs text-gray-500"><span>0%</span><span>5%</span></div>
+                  </div>
+                  <div className="mt-6 grid grid-cols-2 gap-3">
+                    <div className="rounded-2xl bg-gray-50 p-4">
+                      <div className="text-xs font-semibold text-gray-500">Illustrative extra orders / month</div>
+                      <div className="mt-2 text-2xl font-extrabold text-gray-950">{estimatedSales.toLocaleString('en-US')}</div>
+                    </div>
+                    <div className="rounded-2xl bg-blue-600 p-4 text-white">
+                      <div className="text-xs font-semibold text-blue-100">Illustrative sales value / month</div>
+                      <div className="mt-2 text-2xl font-extrabold">{money(estimatedValue)}</div>
+                    </div>
+                  </div>
+                  <button type="button" onClick={onNavigateToContact} className="mt-5 flex w-full items-center justify-center gap-2 rounded-xl bg-gray-950 px-5 py-3 text-sm font-bold text-white transition hover:bg-gray-800">Discuss a chatbot for my business <ArrowRight size={16}/></button>
+                </>
+              );
+            })()}
           </div>
         </div>
       </section>

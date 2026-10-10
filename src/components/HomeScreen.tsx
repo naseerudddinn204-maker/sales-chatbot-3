@@ -211,7 +211,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
 
       {/* Trust / CTA */}
       <section className="px-5 sm:px-8 lg:px-12 pb-10">
-        <div className="max-w-6xl mx-auto rounded-3xl bg-gray-950 p-6 sm:p-9 text-white flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div className="max-w-6xl mx-auto rounded-3xl bg-[#1e3a5f] p-6 sm:p-9 text-white flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div>
             <div className="flex items-center gap-2 text-sm font-bold text-blue-300"><ShieldCheck size={17} /> Built for modern businesses</div>
             <h2 className="mt-2 font-headline text-2xl sm:text-3xl font-extrabold">Ready to put AI on your website?</h2>

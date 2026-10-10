@@ -378,7 +378,7 @@ export const DemoScreen: React.FC<DemoScreenProps> = ({
       </section>
 
       <section className="px-4 sm:px-6">
-        <div className="bg-[#111827] rounded-2xl p-5 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div className="bg-[#1e3a5f] rounded-2xl p-5 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div><h4 className="font-headline text-base sm:text-lg font-bold text-white">Ready for your own AI chatbot?</h4><p className="text-xs sm:text-sm text-gray-300 mt-1">Launch an AI assistant for your website and start serving customers 24/7.</p></div>
           <button onClick={onNavigateToContact} className="h-10 px-4 rounded-lg bg-white text-gray-900 text-xs font-bold whitespace-nowrap cursor-pointer hover:bg-gray-100">Get Your Chatbot</button>
         </div>

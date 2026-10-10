@@ -97,3 +97,13 @@
   background: #9ca3af;
 }
 
+
+/* Consistent subtle border and shadow for public-site cards (admin dashboard excluded). */
+main :is(div, article, button, a)[class*="rounded-"][class*="border"]:not([class*="rounded-full"]) {
+  border-color: rgba(30, 58, 95, 0.18);
+  box-shadow: 0 4px 14px rgba(30, 58, 95, 0.08);
+}
+
+main :is(div, article, button, a)[class*="rounded-"][class*="border"]:not([class*="rounded-full"]):hover {
+  box-shadow: 0 7px 20px rgba(30, 58, 95, 0.12);
+}

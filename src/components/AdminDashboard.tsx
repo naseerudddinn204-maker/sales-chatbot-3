@@ -56,7 +56,7 @@ export function AdminDashboard() {
   const liveUrl = selected ? `${origin}/embed/${selected.slug}` : '';
   // Only form submissions with an email and website belong in Client Requests.
   // Chatbot manager-follow-up questions belong in Client Questions instead.
-  const requestLeads = leads.filter(lead => !!lead.email && (!!lead.company_website || !!lead.chatbot_name || !!lead.order_type) && lead.primary_goal !== 'Manager follow-up');
+  const requestLeads = leads.filter(lead => !!lead.email && (!!lead.company_website || !!lead.chatbot_name || !!lead.order_type) && lead.primary_goal !== 'Manager follow-up' && !lead.plan_name && lead.order_type !== 'Pricing order');
 
   async function addBot() {
     const rows = await createChatbot({ name:'New Chatbot', slug:`chatbot-${Date.now()}`, description:'', system_prompt:'You are a helpful AI sales assistant.', welcome_message:'Hello! How can I help you?', enabled:true, embed_code:'', logo_url:'', brand_color:'#111827', knowledge_description:'', knowledge_text:'' });

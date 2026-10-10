@@ -133,11 +133,11 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
               className="group mt-5 block w-full overflow-hidden rounded-2xl border border-blue-200 bg-gradient-to-br from-white via-white to-blue-50 text-left shadow-md transition-all duration-200 hover:-translate-y-0.5 hover:border-blue-300 hover:shadow-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
               aria-label="See how a chatbot can answer questions in the free demo"
             >
-              <div className="grid grid-cols-[112px_minmax(0,1fr)] items-center gap-3 p-3 sm:grid-cols-[140px_minmax(0,1fr)] sm:gap-4 sm:p-4">
+              <div className="grid grid-cols-[128px_minmax(0,1fr)] items-center gap-3 p-3 sm:grid-cols-[160px_minmax(0,1fr)] sm:gap-4 sm:p-4">
                 <img
                   src="/chatbot-answer-demo.svg"
                   alt="AI chatbot answering a customer's question about business plans"
-                  className="h-28 w-full rounded-xl border border-blue-100 bg-blue-50 p-1 object-contain sm:h-32"
+                  className="h-24 w-full rounded-xl border border-blue-100 bg-blue-50 object-contain sm:h-28"
                   loading="lazy"
                 />
                 <div className="min-w-0 py-1">

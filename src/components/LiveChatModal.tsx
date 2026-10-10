@@ -41,7 +41,8 @@ export const LiveChatModal: React.FC<LiveChatModalProps> = ({ isOpen, onClose, o
       const result = await callBackend<{ reply: string; session_id: string }>({
         message: text,
         session_id: sessionId,
-        slug: 'sales-chatbot'
+        slug: 'sales-chatbot',
+        chat_mode: 'pricing_popup'
       });
       setSessionId(result.session_id);
       const lower = text.toLowerCase();

@@ -130,21 +130,21 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
             <button
               type="button"
               onClick={onNavigateToDemo}
-              className="group mt-4 w-full overflow-hidden rounded-2xl border border-blue-100 bg-white text-left shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="group mt-5 block w-full overflow-hidden rounded-2xl border border-blue-200 bg-gradient-to-br from-white via-white to-blue-50 text-left shadow-md transition-all duration-200 hover:-translate-y-0.5 hover:border-blue-300 hover:shadow-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
               aria-label="See how a chatbot can answer questions in the free demo"
             >
-              <div className="grid grid-cols-[104px_minmax(0,1fr)] items-center gap-3 p-3 sm:grid-cols-[132px_minmax(0,1fr)] sm:gap-4 sm:p-4">
+              <div className="grid grid-cols-[112px_minmax(0,1fr)] items-center gap-3 p-3 sm:grid-cols-[140px_minmax(0,1fr)] sm:gap-4 sm:p-4">
                 <img
                   src="/chatbot-answer-demo.svg"
                   alt="AI chatbot answering a customer's question about business plans"
-                  className="h-24 w-full rounded-xl bg-blue-50 object-cover object-center sm:h-28"
+                  className="h-28 w-full rounded-xl border border-blue-100 bg-blue-50 p-1 object-contain sm:h-32"
                   loading="lazy"
                 />
                 <div className="min-w-0 py-1">
-                  <span className="text-[10px] font-extrabold uppercase tracking-wider text-blue-600">Chatbot demo</span>
-                  <h3 className="mt-1 text-base font-extrabold leading-snug text-gray-950 sm:text-lg">How can a chatbot answer?</h3>
-                  <p className="mt-1 text-xs leading-5 text-gray-600 sm:text-sm">See how it answers questions about products, pricing, and customer support.</p>
-                  <span className="mt-2 inline-flex items-center gap-1 text-xs font-bold text-blue-700 group-hover:text-blue-800">Try the free demo <ArrowRight size={14} /></span>
+                  <span className="inline-flex items-center rounded-full bg-blue-100 px-2 py-1 text-[10px] font-extrabold uppercase tracking-wider text-blue-700">Chatbot demo</span>
+                  <h3 className="mt-2 text-base font-extrabold leading-snug text-gray-950 sm:text-lg">How can a chatbot answer?</h3>
+                  <p className="mt-1 text-xs leading-5 text-gray-600 sm:text-sm">See how an AI chatbot answers questions about products, pricing, orders, and customer support.</p>
+                  <span className="mt-3 inline-flex items-center gap-1.5 rounded-lg bg-blue-600 px-3 py-2 text-xs font-bold text-white transition-colors group-hover:bg-blue-700 sm:text-sm">Try the free demo <ArrowRight size={15} /></span>
                 </div>
               </div>
             </button>

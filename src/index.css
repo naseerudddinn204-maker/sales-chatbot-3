@@ -98,12 +98,19 @@
 }
 
 
-/* Consistent subtle border and shadow for public-site cards (admin dashboard excluded). */
+/* Stronger, clearer borders and shadows for the public website.
+   Keep the admin dashboard untouched (its content is outside main). */
+main [class*="border"] {
+  border-color: rgba(30, 58, 95, 0.28);
+}
+
 main :is(div, article, button, a)[class*="rounded-"][class*="border"]:not([class*="rounded-full"]) {
-  border-color: rgba(30, 58, 95, 0.18);
-  box-shadow: 0 4px 14px rgba(30, 58, 95, 0.08);
+  border-color: rgba(30, 58, 95, 0.32);
+  box-shadow: 0 5px 18px rgba(30, 58, 95, 0.16), 0 1px 3px rgba(30, 58, 95, 0.10);
+  transition: box-shadow 180ms ease, border-color 180ms ease;
 }
 
 main :is(div, article, button, a)[class*="rounded-"][class*="border"]:not([class*="rounded-full"]):hover {
-  box-shadow: 0 7px 20px rgba(30, 58, 95, 0.12);
+  border-color: rgba(30, 58, 95, 0.42);
+  box-shadow: 0 9px 26px rgba(30, 58, 95, 0.22), 0 2px 5px rgba(30, 58, 95, 0.12);
 }

@@ -127,28 +127,38 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
               </div>
             </div>
 
-            <button
-              type="button"
-              onClick={onNavigateToDemo}
-              className="group mt-5 block w-full overflow-hidden rounded-2xl border border-blue-200 bg-gradient-to-br from-white via-white to-blue-50 text-left shadow-md transition-all duration-200 hover:-translate-y-0.5 hover:border-blue-300 hover:shadow-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-              aria-label="See how a chatbot can answer questions in the free demo"
-            >
-              <div className="grid grid-cols-[128px_minmax(0,1fr)] items-center gap-3 p-3 sm:grid-cols-[160px_minmax(0,1fr)] sm:gap-4 sm:p-4">
-                <img
-                  src="/chatbot-answer-demo.svg"
-                  alt="AI chatbot answering a customer's question about business plans"
-                  className="h-24 w-full rounded-xl border border-blue-100 bg-blue-50 object-contain sm:h-28"
-                  loading="lazy"
-                />
-                <div className="min-w-0 py-1">
-                  <span className="inline-flex items-center rounded-full bg-blue-100 px-2 py-1 text-[10px] font-extrabold uppercase tracking-wider text-blue-700">Chatbot demo</span>
-                  <h3 className="mt-2 text-base font-extrabold leading-snug text-gray-950 sm:text-lg">How can a chatbot answer?</h3>
-                  <p className="mt-1 text-xs leading-5 text-gray-600 sm:text-sm">See how an AI chatbot answers questions about products, pricing, orders, and customer support.</p>
-                  <span className="mt-3 inline-flex items-center gap-1.5 rounded-lg bg-blue-600 px-3 py-2 text-xs font-bold text-white transition-colors group-hover:bg-blue-700 sm:text-sm">Try the free demo <ArrowRight size={15} /></span>
-                </div>
-              </div>
-            </button>
           </div>
+        </div>
+      </section>
+
+      {/* Prominent chatbot-answer demo */}
+      <section className="px-5 sm:px-8 lg:px-12 py-8 sm:py-10 bg-blue-50 border-y border-blue-100">
+        <div className="max-w-6xl mx-auto">
+          <button
+            type="button"
+            onClick={onNavigateToDemo}
+            className="group grid w-full grid-cols-1 items-center gap-5 overflow-hidden rounded-3xl border-2 border-blue-200 bg-white p-5 text-left shadow-lg transition-all duration-200 hover:-translate-y-0.5 hover:border-blue-400 hover:shadow-xl sm:grid-cols-[minmax(220px,0.85fr)_1.15fr] sm:gap-8 sm:p-7 lg:p-9"
+            aria-label="Open the free chatbot demo and see how it answers customer questions"
+          >
+            <div className="flex min-h-[190px] items-center justify-center rounded-2xl border border-blue-100 bg-gradient-to-br from-blue-50 to-white p-3 sm:min-h-[240px] sm:p-5">
+              <img
+                src="/chatbot-answer-demo.svg"
+                alt="Illustration of an AI chatbot answering a customer's business question"
+                className="h-44 w-full max-w-[320px] object-contain sm:h-56"
+                loading="eager"
+              />
+            </div>
+            <div className="min-w-0 py-1 sm:py-3">
+              <span className="inline-flex items-center gap-2 rounded-full bg-blue-100 px-3 py-1.5 text-xs font-extrabold uppercase tracking-wider text-blue-700">
+                <Bot size={15} /> See it in action
+              </span>
+              <h2 className="mt-3 text-2xl font-extrabold leading-tight text-gray-950 sm:text-3xl lg:text-4xl">How Can a Chatbot Answer?</h2>
+              <p className="mt-3 max-w-xl text-sm leading-6 text-gray-600 sm:text-base sm:leading-7">See how an AI chatbot can answer customer questions about your products, pricing, orders, and support — any time of day.</p>
+              <span className="mt-5 inline-flex items-center gap-2 rounded-xl bg-blue-600 px-5 py-3 text-sm font-bold text-white shadow-md transition-colors group-hover:bg-blue-700">
+                Try the Free Demo <ArrowRight size={17} />
+              </span>
+            </div>
+          </button>
         </div>
       </section>
 

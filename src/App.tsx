@@ -125,26 +125,26 @@ export default function App() {
         </main>
 
         {!isFramedView && (
-          <footer className="hidden md:flex flex-col border-t border-gray-200/80 bg-white/70 py-6 px-6 text-xs text-gray-500">
+          <footer className="hidden md:flex flex-col border-t border-white/15 bg-[#1e3a5f] py-6 px-6 text-xs text-white/70">
             <div className="flex items-center justify-between gap-4">
               <div className="flex items-center gap-2">
-                <div className="w-6 h-6 rounded-lg bg-white border border-gray-200 flex items-center justify-center overflow-hidden">
+                <div className="w-6 h-6 rounded-lg bg-white/10 border border-white/20 flex items-center justify-center overflow-hidden">
                   <img
                     src="https://www.orken.us/favicon.ico"
                     alt="Orken AI"
                     className="w-full h-full object-contain p-1"
                   />
                 </div>
-                <span className="font-bold text-gray-900">Orken AI</span>
-                <span className="text-gray-300">|</span>
+                <span className="font-bold text-white">Orken AI</span>
+                <span className="text-white/40">|</span>
                 <span>© {new Date().getFullYear()} All rights reserved.</span>
               </div>
 
               <div className="flex items-center gap-5">
-                <button onClick={() => handleTabChange('home')} className="hover:text-gray-900 cursor-pointer">Home</button>
-                <button onClick={() => handleTabChange('demo')} className="hover:text-gray-900 cursor-pointer">Interactive Demo</button>
-                <button onClick={() => handleTabChange('pricing')} className="hover:text-gray-900 cursor-pointer">Pricing</button>
-                <button onClick={() => handleTabChange('contact')} className="hover:text-gray-900 cursor-pointer">Contact</button>
+                <button onClick={() => handleTabChange('home')} className="hover:text-white cursor-pointer">Home</button>
+                <button onClick={() => handleTabChange('demo')} className="hover:text-white cursor-pointer">Free Demo</button>
+                <button onClick={() => handleTabChange('pricing')} className="hover:text-white cursor-pointer">Pricing</button>
+                <button onClick={() => handleTabChange('contact')} className="hover:text-white cursor-pointer">Contact</button>
               </div>
             </div>
           </footer>

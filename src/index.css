@@ -114,3 +114,24 @@ main :is(div, article, button, a)[class*="rounded-"][class*="border"]:not([class
   border-color: rgba(30, 58, 95, 0.42);
   box-shadow: 0 9px 26px rgba(30, 58, 95, 0.22), 0 2px 5px rgba(30, 58, 95, 0.12);
 }
+
+/* Add soft depth to public-site separators and card surfaces.
+   These selectors stay under main so the admin dashboard is not affected. */
+main [class*="border-b"],
+main [class*="border-t"],
+main [class*="border-y"],
+main [class*="border-x"] {
+  box-shadow: 0 2px 6px rgba(30, 58, 95, 0.10);
+}
+
+main :is(div, article, section, button, a)[class*="rounded-"][class*="bg-white"]:not([class*="rounded-full"]),
+main :is(div, article, section, button, a)[class*="rounded-"][class*="bg-gray-50"]:not([class*="rounded-full"]) {
+  box-shadow: 0 5px 18px rgba(30, 58, 95, 0.13), 0 1px 3px rgba(30, 58, 95, 0.08);
+  transition: box-shadow 180ms ease, transform 180ms ease;
+}
+
+main :is(div, article, section, button, a)[class*="rounded-"][class*="bg-white"]:not([class*="rounded-full"]):hover,
+main :is(div, article, section, button, a)[class*="rounded-"][class*="bg-gray-50"]:not([class*="rounded-full"]):hover {
+  box-shadow: 0 8px 24px rgba(30, 58, 95, 0.18), 0 2px 5px rgba(30, 58, 95, 0.10);
+}
+

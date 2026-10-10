@@ -74,7 +74,7 @@ export default function App() {
         className={`w-full transition-all duration-300 ${
           isFramedView
             ? 'max-w-[420px] h-[840px] max-h-[92vh] my-4 shadow-2xl rounded-[2.5rem] border-[9px] border-gray-900 bg-[#f9f9ff] flex flex-col relative ring-1 ring-gray-900/10 overflow-hidden'
-            : 'min-h-screen max-w-md sm:max-w-2xl md:max-w-3xl lg:max-w-4xl mx-auto flex flex-col relative'
+            : 'min-h-screen max-w-7xl mx-auto flex flex-col relative'
         }`}
       >
         <Header

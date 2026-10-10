@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { MessageCircle, X } from 'lucide-react';
 import { ScreenTab, ToastState } from './types';
 import { Header } from './components/Header';
 import { BottomNav } from './components/BottomNav';
@@ -156,6 +157,18 @@ export default function App() {
           isFramedView={isFramedView}
         />
       </div>
+
+      {!isFramedView && (
+        <button
+          type="button"
+          onClick={() => setIsLiveChatOpen(true)}
+          className="fixed bottom-24 right-4 md:bottom-6 md:right-6 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-[#0266ff] text-white shadow-xl ring-4 ring-white/80 transition hover:scale-105 hover:bg-blue-700 focus:outline-none focus-visible:ring-4 focus-visible:ring-blue-300"
+          aria-label="Open AI chatbot"
+          title="Chat with our AI assistant"
+        >
+          {isLiveChatOpen ? <X size={24} /> : <MessageCircle size={25} />}
+        </button>
+      )}
 
       <LiveChatModal
         isOpen={isLiveChatOpen}

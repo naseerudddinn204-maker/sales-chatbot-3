@@ -72,7 +72,11 @@ async function rest(path: string, options: RequestInit = {}) {
 }
 
 export async function listLeads() {
-  return rest('leads?select=id,name,email,company,phone,company_website,traffic_volume,primary_goal,message,chatbot_name,order_type,created_at&order=created_at.desc');
+  return rest('leads?select=id,name,email,company,phone,company_website,traffic_volume,primary_goal,message,chatbot_name,order_type,plan_name,requested_price,billing_type,payment_method,payment_status,payment_reference,order_status,created_at&order=created_at.desc');
+}
+
+export async function updateLead(id: string, payload: Record<string, unknown>) {
+  return rest(`leads?id=eq.${id}`, { method: 'PATCH', body: JSON.stringify(payload) });
 }
 
 export async function listChatbots() {

@@ -126,6 +126,28 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                 </div>
               </div>
             </div>
+
+            <button
+              type="button"
+              onClick={onNavigateToDemo}
+              className="group mt-4 w-full overflow-hidden rounded-2xl border border-blue-100 bg-white text-left shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              aria-label="See how a chatbot can answer questions in the free demo"
+            >
+              <div className="grid grid-cols-[104px_minmax(0,1fr)] items-center gap-3 p-3 sm:grid-cols-[132px_minmax(0,1fr)] sm:gap-4 sm:p-4">
+                <img
+                  src="/chatbot-answer-demo.svg"
+                  alt="AI chatbot answering a customer's question about business plans"
+                  className="h-24 w-full rounded-xl bg-blue-50 object-cover object-center sm:h-28"
+                  loading="lazy"
+                />
+                <div className="min-w-0 py-1">
+                  <span className="text-[10px] font-extrabold uppercase tracking-wider text-blue-600">Chatbot demo</span>
+                  <h3 className="mt-1 text-base font-extrabold leading-snug text-gray-950 sm:text-lg">How can a chatbot answer?</h3>
+                  <p className="mt-1 text-xs leading-5 text-gray-600 sm:text-sm">See how it answers questions about products, pricing, and customer support.</p>
+                  <span className="mt-2 inline-flex items-center gap-1 text-xs font-bold text-blue-700 group-hover:text-blue-800">Try the free demo <ArrowRight size={14} /></span>
+                </div>
+              </div>
+            </button>
           </div>
         </div>
       </section>

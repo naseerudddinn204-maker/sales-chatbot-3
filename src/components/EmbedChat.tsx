@@ -206,6 +206,7 @@ export function EmbedChat({ slug }: { slug: string }) {
           message: text,
           session_id: session,
           slug,
+          chat_mode: 'demo',
           business_description: config?.knowledge_description || '',
           knowledge_text: [config?.knowledge_text || '', visitorDescription.trim(), visitorKnowledge].filter(Boolean).join('\n\n'),
         }),

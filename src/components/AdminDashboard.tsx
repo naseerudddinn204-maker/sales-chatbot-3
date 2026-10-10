@@ -2,10 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { Bot, Code2, LogOut, Plus, Save, Trash2, DollarSign, Copy, Check, ClipboardList, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
 import { createChatbot, createPrice, deleteChatbot, deletePrice, getAdminUser, getSession, listChatbots, listLeads, listPrices, signOut, updateChatbot, updatePrice } from '../lib/supabaseAdmin';
 import { AdminLogin } from './AdminLogin';
+import { PricingOrdersPanel } from './PricingOrdersPanel';
 
 type Bot = { id:string; name:string; slug:string; description:string; system_prompt:string; welcome_message:string; enabled:boolean; embed_code?:string; logo_url?:string; brand_color?:string; knowledge_description?:string; knowledge_text?:string };
 type Price = { id:string; plan_name:string; monthly_price:number; annual_price:number; description:string; features:string[]; highlighted:boolean; enabled:boolean; sort_order:number };
-type Lead = { id:string; name:string; email:string; company?:string; phone?:string; company_website?:string | null; traffic_volume?:string; primary_goal?:string; message?:string; chatbot_name?:string | null; order_type?:string | null; created_at:string };
+type Lead = { id:string; name:string; email:string; company?:string; phone?:string; company_website?:string | null; traffic_volume?:string; primary_goal?:string; message?:string; chatbot_name?:string | null; order_type?:string | null; plan_name?:string | null; created_at:string };
 
 export function AdminDashboard() {
   const [loggedIn, setLoggedIn] = useState(!!getSession());
@@ -50,13 +51,13 @@ export function AdminDashboard() {
 
   const origin = window.location.origin;
   const adminPath = window.location.pathname;
-  const adminPage = adminPath.startsWith('/admin/questions') ? 'questions' : adminPath.startsWith('/admin/requests') ? 'requests' : 'chatbots';
+  const adminPage = adminPath.startsWith('/admin/questions') ? 'questions' : adminPath.startsWith('/admin/pricing-orders') ? 'pricing-orders' : adminPath.startsWith('/admin/requests') ? 'requests' : 'chatbots';
   const defaultEmbedCode = selected ? `<script src="${origin}/embed.js" data-chatbot="${selected.slug}" defer></script>` : '';
   const embedCode = selected?.embed_code?.trim() || defaultEmbedCode;
   const liveUrl = selected ? `${origin}/embed/${selected.slug}` : '';
   // Only form submissions with an email and website belong in Client Requests.
   // Chatbot manager-follow-up questions belong in Client Questions instead.
-  const requestLeads = leads.filter(lead => !!lead.email && (!!lead.company_website || !!lead.chatbot_name || !!lead.order_type) && lead.primary_goal !== 'Manager follow-up');
+  const requestLeads = leads.filter(lead => !!lead.email && (!!lead.company_website || !!lead.chatbot_name || !!lead.order_type) && lead.primary_goal !== 'Manager follow-up' && !lead.plan_name && lead.order_type !== 'Pricing order');
 
   async function addBot() {
     const rows = await createChatbot({ name:'New Chatbot', slug:`chatbot-${Date.now()}`, description:'', system_prompt:'You are a helpful AI sales assistant.', welcome_message:'Hello! How can I help you?', enabled:true, embed_code:'', logo_url:'', brand_color:'#111827', knowledge_description:'', knowledge_text:'' });
@@ -118,10 +119,11 @@ export function AdminDashboard() {
             <span className="min-w-0"><span className="block text-base font-extrabold tracking-tight">SalesChatbot</span><span className="block text-[10px] text-white/55">Admin workspace</span></span>
           </a>
           <div className="mt-5 hidden px-2 text-[9px] font-bold uppercase tracking-[.2em] text-white/40 lg:block">Workspace</div>
-          <nav className="mt-3 grid grid-cols-3 gap-1.5 lg:flex lg:flex-col" aria-label="Dashboard pages">
+          <nav className="mt-3 grid grid-cols-2 sm:grid-cols-4 gap-1.5 lg:flex lg:flex-col" aria-label="Dashboard pages">
             <a href="/admin/chatbots" className={`flex items-center gap-2 rounded-lg px-2.5 py-2.5 text-xs font-semibold transition-colors ${adminPage==='chatbots'?'bg-[#d61616] text-white shadow-lg shadow-red-950/20':'text-white/70 hover:bg-white/10 hover:text-white'}`}><Bot size={16}/><span>Chatbots</span></a>
             <a href="/admin/requests" className={`flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold transition-colors ${adminPage==='requests'?'bg-[#d61616] text-white shadow-lg shadow-red-950/20':'text-white/70 hover:bg-white/10 hover:text-white'}`}><ClipboardList size={16}/><span>Client Requests</span></a>
             <a href="/admin/questions" className={`flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold transition-colors ${adminPage==='questions'?'bg-[#d61616] text-white shadow-lg shadow-red-950/20':'text-white/70 hover:bg-white/10 hover:text-white'}`}><Code2 size={16}/><span>Client Questions</span></a>
+            <a href="/admin/pricing-orders" className={`flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold transition-colors ${adminPage==='pricing-orders'?'bg-[#d61616] text-white shadow-lg shadow-red-950/20':'text-white/70 hover:bg-white/10 hover:text-white'}`}><DollarSign size={16}/><span>Pricing Orders</span></a>
           </nav>
           <div className="mt-auto hidden rounded-xl border border-white/10 bg-white/5 p-3 lg:block">
             <div className="text-xs font-semibold">Manage smarter</div><p className="mt-1 text-[11px] leading-4 text-white/50">Your chatbot settings, leads and client questions in one place.</p>
@@ -132,7 +134,7 @@ export function AdminDashboard() {
       <header className="sticky top-0 z-20 w-full border-b border-slate-200/80 bg-white/90 backdrop-blur-xl">
         <div className="flex min-h-[76px] w-full items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8">
           <div className="min-w-0">
-            <div className="truncate text-xl font-extrabold tracking-tight text-[#151c27]">{adminPage==='requests'?'Client Requests':adminPage==='questions'?'Client Questions':'Chatbot Workspace'}</div>
+            <div className="truncate text-xl font-extrabold tracking-tight text-[#151c27]">{adminPage==='requests'?'Client Requests':adminPage==='questions'?'Client Questions':adminPage==='pricing-orders'?'Pricing Orders':'Chatbot Workspace'}</div>
             <div className="truncate text-xs text-slate-500">SalesChatbot · Manage your business conversations</div>
           </div>
           <div className="flex shrink-0 items-center gap-2">
@@ -148,6 +150,8 @@ export function AdminDashboard() {
 
       <main className={`mx-auto w-full max-w-[1500px] box-border px-3 py-5 sm:px-5 sm:py-7 lg:min-h-0 lg:flex-1 lg:px-8 ${adminPage === 'chatbots' ? 'lg:overflow-hidden' : 'lg:overflow-y-auto'}`}>
         {notice && <div className="mb-4 break-words rounded-xl bg-emerald-50 p-3 text-sm text-emerald-700">{notice}</div>}
+
+        {adminPage === 'pricing-orders' && <PricingOrdersPanel />}
 
         {adminPage === 'questions' && <div className="min-w-0 rounded-3xl border border-slate-100 bg-white p-4 shadow-[0_8px_30px_rgba(21,28,39,0.04)] sm:p-6">
           <div className="mb-4 flex items-center gap-2">

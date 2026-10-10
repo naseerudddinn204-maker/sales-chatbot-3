@@ -69,25 +69,66 @@ Deno.serve(async (req) => {
     );
 
     if (action === "lead") {
-      const name = clean(body?.name);
-      const email = clean(body?.email).toLowerCase();
+      const name = clean(body?.name).slice(0, 120);
+      const email = clean(body?.email).toLowerCase().slice(0, 254);
       if (!name || !email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
         return json({ error: "Please provide your name and a valid email address." }, 400);
       }
+
+      const planName = clean(body?.plan_name).slice(0, 120);
+      const billingType = clean(body?.billing_type);
+      let orderDetails: Record<string, unknown> = {};
+      let chatbotName = clean(body?.chatbot_name).slice(0, 160) || null;
+
+      // For pricing orders, resolve the plan and price from the database rather than
+      // trusting a price supplied by the browser.
+      if (planName) {
+        if (!["monthly", "annual"].includes(billingType)) {
+          return json({ error: "Please choose monthly or annual billing." }, 400);
+        }
+        const { data: bot, error: botError } = await sb
+          .from("chatbots")
+          .select("id,name")
+          .eq("slug", slug)
+          .eq("enabled", true)
+          .single();
+        if (botError || !bot) return json({ error: "This chatbot is not currently available for orders." }, 404);
+
+        const { data: plan, error: planError } = await sb
+          .from("chatbot_prices")
+          .select("plan_name,monthly_price,annual_price")
+          .eq("chatbot_id", bot.id)
+          .eq("plan_name", planName)
+          .eq("enabled", true)
+          .single();
+        if (planError || !plan) return json({ error: "This pricing plan is no longer available. Please refresh the pricing page." }, 400);
+
+        chatbotName = bot.name;
+        orderDetails = {
+          plan_name: plan.plan_name,
+          requested_price: billingType === "annual" ? plan.annual_price : plan.monthly_price,
+          billing_type: billingType,
+          payment_method: "bank_transfer",
+          payment_status: "awaiting_instructions",
+          order_status: "New",
+        };
+      }
+
       const { error: leadError } = await sb.from("leads").insert({
         name,
         email,
-        company: clean(body?.company) || null,
-        phone: clean(body?.phone) || null,
-        company_website: clean(body?.company_website) || null,
-        traffic_volume: clean(body?.traffic_volume) || null,
-        primary_goal: clean(body?.primary_goal) || null,
-        message: clean(body?.message) || null,
-        chatbot_name: clean(body?.chatbot_name) || null,
-        order_type: clean(body?.order_type) || null,
+        company: clean(body?.company).slice(0, 160) || null,
+        phone: clean(body?.phone).slice(0, 40) || null,
+        company_website: clean(body?.company_website).slice(0, 500) || null,
+        traffic_volume: clean(body?.traffic_volume).slice(0, 80) || null,
+        primary_goal: clean(body?.primary_goal).slice(0, 120) || null,
+        message: clean(body?.message).slice(0, 2000) || null,
+        chatbot_name: chatbotName,
+        order_type: planName ? "Pricing order" : (clean(body?.order_type).slice(0, 120) || null),
+        ...orderDetails,
       });
       if (leadError) throw leadError;
-      return json({ ok: true, message: "Your chatbot request has been received." });
+      return json({ ok: true, message: planName ? "Your pricing order has been received." : "Your chatbot request has been received." });
     }
 
     if (action === "config") {

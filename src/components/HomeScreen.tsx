@@ -13,6 +13,13 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   onNavigateToContact,
   onOpenLiveChat,
 }) => {
+  const [visitors, setVisitors] = useState(1000);
+  const [conversion, setConversion] = useState(1);
+  const [orderValue, setOrderValue] = useState(50);
+  const estimatedSales = Math.round(visitors * conversion / 100);
+  const estimatedValue = estimatedSales * orderValue;
+  const money = (value: number) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(value);
+
   return (
     <div className="w-full overflow-hidden bg-white text-gray-900">
       {/* Hero */}
@@ -228,15 +235,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
             <p className="mt-3 text-xs leading-5 text-gray-500">This is a planning estimate only. Actual results depend on your business, traffic, offer, and customer behaviour.</p>
           </div>
           <div className="rounded-3xl border border-blue-100 bg-white p-5 sm:p-7 shadow-sm">
-            {(() => {
-              const [visitors, setVisitors] = useState(1000);
-              const [conversion, setConversion] = useState(1);
-              const [orderValue, setOrderValue] = useState(50);
-              const estimatedSales = Math.round(visitors * conversion / 100);
-              const estimatedValue = estimatedSales * orderValue;
-              const money = (value: number) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(value);
-              return (
-                <>
+            <>
                   <div className="grid gap-5 sm:grid-cols-2">
                     <label className="block text-sm font-semibold text-gray-800">
                       Monthly website visitors
@@ -263,10 +262,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                     </div>
                   </div>
                   <button type="button" onClick={onNavigateToContact} className="mt-5 flex w-full items-center justify-center gap-2 rounded-xl bg-gray-950 px-5 py-3 text-sm font-bold text-white transition hover:bg-gray-800">Discuss a chatbot for my business <ArrowRight size={16}/></button>
-                </>
-              );
-            })()}
-          </div>
+            </>          </div>
         </div>
       </section>
 

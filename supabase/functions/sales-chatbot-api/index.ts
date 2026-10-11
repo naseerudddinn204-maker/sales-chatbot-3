@@ -131,7 +131,7 @@ Deno.serve(async (req) => {
         };
       }
 
-      const { error: leadError } = await sb.from("leads").insert({
+      const { data: savedLead, error: leadError } = await sb.from("leads").insert({
         name,
         email,
         company: clean(body?.company).slice(0, 160) || null,
@@ -143,9 +143,9 @@ Deno.serve(async (req) => {
         chatbot_name: chatbotName,
         order_type: planName ? "Pricing order" : (clean(body?.order_type).slice(0, 120) || null),
         ...orderDetails,
-      });
+      }).select("id,created_at").single();
       if (leadError) throw leadError;
-      return json({ ok: true, message: planName ? "Your pricing order has been received." : "Your chatbot request has been received." });
+      return json({ ok: true, message: planName ? "Your pricing order has been received." : "Your chatbot request has been received.", order_id: planName ? savedLead.id : null, created_at: savedLead.created_at });
     }
 
     if (action === "config") {

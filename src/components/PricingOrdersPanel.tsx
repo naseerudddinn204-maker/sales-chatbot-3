@@ -44,7 +44,7 @@ export function PricingOrdersPanel() {
     setNotice('');
     try {
       const rows = await updateLead(order.id, {
-        order_status: order.order_status || 'New',
+        order_status: order.order_status || 'Pending',
         payment_status: order.payment_status || 'awaiting_instructions',
         payment_reference: order.payment_reference || null,
       });
@@ -79,15 +79,16 @@ export function PricingOrdersPanel() {
         : <div className="overflow-x-auto">
           <table className="w-full min-w-[1250px] text-left text-sm">
             <thead><tr className="border-b text-xs uppercase text-slate-500">
-              <th className="p-3">Date</th><th className="p-3">Client</th><th className="p-3">Contact</th><th className="p-3">Plan</th><th className="p-3">Price / Billing</th><th className="p-3">Order status</th><th className="p-3">Payment status</th><th className="p-3">Payment reference</th><th className="p-3">Action</th>
+              <th className="p-3">Date</th><th className="p-3">Order reference</th><th className="p-3">Client</th><th className="p-3">Contact</th><th className="p-3">Plan</th><th className="p-3">Price / Billing</th><th className="p-3">Order status</th><th className="p-3">Payment status</th><th className="p-3">Payment reference</th><th className="p-3">Action</th>
             </tr></thead>
             <tbody>{orders.map(order => <tr key={order.id} className="border-b align-top last:border-0">
               <td className="whitespace-nowrap p-3">{new Date(order.created_at).toLocaleString()}</td>
+              <td className="p-3"><span title={order.id} className="font-mono text-xs font-semibold text-slate-700">{order.id.slice(0, 8).toUpperCase()}</span><div className="text-[10px] text-slate-400">{order.id}</div></td>
               <td className="p-3 font-semibold">{order.name}{order.company && <div className="text-xs font-normal text-slate-500">{order.company}</div>}</td>
               <td className="p-3">{order.email}{order.phone && <div className="text-xs text-slate-500">{order.phone}</div>}{order.company_website && <a className="block max-w-[170px] break-all text-xs text-blue-600 hover:underline" href={order.company_website} target="_blank" rel="noreferrer">{order.company_website}</a>}</td>
               <td className="p-3 font-semibold">{order.chatbot_name || 'AI Chatbot'}<div className="text-xs font-normal text-slate-500">{order.plan_name || 'Plan not specified'}</div></td>
               <td className="whitespace-nowrap p-3">{order.requested_price == null ? '—' : '$' + Number(order.requested_price).toLocaleString()}<div className="text-xs text-slate-500">{order.billing_type || '—'}</div></td>
-              <td className="p-3"><select aria-label={'Order status for ' + order.name} className="w-40 rounded-lg border border-slate-200 bg-white p-2 text-xs" value={order.order_status || 'New'} onChange={e => updateOrder(order.id, { order_status: e.target.value })}><option>New</option><option>Contacted</option><option>Payment Pending</option><option>In Progress</option><option>Completed</option></select></td>
+              <td className="p-3"><select aria-label={'Order status for ' + order.name} className="w-40 rounded-lg border border-slate-200 bg-white p-2 text-xs" value={order.order_status || 'Pending'} onChange={e => updateOrder(order.id, { order_status: e.target.value })}><option>Pending</option><option>In Progress</option><option>Completed</option><option>Cancelled</option></select></td>
               <td className="p-3"><select aria-label={'Payment status for ' + order.name} className="w-44 rounded-lg border border-slate-200 bg-white p-2 text-xs" value={order.payment_status || 'awaiting_instructions'} onChange={e => updateOrder(order.id, { payment_status: e.target.value })}><option value="awaiting_instructions">Awaiting instructions</option><option value="payment_pending">Payment pending</option><option value="paid">Paid</option><option value="rejected">Rejected</option></select></td>
               <td className="p-3"><input aria-label={'Payment reference for ' + order.name} className="w-44 rounded-lg border border-slate-200 p-2 text-xs" maxLength={160} placeholder="Bank reference / note" value={order.payment_reference || ''} onChange={e => updateOrder(order.id, { payment_reference: e.target.value })} /></td>
               <td className="p-3"><button onClick={() => void saveOrder(order)} disabled={saving === order.id} className="flex items-center gap-2 whitespace-nowrap rounded-lg bg-slate-900 px-3 py-2 text-xs font-bold text-white disabled:opacity-60"><Save size={14}/>{saving === order.id ? 'Saving…' : 'Save order'}</button></td>

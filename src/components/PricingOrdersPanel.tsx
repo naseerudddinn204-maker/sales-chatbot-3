@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { DollarSign, RefreshCw, Save } from 'lucide-react';
 import { listLeads, updateLead } from '../lib/supabaseAdmin';
+import { OrderDeliveryPanel } from './OrderDeliveryPanel';
 
 type PricingOrder = {
   id: string;
@@ -95,6 +96,7 @@ export function PricingOrdersPanel() {
             </tr>)}</tbody>
           </table>
         </div>}
+      <OrderDeliveryPanel />
     </section>
   );
 }

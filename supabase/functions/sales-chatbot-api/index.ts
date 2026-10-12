@@ -127,7 +127,7 @@ Deno.serve(async (req) => {
           billing_type: billingType,
           payment_method: "bank_transfer",
           payment_status: "awaiting_instructions",
-          order_status: "New",
+          order_status: "Pending",
         };
       }
 

@@ -1,5 +1,6 @@
 import React from 'react';
 import { ScreenTab } from '../types';
+import { getUserSession, signOutUser } from '../lib/userAuth';
 
 interface HeaderProps {
   currentTab: ScreenTab;
@@ -13,6 +14,13 @@ export const Header: React.FC<HeaderProps> = ({
   onTabChange,
   isFramedView,
 }) => {
+  const userSession = getUserSession();
+
+  async function handleUserLogout() {
+    await signOutUser();
+    window.location.href = '/';
+  }
+
   return (
     <header
       className="fixed top-0 left-0 right-0 w-full z-40 pt-safe bg-[#1e3a5f]/95 backdrop-blur-xl border-b border-white/10 select-none transform translate-z-0 will-change-transform"
@@ -51,6 +59,18 @@ export const Header: React.FC<HeaderProps> = ({
           <button onClick={() => onTabChange('contact')} className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${currentTab === 'contact' ? 'bg-white/15 text-white shadow-sm' : 'text-white/60 hover:text-white'}`}>Contact Experts</button>
         </nav>
 
+        <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
+          {userSession ? (
+            <>
+              <a href="/account" className="hidden sm:inline-flex h-9 items-center rounded-lg border border-white/20 px-3 text-xs font-bold text-white hover:bg-white/10">My account</a>
+              <button onClick={handleUserLogout} className="hidden sm:inline-flex h-9 items-center rounded-lg border border-white/20 px-3 text-xs font-bold text-white hover:bg-white/10">Log out</button>
+            </>
+          ) : (
+            <>
+              <a href="/login" className="hidden sm:inline-flex h-9 items-center rounded-lg px-2.5 text-xs font-bold text-white/90 hover:bg-white/10">Log in</a>
+              <a href="/signup" className="h-9 items-center rounded-lg border border-white/20 px-2.5 text-xs font-bold text-white hover:bg-white/10 inline-flex">Sign up</a>
+            </>
+          )}
         <button
           onClick={() => onTabChange('demo')}
           className="h-9 px-3.5 rounded-lg bg-emerald-500/100 hover:bg-emerald-400 text-white text-xs font-bold flex items-center justify-center shadow-sm active:scale-95 transition-all whitespace-nowrap cursor-pointer"
@@ -58,6 +78,7 @@ export const Header: React.FC<HeaderProps> = ({
           <span className="material-symbols-outlined text-[16px] mr-1">bolt</span>
           <span>Try Free</span>
         </button>
+        </div>
       </div>
     </header>
   );

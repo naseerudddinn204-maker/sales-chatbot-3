@@ -12,6 +12,7 @@ import { Toast } from './components/Toast';
 import { AdminDashboard } from './components/AdminDashboard';
 import { EmbedChat } from './components/EmbedChat';
 import { ChatbotCatalog } from './components/ChatbotCatalog';
+import { UserAuth } from './components/UserAuth';
 
 export default function App() {
   const path = window.location.pathname;
@@ -22,6 +23,11 @@ export default function App() {
   if (path.startsWith('/admin/')) return <AdminDashboard />;
   if (path.startsWith('/embed/')) return <EmbedChat slug={decodeURIComponent(path.split('/embed/')[1] || 'sales-chatbot')} />;
   if (path === '/chatbots' || path === '/chatbots/') return <ChatbotCatalog />;
+  if (path === '/login') return <UserAuth mode="login" />;
+  if (path === '/signup') return <UserAuth mode="signup" />;
+  if (path === '/forgot-password') return <UserAuth mode="forgot-password" />;
+  if (path === '/reset-password') return <UserAuth mode="reset-password" />;
+  if (path === '/account') return <UserAuth mode="account" />;
   const initialParams = new URLSearchParams(window.location.search);
   const [currentTab, setCurrentTab] = useState<ScreenTab>(initialParams.get('tab') === 'contact' ? 'contact' : 'home');
   const [selectedChatbotName, setSelectedChatbotName] = useState(initialParams.get('chatbot') || '');

@@ -62,7 +62,7 @@ export const Header: React.FC<HeaderProps> = ({
         <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
           {userSession ? (
             <>
-              <a href="/account" className="hidden sm:inline-flex h-9 items-center rounded-lg border border-white/20 px-3 text-xs font-bold text-white hover:bg-white/10">My account</a>
+              <a href="/account" className="inline-flex h-9 items-center rounded-lg border border-white/20 px-2.5 text-xs font-bold text-white hover:bg-white/10">Account</a>
               <button onClick={handleUserLogout} className="hidden sm:inline-flex h-9 items-center rounded-lg border border-white/20 px-3 text-xs font-bold text-white hover:bg-white/10">Log out</button>
             </>
           ) : (

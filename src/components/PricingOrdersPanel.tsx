@@ -11,6 +11,7 @@ type PricingOrder = {
   phone?: string | null;
   company_website?: string | null;
   chatbot_name?: string | null;
+  order_type?: string | null;
   plan_name?: string | null;
   requested_price?: number | null;
   billing_type?: string | null;

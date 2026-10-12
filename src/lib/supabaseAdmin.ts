@@ -71,6 +71,10 @@ async function rest(path: string, options: RequestInit = {}) {
   return data;
 }
 
+export async function listProfiles() {
+  return rest('profiles?select=id,full_name,email,email_confirmed_at,created_at&order=created_at.desc');
+}
+
 export async function listLeads() {
   return rest('leads?select=id,name,email,company,phone,company_website,traffic_volume,primary_goal,message,chatbot_name,order_type,plan_name,requested_price,billing_type,payment_method,payment_status,payment_reference,order_status,created_at&order=created_at.desc');
 }

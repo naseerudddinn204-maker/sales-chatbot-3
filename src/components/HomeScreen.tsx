@@ -5,12 +5,14 @@ import { ChatbotCatalog } from './ChatbotCatalog';
 interface HomeScreenProps {
   onNavigateToDemo: () => void;
   onNavigateToContact: () => void;
+  onNavigateToPricing: () => void;
   onOpenLiveChat: () => void;
 }
 
 export const HomeScreen: React.FC<HomeScreenProps> = ({
   onNavigateToDemo,
   onNavigateToContact,
+  onNavigateToPricing,
   onOpenLiveChat,
 }) => {
   return (
@@ -43,10 +45,11 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                 <ArrowRight size={16} />
               </button>
               <button
-                onClick={onNavigateToContact}
-                className="h-12 px-6 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 text-gray-900 text-sm font-bold flex items-center justify-center gap-2 transition-all"
+                onClick={onNavigateToPricing}
+                className="h-12 px-6 rounded-xl border border-blue-200 bg-white hover:bg-blue-50 text-blue-800 text-sm font-bold flex items-center justify-center gap-2 transition-all"
               >
-                Get Your Chatbot
+                View Pricing
+                <ArrowRight size={16} />
               </button>
             </div>
 
@@ -159,6 +162,25 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
               </span>
             </div>
           </button>
+        </div>
+      </section>
+
+
+      {/* Confidence builders: promises that match the current order flow */}
+      <section className="px-5 sm:px-8 lg:px-12 py-6 bg-white">
+        <div className="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div className="flex items-start gap-3 rounded-2xl border border-blue-100 bg-blue-50/70 p-4 sm:p-5">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white text-blue-700"><Bot size={20} /></div>
+            <div><h3 className="text-sm font-extrabold text-gray-950">Try before you choose</h3><p className="mt-1 text-sm leading-5 text-gray-600">Explore the Free Demo to see how a chatbot handles sample customer questions.</p></div>
+          </div>
+          <div className="flex items-start gap-3 rounded-2xl border border-blue-100 bg-blue-50/70 p-4 sm:p-5">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white text-blue-700"><Check size={20} /></div>
+            <div><h3 className="text-sm font-extrabold text-gray-950">Know the plan first</h3><p className="mt-1 text-sm leading-5 text-gray-600">Review plan features and billing options before sending an order request.</p></div>
+          </div>
+          <div className="flex items-start gap-3 rounded-2xl border border-blue-100 bg-blue-50/70 p-4 sm:p-5">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white text-blue-700"><ShieldCheck size={20} /></div>
+            <div><h3 className="text-sm font-extrabold text-gray-950">No payment at request</h3><p className="mt-1 text-sm leading-5 text-gray-600">Submitting the pricing form does not charge you. Our team confirms next steps with you.</p></div>
+          </div>
         </div>
       </section>
 

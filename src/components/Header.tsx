@@ -34,7 +34,7 @@ export const Header: React.FC<HeaderProps> = ({
         >
           <div className="w-9 h-9 rounded-xl bg-[#1e3a5f] border border-white/10 flex items-center justify-center shadow-sm overflow-hidden transition-transform group-hover:scale-105 shrink-0">
             <img
-              src="https://orken.us/favicon.ico"
+              src="/orken-mark.svg"
               alt="Orken AI logo"
               className="w-full h-full object-contain p-1"
               onError={(e) => {

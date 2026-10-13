@@ -85,6 +85,54 @@ Deno.serve(async (req) => {
       Deno.env.get("SUPABASE_ANON_KEY")!
     );
 
+    if (action === "client_portal" || action === "client_support") {
+      const authHeader = req.headers.get("Authorization") || "";
+      const token = authHeader.startsWith("Bearer ") ? authHeader.slice(7) : "";
+      if (!token) return json({ error: "Please log in to access your client dashboard." }, 401);
+      const { data: authData, error: authError } = await sb.auth.getUser(token);
+      const user = authData?.user;
+      if (authError || !user?.email) return json({ error: "Your session has expired. Please log in again." }, 401);
+
+      const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+      if (!serviceKey) return json({ error: "Client dashboard service is not configured." }, 503);
+      const admin = createClient(Deno.env.get("SUPABASE_URL")!, serviceKey, {
+        auth: { persistSession: false, autoRefreshToken: false },
+      });
+      const email = user.email.toLowerCase();
+
+      if (action === "client_support") {
+        const subject = clean(body?.subject).slice(0, 160);
+        const message = clean(body?.message).slice(0, 2000);
+        if (!subject || message.length < 5) return json({ error: "Please enter a subject and a message." }, 400);
+        const { error: insertError } = await admin.from("leads").insert({
+          name: clean(user.user_metadata?.full_name) || email.split("@")[0],
+          email,
+          order_type: "Client support",
+          message: "Subject: " + subject + "\n\n" + message,
+        });
+        if (insertError) throw insertError;
+        return json({ ok: true, message: "Your support request has been sent to our team." });
+      }
+
+      const { data: rows, error: rowsError } = await admin.from("leads")
+        .select("id,created_at,name,email,company,phone,chatbot_name,plan_name,requested_price,billing_type,payment_status,order_status,order_type,delivery_chatbot_id,delivery_status")
+        .eq("email", email)
+        .order("created_at", { ascending: false })
+        .limit(100);
+      if (rowsError) throw rowsError;
+      const orders = (rows || []).filter((row: any) => row.plan_name || row.order_type === "Pricing order");
+      const botIds = [...new Set(orders.map((row: any) => row.delivery_chatbot_id).filter(Boolean))];
+      let chatbots: any[] = [];
+      if (botIds.length) {
+        const { data: bots, error: botsError } = await admin.from("chatbots")
+          .select("id,name,slug,embed_code,logo_url,brand_color,enabled")
+          .in("id", botIds);
+        if (botsError) throw botsError;
+        chatbots = bots || [];
+      }
+      return json({ ok: true, profile: { name: clean(user.user_metadata?.full_name), email }, orders, chatbots });
+    }
+
     if (action === "lead") {
       const name = clean(body?.name).slice(0, 120);
       const email = clean(body?.email).toLowerCase().slice(0, 254);

@@ -217,6 +217,38 @@ Deno.serve(async (req) => {
       return json({ ok: true, message: planName ? "Your pricing order has been received." : "Your chatbot request has been received.", order_id: planName ? savedLead.id : null, created_at: savedLead.created_at });
     }
 
+    if (action === "manager_followup") {
+      const phone = clean(body?.phone).slice(0, 40);
+      const question = clean(body?.question).slice(0, 2000);
+      if (body?.consent !== true) return json({ error: "Consent is required before a manager follow-up can be saved." }, 400);
+      if (!isPhone(phone)) return json({ error: "Please provide a valid phone number only." }, 400);
+      if (!question || question.length < 3) return json({ error: "The visitor question is missing." }, 400);
+
+      const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+      if (!serviceKey) {
+        console.error("Manager follow-up unavailable: SUPABASE_SERVICE_ROLE_KEY is not configured.");
+        return json({ error: "Contact saving is temporarily unavailable. Please try again later." }, 503);
+      }
+      const admin = createClient(Deno.env.get("SUPABASE_URL")!, serviceKey, {
+        auth: { persistSession: false, autoRefreshToken: false },
+      });
+      const { data: savedLead, error: leadError } = await admin.from("leads").insert({
+        name: "Website Chat Visitor",
+        email: null,
+        company: null,
+        phone,
+        message: question,
+        company_website: null,
+        traffic_volume: null,
+        primary_goal: "Manager follow-up",
+      }).select("id,created_at").single();
+      if (leadError) {
+        console.error("Manager follow-up insert failed:", leadError);
+        return json({ error: "We couldn't save your contact details. Please try again." }, 500);
+      }
+      return json({ ok: true, lead_id: savedLead.id, created_at: savedLead.created_at, message: "Your contact details were saved for manager follow-up." });
+    }
+
     if (action === "config") {
       const { data: bot, error } = await sb
         .from("chatbots")

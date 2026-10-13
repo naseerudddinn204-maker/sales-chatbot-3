@@ -253,7 +253,7 @@ export function EmbedChat({ slug }: { slug: string }) {
     };
   }, [slug]);
 
-  async function saveLead(phone: string, question: string) {
+  async function saveLead(phone: string) {
     const response = await fetch(API, {
       method: 'POST',
       headers,
@@ -304,7 +304,7 @@ export function EmbedChat({ slug }: { slug: string }) {
     setLoading(true);
     try {
       if (isPhoneReply && previousQuestion) {
-        await saveLead(text, previousQuestion);
+        await saveLead(text);
         setMessages(m => [...m, { role: 'assistant', text: 'Thank you! Your contact number has been recorded. Our manager will follow up with you.' }]);
         return;
       }

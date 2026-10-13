@@ -150,7 +150,7 @@ export function AdminDashboard() {
 
   return (
     <div className="min-h-screen w-full max-w-full overflow-x-hidden bg-[#f4f7fc] text-slate-900 selection:bg-blue-100 lg:flex lg:h-screen lg:min-h-0 lg:overflow-hidden">
-      {sidebarVisible && <aside className="w-full shrink-0 bg-gradient-to-b from-[#10233f] via-[#142d4f] to-[#10233f] text-white lg:sticky lg:top-0 lg:h-screen lg:w-[220px] lg:overflow-y-auto">
+      {sidebarVisible && <aside className="w-full shrink-0 bg-[#111827] text-white lg:sticky lg:top-0 lg:h-screen lg:w-[220px] lg:overflow-y-auto">
         <div className="flex h-full flex-col px-3 py-3 lg:px-4 lg:py-5">
           <a href="/admin/chatbots" className="flex items-center gap-2 px-2 py-1.5">
             <span className="flex h-9 w-9 items-center justify-center overflow-hidden rounded-2xl border border-white/20 bg-gradient-to-br from-white to-blue-50 shadow-lg shadow-blue-950/20"><img src="/orken-mark.svg" alt="Orken AI logo" className="h-full w-full object-contain p-1" /></span>
@@ -160,9 +160,9 @@ export function AdminDashboard() {
           <nav className="mt-3 grid grid-cols-2 sm:grid-cols-4 gap-1.5 lg:flex lg:flex-col" aria-label="Dashboard pages">
             <a href="/admin/dashboard" className={`flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold transition-colors ${adminPage==='dashboard'?'bg-[#6D4AFF] text-white shadow-lg shadow-violet-950/20':'text-white/70 hover:bg-white/10 hover:text-white'}`}><LayoutDashboard size={16}/><span>Dashboard</span></a>
             <a href="/admin/chatbots" className={`flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold transition-colors ${adminPage==='chatbots'?'bg-[#6D4AFF] text-white shadow-lg shadow-violet-950/20':'text-white/70 hover:bg-white/10 hover:text-white'}`}><Bot size={16}/><span>Chatbots</span></a>
-            <a href="/admin/requests" className={`flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold transition-colors ${adminPage==='requests'?'bg-blue-500 text-white shadow-lg shadow-blue-950/30 ring-1 ring-white/10':'text-white/70 hover:bg-white/10 hover:text-white'}`}><ClipboardList size={16}/><span>Client Requests</span></a>
-            <a href="/admin/questions" className={`flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold transition-colors ${adminPage==='questions'?'bg-blue-500 text-white shadow-lg shadow-blue-950/30 ring-1 ring-white/10':'text-white/70 hover:bg-white/10 hover:text-white'}`}><Code2 size={16}/><span>Client Questions</span></a>
-            <a href="/admin/pricing-orders" className={`flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold transition-colors ${adminPage==='pricing-orders'?'bg-blue-500 text-white shadow-lg shadow-blue-950/30 ring-1 ring-white/10':'text-white/70 hover:bg-white/10 hover:text-white'}`}><DollarSign size={16}/><span>Pricing Orders</span></a>
+            <a href="/admin/requests" className={`flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold transition-colors ${adminPage==='requests'?'bg-[#6D4AFF] text-white shadow-lg shadow-violet-950/20':'text-white/70 hover:bg-white/10 hover:text-white'}`}><ClipboardList size={16}/><span>Client Requests</span></a>
+            <a href="/admin/questions" className={`flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold transition-colors ${adminPage==='questions'?'bg-[#6D4AFF] text-white shadow-lg shadow-violet-950/20':'text-white/70 hover:bg-white/10 hover:text-white'}`}><Code2 size={16}/><span>Client Questions</span></a>
+            <a href="/admin/pricing-orders" className={`flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold transition-colors ${adminPage==='pricing-orders'?'bg-[#6D4AFF] text-white shadow-lg shadow-violet-950/20':'text-white/70 hover:bg-white/10 hover:text-white'}`}><DollarSign size={16}/><span>Pricing Orders</span></a>
             <a href="/admin/users" className={`flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold transition-colors ${adminPage==='users'?'bg-[#6D4AFF] text-white shadow-lg shadow-violet-950/20':'text-white/70 hover:bg-white/10 hover:text-white'}`}><Users size={16}/><span>Users</span></a>
             <a href="/admin/settings" className={`flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold transition-colors ${adminPage==='settings'?'bg-[#6D4AFF] text-white shadow-lg shadow-violet-950/20':'text-white/70 hover:bg-white/10 hover:text-white'}`}><Settings size={16}/><span>Settings</span></a>
           </nav>
@@ -193,23 +193,23 @@ export function AdminDashboard() {
         {notice && <div className="mb-4 break-words rounded-xl border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-700">{notice}</div>}
 
         {adminPage === 'dashboard' && <section className="mb-5 grid grid-cols-2 gap-3 xl:grid-cols-5" aria-label="Dashboard overview">
-          <div className="rounded-2xl border border-blue-100 bg-gradient-to-br from-white to-blue-50/80 p-4 shadow-[0_8px_28px_rgba(30,64,175,0.06)]">
+          <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
             <div className="flex items-center justify-between"><span className="text-xs font-semibold text-slate-500">Total chatbots</span><span className="rounded-xl bg-blue-100 p-2 text-blue-700"><Bot size={17}/></span></div>
             <div className="mt-3 text-2xl font-extrabold tracking-tight text-slate-900">{bots.length}</div><div className="mt-1 text-xs text-slate-500">Across your workspace</div>
           </div>
-          <div className="rounded-2xl border border-violet-100 bg-gradient-to-br from-white to-violet-50/70 p-4 shadow-[0_8px_28px_rgba(109,40,217,0.05)]">
+          <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
             <div className="flex items-center justify-between"><span className="text-xs font-semibold text-slate-500">Client questions</span><span className="rounded-xl bg-violet-100 p-2 text-violet-700"><ClipboardList size={17}/></span></div>
             <div className="mt-3 text-2xl font-extrabold tracking-tight text-slate-900">{clientQuestions.length}</div><div className="mt-1 text-xs text-slate-500">Manager follow-ups</div>
           </div>
-          <div className="rounded-2xl border border-amber-100 bg-gradient-to-br from-white to-amber-50/70 p-4 shadow-[0_8px_28px_rgba(217,119,6,0.05)]">
+          <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
             <div className="flex items-center justify-between"><span className="text-xs font-semibold text-slate-500">Pricing orders</span><span className="rounded-xl bg-amber-100 p-2 text-amber-700"><DollarSign size={17}/></span></div>
             <div className="mt-3 text-2xl font-extrabold tracking-tight text-slate-900">{pricingOrders.length}</div><div className="mt-1 text-xs text-slate-500">Orders received</div>
           </div>
-          <div className="rounded-2xl border border-violet-100 bg-gradient-to-br from-white to-violet-50/70 p-4 shadow-[0_8px_28px_rgba(109,40,217,0.05)]">
+          <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
             <div className="flex items-center justify-between"><span className="text-xs font-semibold text-slate-500">Client requests</span><span className="rounded-xl bg-violet-100 p-2 text-violet-700"><ClipboardList size={17}/></span></div>
             <div className="mt-3 text-2xl font-extrabold tracking-tight text-slate-900">{requestLeads.length}</div><div className="mt-1 text-xs text-slate-500">Requests to review</div>
           </div>
-          <div className="rounded-2xl border border-amber-100 bg-gradient-to-br from-white to-amber-50/70 p-4 shadow-[0_8px_28px_rgba(217,119,6,0.05)]">
+          <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
             <div className="flex items-center justify-between"><span className="text-xs font-semibold text-slate-500">Registered users</span><span className="rounded-xl bg-amber-100 p-2 text-amber-700"><Users size={17}/></span></div>
             <div className="mt-3 text-2xl font-extrabold tracking-tight text-slate-900">{userProfiles.length}</div><div className="mt-1 text-xs text-slate-500">User accounts</div>
           </div>
@@ -295,7 +295,7 @@ export function AdminDashboard() {
           <aside className="min-w-0 rounded-[1.5rem] border border-slate-200/70 bg-white p-3 shadow-[0_12px_40px_rgba(15,35,65,0.06)] sm:p-4 lg:h-full lg:min-h-0 lg:overflow-y-auto">
             <div className="mb-4 flex items-center justify-between gap-2">
               <h2 className="truncate font-bold">Your Chatbots</h2>
-              <button onClick={addBot} className="shrink-0 rounded-xl bg-gradient-to-r from-blue-700 to-blue-500 p-2 text-white shadow-md shadow-blue-700/15 transition hover:from-blue-800 hover:to-blue-600"><Plus size={17}/></button>
+              <button onClick={addBot} className="shrink-0 rounded-xl bg-[#6D4AFF] p-2 text-white shadow-md shadow-violet-700/15 transition hover:bg-[#5a39e8]"><Plus size={17}/></button>
             </div>
             <div className="grid gap-2">
               {bots.map(bot => (
@@ -314,7 +314,7 @@ export function AdminDashboard() {
               <div className="min-w-0 rounded-[1.5rem] border border-slate-200/70 bg-white p-4 shadow-[0_12px_40px_rgba(15,35,65,0.06)] sm:p-6">
                 <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                   <div className="min-w-0"><h2 className="text-xl font-bold">Chatbot settings</h2><p className="text-sm text-slate-500">These settings control the public chatbot.</p></div>
-                  <button onClick={saveBot} className="flex w-full shrink-0 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-700 to-blue-500 px-4 py-2 text-white shadow-md shadow-blue-700/15 transition hover:from-blue-800 hover:to-blue-600 sm:w-auto"><Save size={16}/> Save</button>
+                  <button onClick={saveBot} className="flex w-full shrink-0 items-center justify-center gap-2 rounded-xl bg-[#6D4AFF] px-4 py-2 text-white shadow-md shadow-violet-700/15 transition hover:bg-[#5a39e8] sm:w-auto"><Save size={16}/> Save</button>
                 </div>
                 <div className="grid min-w-0 gap-4 md:grid-cols-2">
                   <input className={inputClass} value={selected.name} onChange={e=>setSelected({...selected,name:e.target.value})} placeholder="Chatbot name"/>
@@ -382,7 +382,7 @@ export function AdminDashboard() {
               <div className="min-w-0 rounded-[1.5rem] border border-slate-200/70 bg-white p-4 shadow-[0_12px_40px_rgba(15,35,65,0.06)] sm:p-6">
                 <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                   <div className="min-w-0"><h2 className="flex items-center gap-2 text-xl font-bold"><DollarSign size={20}/> Pricing</h2><p className="text-sm text-slate-500">Change pricing here; the public site reads it from Supabase.</p></div>
-                  <button onClick={addPrice} className="flex w-full shrink-0 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-700 to-blue-500 px-4 py-2 text-white shadow-md shadow-blue-700/15 transition hover:from-blue-800 hover:to-blue-600 sm:w-auto"><Plus size={16}/> Add plan</button>
+                  <button onClick={addPrice} className="flex w-full shrink-0 items-center justify-center gap-2 rounded-xl bg-[#6D4AFF] px-4 py-2 text-white shadow-md shadow-violet-700/15 transition hover:bg-[#5a39e8] sm:w-auto"><Plus size={16}/> Add plan</button>
                 </div>
                 <div className="space-y-4">
                   {prices.map(p=><div key={p.id} className="min-w-0 rounded-2xl border border-slate-200/80 bg-slate-50/70 p-3 transition-colors hover:bg-white sm:p-4">
@@ -411,7 +411,7 @@ export function AdminDashboard() {
                 <p className="mt-2 break-words text-xs text-slate-500">Custom code save karne ke liye upar <b>Save</b> button dabayein. Neeche wala code sirf copy/use ke liye hai; dashboard custom HTML ko execute nahi karta.</p>
                 <pre className="mt-4 max-w-full overflow-hidden whitespace-pre-wrap break-all rounded-2xl bg-slate-950 p-3 text-xs text-slate-100 sm:p-4 sm:text-sm">{embedCode}</pre>
                 <div className="mt-4 grid gap-3 sm:flex sm:flex-wrap">
-                  <button onClick={copyEmbed} className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-700 to-blue-500 px-4 py-2 text-white shadow-md shadow-blue-700/15 transition hover:from-blue-800 hover:to-blue-600 sm:w-auto">{embedCopied?<Check size={16}/>:<Copy size={16}/>} {embedCopied?'Copied':'Copy embed code'}</button>
+                  <button onClick={copyEmbed} className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#6D4AFF] px-4 py-2 text-white shadow-md shadow-violet-700/15 transition hover:bg-[#5a39e8] sm:w-auto">{embedCopied?<Check size={16}/>:<Copy size={16}/>} {embedCopied?'Copied':'Copy embed code'}</button>
                   <a href={liveUrl} target="_blank" rel="noreferrer" className="flex w-full items-center justify-center rounded-xl border px-4 py-2 sm:w-auto">Open live chatbot</a>
                   <button onClick={removeBot} className="flex w-full items-center justify-center gap-2 rounded-xl border border-red-200 px-4 py-2 text-red-600 sm:w-auto"><Trash2 size={16}/> Delete chatbot</button>
                 </div>

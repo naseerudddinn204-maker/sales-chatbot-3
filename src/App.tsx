@@ -136,7 +136,7 @@ export default function App() {
               <div className="flex items-center gap-2">
                 <div className="w-6 h-6 rounded-lg bg-white/10 border border-white/20 flex items-center justify-center overflow-hidden">
                   <img
-                    src="https://orken.us/favicon.ico"
+                    src="/orken-mark.svg"
                     alt="Orken AI logo"
                     className="w-full h-full object-contain p-0.5"
                   />

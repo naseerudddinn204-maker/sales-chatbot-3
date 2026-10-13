@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Bot, Code2, LogOut, Plus, Save, Trash2, DollarSign, Copy, Check, ClipboardList, PanelLeftClose, PanelLeftOpen, Users, LayoutDashboard, Settings, Search, RefreshCw, Mail, ExternalLink, X, ChevronLeft, ChevronRight, CalendarDays, ArrowUpDown } from 'lucide-react';
+import { Bot, Code2, LogOut, Plus, Save, Trash2, DollarSign, Copy, Check, ClipboardList, PanelLeftClose, PanelLeftOpen, Users, LayoutDashboard, Settings, Search, RefreshCw, Mail, ExternalLink, X, ChevronLeft, ChevronRight, ArrowUpDown } from 'lucide-react';
 import { createChatbot, createPrice, deleteChatbot, deletePrice, getAdminUser, getSession, listChatbots, listLeads, listPrices, listProfiles, signOut, updateChatbot, updatePrice } from '../lib/supabaseAdmin';
 import { AdminLogin } from './AdminLogin';
 import { PricingOrdersPanel } from './PricingOrdersPanel';

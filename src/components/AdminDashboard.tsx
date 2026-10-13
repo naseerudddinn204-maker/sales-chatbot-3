@@ -24,6 +24,7 @@ export function AdminDashboard() {
   const [userProfiles, setUserProfiles] = useState<UserProfile[]>([]);
   const [loading, setLoading] = useState(true);
   const [notice, setNotice] = useState('');
+  const [noticeTone, setNoticeTone] = useState<'success' | 'error'>('success');
   const [embedCopied, setEmbedCopied] = useState(false);
   const [sidebarVisible, setSidebarVisible] = useState(true);
   const [requestSearch, setRequestSearch] = useState('');
@@ -37,6 +38,7 @@ export function AdminDashboard() {
 
   async function load() {
     setLoading(true);
+    setNotice('');
     try {
       const admin = await getAdminUser();
       if (!admin) { setAuthorized(false); return; }
@@ -47,7 +49,7 @@ export function AdminDashboard() {
       const profiles = await listProfiles().catch(() => []);
       setUserProfiles(profiles || []);
       if (!selected && data[0]) setSelected(data[0]);
-    } catch (e) { setNotice(e instanceof Error ? e.message : 'Could not load dashboard'); }
+    } catch (e) { setNoticeTone('error'); setNotice(e instanceof Error ? e.message : 'Could not load dashboard'); }
     finally { setLoading(false); }
   }
 
@@ -55,7 +57,7 @@ export function AdminDashboard() {
   useEffect(() => { if (selected) listPrices(selected.id).then(setPrices).catch(() => setPrices([])); }, [selected?.id]);
 
   if (!loggedIn) return <AdminLogin onLoggedIn={() => setLoggedIn(true)} />;
-  if (loading) return <div className="min-h-screen grid place-items-center p-4 text-center">Loading admin dashboard…</div>;
+  if (loading) return <div className="min-h-screen bg-[#f4f5f9] p-5 sm:p-8"><div className="mx-auto max-w-6xl"><div className="mb-8 h-10 w-64 animate-pulse rounded-xl bg-slate-200"/><div className="grid grid-cols-2 gap-4 lg:grid-cols-5">{Array.from({length:5},(_,i)=><div key={i} className="h-28 animate-pulse rounded-2xl border border-slate-200 bg-white"/>)}</div><div className="mt-6 grid gap-4 lg:grid-cols-[1fr_1.3fr]"><div className="h-72 animate-pulse rounded-2xl border border-slate-200 bg-white"/><div className="h-72 animate-pulse rounded-2xl border border-slate-200 bg-white"/></div><p className="mt-5 text-sm text-slate-500">Loading your live dashboard data…</p></div></div>;
   if (!authorized) return (
     <div className="min-h-screen grid place-items-center bg-slate-50 p-4">
       <div className="w-full max-w-md rounded-3xl bg-white p-6 sm:p-8 text-center shadow">
@@ -111,6 +113,7 @@ export function AdminDashboard() {
     const bot = rows[0];
     setBots(bots.map(b => b.id === bot.id ? bot : b));
     setSelected(bot);
+    setNoticeTone('success');
     setNotice('Chatbot saved.');
   }
 
@@ -131,6 +134,7 @@ export function AdminDashboard() {
   async function savePrice(price: Price) {
     const rows = await updatePrice(price.id, price);
     setPrices(prices.map(p => p.id === price.id ? rows[0] : p));
+    setNoticeTone('success');
     setNotice('Pricing saved.');
   }
   async function removePrice(id:string) {
@@ -190,7 +194,7 @@ export function AdminDashboard() {
       </header>
 
       <main className={`mx-auto w-full max-w-[1500px] box-border px-3 py-5 sm:px-5 sm:py-7 lg:min-h-0 lg:flex-1 lg:px-8 ${adminPage === 'chatbots' ? 'lg:overflow-hidden' : 'lg:overflow-y-auto'}`}>
-        {notice && <div className="mb-4 break-words rounded-xl border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-700">{notice}</div>}
+        {notice && <div role={noticeTone === 'error' ? 'alert' : 'status'} className={`mb-4 break-words rounded-xl border p-3 text-sm ${noticeTone === 'error' ? 'border-red-200 bg-red-50 text-red-700' : 'border-emerald-200 bg-emerald-50 text-emerald-700'}`}>{notice}</div>}
 
         {adminPage === 'dashboard' && <section className="mb-5 grid grid-cols-2 gap-3 xl:grid-cols-5" aria-label="Dashboard overview">
           <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">

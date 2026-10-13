@@ -171,7 +171,8 @@ Deno.serve(async (req) => {
         chatbotName = bot.name;
         orderDetails = {
           plan_name: plan.plan_name,
-          requested_price: billingType === "annual" ? plan.annual_price : plan.monthly_price,
+          // annual_price is the monthly-equivalent rate shown on the pricing page; save the actual 12-month total for an annual order.
+          requested_price: billingType === "annual" ? Number(plan.annual_price) * 12 : Number(plan.monthly_price),
           billing_type: billingType,
           payment_method: "bank_transfer",
           payment_status: "awaiting_instructions",

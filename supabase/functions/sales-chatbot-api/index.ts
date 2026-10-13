@@ -180,7 +180,17 @@ Deno.serve(async (req) => {
         };
       }
 
-      const { data: savedLead, error: leadError } = await sb.from("leads").insert({
+      // Public pricing orders must be inserted server-side with the service role because
+      // the leads table intentionally blocks anonymous direct inserts via RLS.
+      const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+      if (!serviceKey) {
+        console.error("Pricing order submission unavailable: SUPABASE_SERVICE_ROLE_KEY is not configured.");
+        return json({ error: "Order service is temporarily unavailable. Please contact support." }, 503);
+      }
+      const admin = createClient(Deno.env.get("SUPABASE_URL")!, serviceKey, {
+        auth: { persistSession: false, autoRefreshToken: false },
+      });
+      const { data: savedLead, error: leadError } = await admin.from("leads").insert({
         name,
         email,
         company: clean(body?.company).slice(0, 160) || null,
@@ -193,7 +203,10 @@ Deno.serve(async (req) => {
         order_type: planName ? "Pricing order" : (clean(body?.order_type).slice(0, 120) || null),
         ...orderDetails,
       }).select("id,created_at").single();
-      if (leadError) throw leadError;
+      if (leadError) {
+        console.error("Lead/order insert failed:", leadError);
+        throw new Error("Could not save your order request. Please try again or contact support.");
+      }
       return json({ ok: true, message: planName ? "Your pricing order has been received." : "Your chatbot request has been received.", order_id: planName ? savedLead.id : null, created_at: savedLead.created_at });
     }
 

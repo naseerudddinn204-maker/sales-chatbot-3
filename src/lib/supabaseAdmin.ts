@@ -1,5 +1,5 @@
-const SUPABASE_URL = 'https://tlkmcfpzfdokcnyyvkov.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_-gNvioLExBonu8hGuWa8lQ_eIWmhMn6';
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || 'https://tlkmcfpzfdokcnyyvkov.supabase.co';
+const SUPABASE_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY || 'sb_publishable_-gNvioLExBonu8hGuWa8lQ_eIWmhMn6';
 
 const authHeaders = (token?: string) => ({
   apikey: SUPABASE_KEY,

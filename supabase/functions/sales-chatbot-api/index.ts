@@ -13,7 +13,6 @@ const json = (body: unknown, status = 200) =>
     headers: { ...cors, "Content-Type": "application/json" },
   });
 
-const PHONE_RE = /(?:\+?\d[\d\s().-]{6,}\d)/;
 const MANAGER_REPLY = "I don't have that information. Please share your phone number so our manager can contact you about this question.";
 const NO_ANSWER_REPLY = "I don't have that information in my current business knowledge.";
 
@@ -36,8 +35,16 @@ function clean(value: unknown) {
 }
 
 function isPhone(value: string) {
-  const compact = value.replace(/[^\d+]/g, "");
-  return PHONE_RE.test(value) && compact.replace("+", "").length >= 7;
+  const candidate = value.trim();
+  // Require the entire message to look like a phone number. This prevents budgets,
+  // itinerary details and other ordinary text containing digits from being stored as contacts.
+  if (!/^\+?[\d\s().-]{7,24}$/.test(candidate)) return false;
+  const digits = candidate.replace(/\D/g, "");
+  return digits.length >= 7 && digits.length <= 15;
+}
+
+function isTravelPlanningRequest(message: string) {
+  return /\b(itinerary|travel plan|plan (?:a |my |our )?trip|trip to|tour plan|travel budget|holiday plan|vacation|tour package|days in skardu|skardu trip|hunza trip|gilgit trip)\b/i.test(message);
 }
 
 async function fetchWithRetry(url: string | URL | Request, init?: RequestInit) {
@@ -458,7 +465,37 @@ Deno.serve(async (req) => {
 
     let reply = unknownReply;
 
-    if (isGreeting(message)) {
+    // Travel planning is an explicit supported use case. Keep all cost/availability
+    // claims clearly estimated unless a live source has actually verified them.
+    if (isTravelPlanningRequest(message) && key) {
+      const travelPrompt =
+        "You are a careful travel-planning assistant. Answer the user's actual travel question first. " +
+        "If destination, trip duration/dates, number of travelers, or budget are essential and missing, ask only for the missing details. " +
+        "When enough information is available, create a practical day-by-day itinerary with activities, estimated transport, hotel options, meals, approximate costs, and a clear total for all travelers. " +
+        "Compare the estimated total with the user's budget and suggest realistic savings if needed. " +
+        "Clearly label hotel prices, transport fares, and all costs as estimates unless verified from a real current source. " +
+        "Never claim live hotel availability, confirmed prices, reservations, bookings, or contact records. Do not ask for a phone number unless the user agrees to a manager follow-up. " +
+        "Use PKR when the user specifies PKR. State assumptions, seasonal uncertainty, and exclusions such as long-distance travel where relevant. " +
+        "Format multi-day itineraries with clear day headings and a concise cost table.\n\nUser request: " + message;
+      const ar = await fetchWithRetry(
+        "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent?key=" + encodeURIComponent(key),
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: travelPrompt }] }],
+            generationConfig: { temperature: 0.25, maxOutputTokens: 4096 },
+          }),
+        }
+      );
+      if (!ar.ok) {
+        const detail = await ar.text();
+        console.error("Gemini travel planning error", ar.status, detail);
+        return json({ error: geminiError(ar.status) }, ar.status === 429 ? 503 : (ar.status >= 500 ? 503 : 502));
+      }
+      const travelData = await ar.json();
+      reply = clean(travelData?.candidates?.[0]?.content?.parts?.[0]?.text) || "Please share your destination, trip duration or dates, number of travelers, and budget so I can plan a realistic itinerary.";
+    } else if (isGreeting(message)) {
       reply = greetingReply(message);
     } else if (!hasKnowledge) {
       reply = unknownReply;

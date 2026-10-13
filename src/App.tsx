@@ -17,7 +17,7 @@ import { UserAuth } from './components/UserAuth';
 export default function App() {
   const path = window.location.pathname;
   if (path === '/admin' || path === '/admin/') {
-    window.history.replaceState({}, '', '/admin/chatbots');
+    window.history.replaceState({}, '', '/admin/dashboard');
     return <AdminDashboard />;
   }
   if (path.startsWith('/admin/')) return <AdminDashboard />;

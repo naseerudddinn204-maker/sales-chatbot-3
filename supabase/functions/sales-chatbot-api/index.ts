@@ -311,7 +311,7 @@ Deno.serve(async (req) => {
                 { inlineData: { mimeType: "application/pdf", data: btoa(binary) } }
               ]
             }],
-            generationConfig: { temperature: 0.1, maxOutputTokens: 8192 }
+            generationConfig: { maxOutputTokens: 8192 }
           })
         }
       );
@@ -517,7 +517,7 @@ Deno.serve(async (req) => {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             contents: [{ parts: [{ text: travelPrompt }] }],
-            generationConfig: { temperature: 0.25, maxOutputTokens: 4096 },
+            generationConfig: { maxOutputTokens: 4096 },
           }),
         }
       );
@@ -560,7 +560,7 @@ Deno.serve(async (req) => {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             contents: [{ parts: [{ text: prompt }] }],
-            generationConfig: { temperature: 0.1 },
+            generationConfig: {},
           }),
         }
       );

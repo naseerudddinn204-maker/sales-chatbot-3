@@ -499,7 +499,8 @@ Deno.serve(async (req) => {
 
     // Travel planning is an explicit supported use case. Keep all cost/availability
     // claims clearly estimated unless a live source has actually verified them.
-    if (isTravelPlanningRequest(message) && key) {
+    if (isTravelPlanningRequest(message)) {
+      if (!key) return json({ error: "Travel planning is temporarily unavailable because the AI service is not configured." }, 503);
       const travelPrompt =
         "You are a careful travel-planning assistant. Answer the user's actual travel question first. " +
         "If destination, trip duration/dates, number of travelers, or budget are essential and missing, ask only for the missing details. " +

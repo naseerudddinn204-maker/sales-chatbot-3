@@ -197,9 +197,13 @@ export function AdminDashboard() {
             <div className="flex items-center justify-between"><span className="text-xs font-semibold text-slate-500">Total chatbots</span><span className="rounded-xl bg-blue-100 p-2 text-blue-700"><Bot size={17}/></span></div>
             <div className="mt-3 text-2xl font-extrabold tracking-tight text-slate-900">{bots.length}</div><div className="mt-1 text-xs text-slate-500">Across your workspace</div>
           </div>
-          <div className="rounded-2xl border border-emerald-100 bg-gradient-to-br from-white to-emerald-50/70 p-4 shadow-[0_8px_28px_rgba(5,150,105,0.05)]">
-            <div className="flex items-center justify-between"><span className="text-xs font-semibold text-slate-500">Enabled bots</span><span className="rounded-xl bg-emerald-100 p-2 text-emerald-700"><Check size={17}/></span></div>
-            <div className="mt-3 text-2xl font-extrabold tracking-tight text-slate-900">{bots.filter(bot => bot.enabled).length}</div><div className="mt-1 text-xs text-slate-500">Currently available</div>
+          <div className="rounded-2xl border border-violet-100 bg-gradient-to-br from-white to-violet-50/70 p-4 shadow-[0_8px_28px_rgba(109,40,217,0.05)]">
+            <div className="flex items-center justify-between"><span className="text-xs font-semibold text-slate-500">Client questions</span><span className="rounded-xl bg-violet-100 p-2 text-violet-700"><ClipboardList size={17}/></span></div>
+            <div className="mt-3 text-2xl font-extrabold tracking-tight text-slate-900">{clientQuestions.length}</div><div className="mt-1 text-xs text-slate-500">Manager follow-ups</div>
+          </div>
+          <div className="rounded-2xl border border-amber-100 bg-gradient-to-br from-white to-amber-50/70 p-4 shadow-[0_8px_28px_rgba(217,119,6,0.05)]">
+            <div className="flex items-center justify-between"><span className="text-xs font-semibold text-slate-500">Pricing orders</span><span className="rounded-xl bg-amber-100 p-2 text-amber-700"><DollarSign size={17}/></span></div>
+            <div className="mt-3 text-2xl font-extrabold tracking-tight text-slate-900">{pricingOrders.length}</div><div className="mt-1 text-xs text-slate-500">Orders received</div>
           </div>
           <div className="rounded-2xl border border-violet-100 bg-gradient-to-br from-white to-violet-50/70 p-4 shadow-[0_8px_28px_rgba(109,40,217,0.05)]">
             <div className="flex items-center justify-between"><span className="text-xs font-semibold text-slate-500">Client requests</span><span className="rounded-xl bg-violet-100 p-2 text-violet-700"><ClipboardList size={17}/></span></div>

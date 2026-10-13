@@ -89,20 +89,39 @@ export function AdminDashboard() {
 
   async function addPrice() {
     if (!selected) return;
-    const rows = await createPrice({ chatbot_id:selected.id, plan_name:'New Plan', monthly_price:99, annual_price:79, description:'', features:['Feature 1'], highlighted:false, enabled:true, sort_order:prices.length });
-    setPrices([...prices, rows[0]]);
+    setNotice('');
+    try {
+      const rows = await createPrice({ chatbot_id:selected.id, plan_name:'New Plan', monthly_price:99, annual_price:79, description:'', features:['Feature 1'], highlighted:false, enabled:true, sort_order:prices.length });
+      if (!rows?.[0]) throw new Error('The new pricing plan was not returned by the database.');
+      setPrices(current => [...current, rows[0]]);
+      setNotice('Pricing plan added. Update its details and click Save.');
+    } catch (e) {
+      setNotice(e instanceof Error ? e.message : 'Could not add pricing plan.');
+    }
   }
 
   async function savePrice(price: Price) {
-    const rows = await updatePrice(price.id, price);
-    setPrices(prices.map(p => p.id === price.id ? rows[0] : p));
-    setNotice('Pricing saved.');
+    setNotice('');
+    try {
+      const rows = await updatePrice(price.id, price);
+      if (!rows?.[0]) throw new Error('The pricing plan was not updated. Check admin permissions and try again.');
+      setPrices(current => current.map(p => p.id === price.id ? rows[0] : p));
+      setNotice('Pricing saved.');
+    } catch (e) {
+      setNotice(e instanceof Error ? e.message : 'Could not save pricing.');
+    }
   }
 
   async function removePrice(id:string) {
     if (!confirm('Delete this pricing plan?')) return;
-    await deletePrice(id);
-    setPrices(prices.filter(p => p.id !== id));
+    setNotice('');
+    try {
+      await deletePrice(id);
+      setPrices(current => current.filter(p => p.id !== id));
+      setNotice('Pricing plan deleted.');
+    } catch (e) {
+      setNotice(e instanceof Error ? e.message : 'Could not delete pricing plan.');
+    }
   }
 
   async function copyEmbed() {

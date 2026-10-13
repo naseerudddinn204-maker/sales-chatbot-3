@@ -257,7 +257,7 @@ export function EmbedChat({ slug }: { slug: string }) {
     const response = await fetch(API, {
       method: 'POST',
       headers,
-      body: JSON.stringify({ action: 'manager_followup', phone, question, consent: true }),
+      body: JSON.stringify({ action: 'manager_followup', phone, slug, session_id: session, consent: true }),
     });
     const data = await response.json().catch(() => ({}));
     if (!response.ok || data?.ok !== true) {

@@ -89,39 +89,20 @@ export function AdminDashboard() {
 
   async function addPrice() {
     if (!selected) return;
-    setNotice('');
-    try {
-      const rows = await createPrice({ chatbot_id:selected.id, plan_name:'New Plan', monthly_price:99, annual_price:79, description:'', features:['Feature 1'], highlighted:false, enabled:true, sort_order:prices.length });
-      if (!rows?.[0]) throw new Error('The new pricing plan was not returned by the database.');
-      setPrices(current => [...current, rows[0]]);
-      setNotice('Pricing plan added. Update its details and click Save.');
-    } catch (e) {
-      setNotice(e instanceof Error ? e.message : 'Could not add pricing plan.');
-    }
+    const rows = await createPrice({ chatbot_id:selected.id, plan_name:'New Plan', monthly_price:99, annual_price:79, description:'', features:['Feature 1'], highlighted:false, enabled:true, sort_order:prices.length });
+    setPrices([...prices, rows[0]]);
   }
 
   async function savePrice(price: Price) {
-    setNotice('');
-    try {
-      const rows = await updatePrice(price.id, price);
-      if (!rows?.[0]) throw new Error('The pricing plan was not updated. Check admin permissions and try again.');
-      setPrices(current => current.map(p => p.id === price.id ? rows[0] : p));
-      setNotice('Pricing saved.');
-    } catch (e) {
-      setNotice(e instanceof Error ? e.message : 'Could not save pricing.');
-    }
+    const rows = await updatePrice(price.id, price);
+    setPrices(prices.map(p => p.id === price.id ? rows[0] : p));
+    setNotice('Pricing saved.');
   }
 
   async function removePrice(id:string) {
     if (!confirm('Delete this pricing plan?')) return;
-    setNotice('');
-    try {
-      await deletePrice(id);
-      setPrices(current => current.filter(p => p.id !== id));
-      setNotice('Pricing plan deleted.');
-    } catch (e) {
-      setNotice(e instanceof Error ? e.message : 'Could not delete pricing plan.');
-    }
+    await deletePrice(id);
+    setPrices(prices.filter(p => p.id !== id));
   }
 
   async function copyEmbed() {
@@ -337,10 +318,10 @@ export function AdminDashboard() {
                 <div className="space-y-4">
                   {prices.map(p=><div key={p.id} className="min-w-0 rounded-2xl border p-3 sm:p-4">
                     <div className="grid min-w-0 gap-3 sm:grid-cols-2 lg:grid-cols-4">
-                      <label className="block min-w-0 text-xs font-semibold text-slate-600">Plan name<input aria-label="Plan name" className={smallInputClass + " mt-1"} value={p.plan_name} onChange={e=>setPrices(prices.map(x=>x.id===p.id?{...x,plan_name:e.target.value}:x))} placeholder="Plan name"/></label>
-                      <label className="block min-w-0 text-xs font-semibold text-slate-600">Monthly price ($/month)<input aria-label="Monthly price in dollars per month" className={smallInputClass + " mt-1"} type="number" min="0" step="0.01" value={p.monthly_price} onChange={e=>setPrices(prices.map(x=>x.id===p.id?{...x,monthly_price:Number(e.target.value)}:x))}/></label>
-                      <label className="block min-w-0 text-xs font-semibold text-slate-600">Annual rate ($/month)<input aria-label="Annual billing rate in dollars per month" className={smallInputClass + " mt-1"} type="number" min="0" step="0.01" value={p.annual_price} onChange={e=>setPrices(prices.map(x=>x.id===p.id?{...x,annual_price:Number(e.target.value)}:x))}/><span className="mt-1 block text-[11px] font-normal text-slate-500">Total billed yearly: ${Number(p.annual_price)*12}</span></label>
-                      <div className="flex min-w-0 items-end gap-2"><button onClick={()=>savePrice(p)} className="min-w-0 flex-1 rounded-lg bg-slate-900 px-3 py-2 text-sm text-white">Save</button><button onClick={()=>removePrice(p.id)} className="shrink-0 rounded-lg border p-2"><Trash2 size={16}/></button></div>
+                      <input className={smallInputClass} value={p.plan_name} onChange={e=>setPrices(prices.map(x=>x.id===p.id?{...x,plan_name:e.target.value}:x))}/>
+                      <input className={smallInputClass} type="number" value={p.monthly_price} onChange={e=>setPrices(prices.map(x=>x.id===p.id?{...x,monthly_price:Number(e.target.value)}:x))}/>
+                      <input className={smallInputClass} type="number" value={p.annual_price} onChange={e=>setPrices(prices.map(x=>x.id===p.id?{...x,annual_price:Number(e.target.value)}:x))}/>
+                      <div className="flex min-w-0 gap-2"><button onClick={()=>savePrice(p)} className="min-w-0 flex-1 rounded-lg bg-slate-900 px-3 py-2 text-sm text-white">Save</button><button onClick={()=>removePrice(p.id)} className="shrink-0 rounded-lg border p-2"><Trash2 size={16}/></button></div>
                     </div>
                     <input className={smallInputClass + " mt-3"} value={p.description||''} onChange={e=>setPrices(prices.map(x=>x.id===p.id?{...x,description:e.target.value}:x))} placeholder="Plan description"/>
                     <textarea className={smallInputClass + " mt-3"} rows={2} value={(p.features||[]).join(', ')} onChange={e=>setPrices(prices.map(x=>x.id===p.id?{...x,features:e.target.value.split(',').map(v=>v.trim()).filter(Boolean)}:x))} placeholder="Features, comma separated"/>

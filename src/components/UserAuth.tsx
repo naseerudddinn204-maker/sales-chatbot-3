@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { ArrowLeft, CheckCircle2, Eye, EyeOff, LockKeyhole, Mail, ShieldCheck, UserRound } from 'lucide-react';
-import { getUserSession, requestPasswordReset, signInUser, signOutUser, signUpUser, updateForgottenPassword } from '../lib/userAuth';
+import { getUserSession, requestPasswordReset, resendSignupConfirmation, signInUser, signOutUser, signUpUser, updateForgottenPassword } from '../lib/userAuth';
 import { ClientDashboard } from './ClientDashboard';
 
 type Mode = 'login' | 'signup' | 'forgot-password' | 'reset-password' | 'account';
@@ -32,7 +32,7 @@ export function UserAuth({ mode }: { mode: Mode }) {
         if (password !== confirmPassword) throw new Error('The passwords do not match.');
         const result = await signUpUser(name, email, password);
         if (result.needsConfirmation) {
-          setSuccess('Account created. Please check your email and click the verification link before logging in.');
+          setSuccess('Your account was created, but email verification is still required. Check your inbox and spam folder. If the email is missing, use the resend button below.');
         } else {
           setSuccess('Your account is ready.');
           window.location.href = '/account';
@@ -53,6 +53,24 @@ export function UserAuth({ mode }: { mode: Mode }) {
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Something went wrong. Please try again.');
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function resendVerification() {
+    if (!email.trim()) {
+      setError('Enter your email address first.');
+      return;
+    }
+    setBusy(true);
+    setError('');
+    setSuccess('');
+    try {
+      await resendSignupConfirmation(email);
+      setSuccess('A new verification email has been requested. Check your inbox and spam folder.');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Could not resend the verification email. Please try again.');
     } finally {
       setBusy(false);
     }
@@ -95,6 +113,12 @@ export function UserAuth({ mode }: { mode: Mode }) {
           )}
           {error && <div role="alert" className="mt-5 rounded-xl border border-red-100 bg-red-50 p-3 text-sm leading-5 text-red-700">{error}</div>}
           {success && <div role="status" className="mt-5 flex gap-2 rounded-xl border border-emerald-100 bg-emerald-50 p-3 text-sm leading-5 text-emerald-800"><CheckCircle2 size={18} className="shrink-0 mt-0.5"/>{success}</div>}
+
+          {mode === 'signup' && success.startsWith('Your account was created') && (
+            <button type="button" disabled={busy} onClick={resendVerification} className="mt-4 flex w-full items-center justify-center rounded-xl border border-blue-200 bg-blue-50 px-4 py-3 text-sm font-bold text-blue-800 transition hover:bg-blue-100 disabled:opacity-60">
+              {busy ? 'Please wait…' : 'Resend verification email'}
+            </button>
+          )}
 
           {!success || mode === 'login' ? (
             <form onSubmit={submit} className="mt-6 space-y-4">

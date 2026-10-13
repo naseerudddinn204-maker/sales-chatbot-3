@@ -13,7 +13,10 @@ type Message = { role: 'user' | 'assistant'; text: string };
 const headers = { apikey: SUPABASE_KEY, Authorization: 'Bearer ' + SUPABASE_KEY, 'Content-Type': 'application/json' };
 
 function looksLikePhone(value: string) {
-  const digits = value.replace(/\D/g, '');
+  const candidate = value.trim();
+  // Only treat a phone-number-only reply as contact information; ignore budgets and other text with digits.
+  if (!/^\+?[\d\s().-]{7,24}$/.test(candidate)) return false;
+  const digits = candidate.replace(/\D/g, '');
   return digits.length >= 7 && digits.length <= 15;
 }
 
@@ -251,21 +254,15 @@ export function EmbedChat({ slug }: { slug: string }) {
   }, [slug]);
 
   async function saveLead(phone: string, question: string) {
-    const response = await fetch(SUPABASE_URL + '/rest/v1/leads', {
+    const response = await fetch(API, {
       method: 'POST',
-      headers: { ...headers, Prefer: 'return=minimal' },
-      body: JSON.stringify({
-        name: 'Website Chat Visitor',
-        email: null,
-        company: null,
-        phone,
-        message: question,
-        company_website: null,
-        traffic_volume: null,
-        primary_goal: 'Manager follow-up',
-      }),
+      headers,
+      body: JSON.stringify({ action: 'manager_followup', phone, question, consent: true }),
     });
-    if (!response.ok) throw new Error((await response.text()) || 'Unable to save the client question.');
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok || data?.ok !== true) {
+      throw new Error(data?.error || 'Unable to save the client question. Please try again.');
+    }
   }
 
   async function handleKnowledgeFile(file?: File) {

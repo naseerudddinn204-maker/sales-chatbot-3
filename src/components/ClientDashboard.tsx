@@ -58,7 +58,7 @@ export function ClientDashboard({ session, onLogout }: { session: SiteSession; o
   const input = 'mt-1 w-full rounded-xl border border-[#dce3f0] bg-white px-4 py-3 text-sm outline-none focus:border-[#1e3a5f] focus:ring-4 focus:ring-[#dce7f8]';
   return <div className="min-h-screen bg-[#f9f9ff] text-[#151c27]">
     <header className="border-b border-white/10 bg-[#1e3a5f]"><div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-4 sm:px-6">
-      <div><p className="text-xs font-bold uppercase tracking-widest text-[#1e3a5f]">Sales Chatbot</p><h1 className="mt-1 text-xl font-extrabold sm:text-2xl">Client Dashboard</h1></div>
+      <div><p className="text-xs font-bold uppercase tracking-widest text-[#1e3a5f]">Sales Chatbot</p><h1 className="mt-1 text-xl font-extrabold text-white sm:text-2xl">Client Dashboard</h1></div>
       <div className="flex gap-2"><a href="/" className="inline-flex items-center gap-2 rounded-xl border border-slate-200 px-3 py-2 text-sm font-semibold text-slate-600"><ArrowLeft size={15}/><span className="hidden sm:inline">Back to website</span><span className="sm:hidden">Website</span></a><button onClick={onLogout} className="inline-flex items-center gap-2 rounded-xl bg-[#1e3a5f] px-3 py-2 text-sm font-bold text-white"><LogOut size={15}/>Log out</button></div>
     </div></header>
     <div className="mx-auto grid max-w-7xl gap-5 px-4 py-6 sm:px-6 lg:grid-cols-[230px_minmax(0,1fr)] lg:py-8">

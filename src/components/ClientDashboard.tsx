@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { ArrowLeft, Bot, CheckCircle2, CreditCard, Headset, LayoutDashboard, LogOut, RefreshCw, UserRound } from 'lucide-react';
+import { getUserSession, refreshUserSession } from '../lib/userAuth';
 import type { SiteSession } from '../lib/userAuth';
 
 type Order = { id:string; created_at:string; chatbot_name?:string|null; plan_name?:string|null; requested_price?:number|string|null; billing_type?:string|null; payment_status?:string|null; order_status?:string|null; delivery_status?:string|null; delivery_chatbot_id?:string|null };
@@ -21,7 +22,18 @@ export function ClientDashboard({ session, onLogout }: { session: SiteSession; o
   const [notice, setNotice] = useState('');
 
   async function request(action: string, extra: Record<string, unknown> = {}) {
-    const response = await fetch(API, { method: 'POST', headers: { apikey: KEY, Authorization: 'Bearer ' + session.access_token, 'Content-Type': 'application/json' }, body: JSON.stringify({ action, ...extra }) });
+    const current = getUserSession() || session;
+    const send = (token: string) => fetch(API, { method: 'POST', headers: { apikey: KEY, Authorization: 'Bearer ' + token, 'Content-Type': 'application/json' }, body: JSON.stringify({ action, ...extra }) });
+    let response = await send(current.access_token);
+    if (response.status === 401) {
+      try {
+        const refreshed = await refreshUserSession();
+        response = await send(refreshed.access_token);
+      } catch {
+        window.location.replace('/login?reason=session');
+        throw new Error('Your session has expired. Please log in again.');
+      }
+    }
     const data = await response.json().catch(() => ({}));
     if (!response.ok) throw new Error(data.error || 'Request failed. Please try again.');
     return data;

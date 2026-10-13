@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { ArrowLeft, CheckCircle2, Eye, EyeOff, LockKeyhole, Mail, ShieldCheck, UserRound } from 'lucide-react';
 import { getUserSession, requestPasswordReset, signInUser, signOutUser, signUpUser, updateForgottenPassword } from '../lib/userAuth';
+import { ClientDashboard } from './ClientDashboard';
 
 type Mode = 'login' | 'signup' | 'forgot-password' | 'reset-password' | 'account';
 
@@ -77,24 +78,7 @@ export function UserAuth({ mode }: { mode: Mode }) {
       window.location.replace('/login');
       return null;
     }
-    return (
-      <div className="min-h-screen bg-slate-50 px-4 py-16">
-        <div className="mx-auto max-w-lg rounded-3xl border border-slate-100 bg-white p-6 shadow-sm sm:p-9">
-          <a href="/" className="inline-flex items-center gap-2 text-sm font-semibold text-slate-500 hover:text-blue-700"><ArrowLeft size={16}/> Back to website</a>
-          <div className="mt-7 flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-50 text-blue-700"><UserRound size={26}/></div>
-          <h1 className="mt-5 text-2xl font-extrabold text-slate-900">{title}</h1>
-          <p className="mt-2 text-sm text-slate-500">{subtitle}</p>
-          <div className="mt-6 rounded-2xl border border-slate-100 bg-slate-50 p-4">
-            <div className="text-xs font-semibold uppercase tracking-wide text-slate-500">Name</div>
-            <div className="mt-1 font-semibold text-slate-900">{session.user.user_metadata?.full_name || 'Account holder'}</div>
-            <div className="mt-4 text-xs font-semibold uppercase tracking-wide text-slate-500">Email</div>
-            <div className="mt-1 break-all font-semibold text-slate-900">{session.user.email}</div>
-            <div className="mt-4 inline-flex items-center gap-2 text-sm text-emerald-700"><ShieldCheck size={17}/> Signed in</div>
-          </div>
-          <button onClick={logout} className="mt-6 w-full rounded-xl border border-slate-200 px-4 py-3 text-sm font-bold text-slate-700 transition hover:bg-slate-50">Log out</button>
-        </div>
-      </div>
-    );
+    return <ClientDashboard session={session} onLogout={logout} />;
   }
 
   return (

@@ -69,6 +69,24 @@ export async function signInUser(email: string, password: string) {
   return data.user as SiteUser;
 }
 
+export async function refreshUserSession() {
+  const current = getUserSession();
+  if (!current?.refresh_token) throw new Error('Your session has expired. Please log in again.');
+  const data = await authRequest('token?grant_type=refresh_token', {
+    refresh_token: current.refresh_token,
+  });
+  if (!data.access_token || !data.refresh_token || !data.user) {
+    throw new Error('Your session has expired. Please log in again.');
+  }
+  const next: SiteSession = {
+    access_token: data.access_token,
+    refresh_token: data.refresh_token,
+    user: data.user,
+  };
+  saveSession(next);
+  return next;
+}
+
 export async function requestPasswordReset(email: string) {
   const redirectTo = `${window.location.origin}/reset-password`;
   await authRequest(`recover?redirect_to=${encodeURIComponent(redirectTo)}`, {

@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 180" fill="none">
+  <defs>
+    <linearGradient id="orkenGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4F46E5"/>
+      <stop offset="100%" stop-color="#7C3AED"/>
+    </linearGradient>
+  </defs>
+  <circle cx="90" cy="90" r="70" stroke="url(#orkenGradient)" stroke-width="28" fill="none"/>
+  <path d="M120 155 L245 20" stroke="url(#orkenGradient)" stroke-width="28" stroke-linecap="square"/>
+  <path d="M180 90 L250 160" stroke="url(#orkenGradient)" stroke-width="28" stroke-linecap="square"/>
+</svg>

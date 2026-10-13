@@ -394,7 +394,7 @@ Deno.serve(async (req) => {
                   { inlineData: { mimeType: "application/pdf", data: base64 } }
                 ]
               }],
-              generationConfig: { temperature: 0.1, maxOutputTokens: 8192 }
+              generationConfig: { maxOutputTokens: 8192 }
             })
           }
         );

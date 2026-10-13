@@ -57,6 +57,14 @@ export async function signUpUser(name: string, email: string, password: string) 
   return { needsConfirmation: !data.access_token, user: data.user as SiteUser | undefined };
 }
 
+export async function resendSignupConfirmation(email: string) {
+  const redirectTo = `${window.location.origin}/login?verified=1`;
+  await authRequest(`resend?redirect_to=${encodeURIComponent(redirectTo)}`, {
+    type: 'signup',
+    email: email.trim().toLowerCase(),
+  });
+}
+
 export async function signInUser(email: string, password: string) {
   const data = await authRequest('token?grant_type=password', {
     email: email.trim().toLowerCase(),

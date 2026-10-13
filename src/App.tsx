@@ -110,6 +110,7 @@ export default function App() {
             <HomeScreen
               onNavigateToDemo={() => handleTabChange('demo')}
               onNavigateToContact={() => handleTabChange('contact')}
+              onNavigateToPricing={() => handleTabChange('pricing')}
               onOpenLiveChat={() => setIsLiveChatOpen(true)}
             />
           )}

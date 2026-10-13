@@ -219,10 +219,11 @@ Deno.serve(async (req) => {
 
     if (action === "manager_followup") {
       const phone = clean(body?.phone).slice(0, 40);
-      const question = clean(body?.question).slice(0, 2000);
+      const followupSlug = clean(body?.slug);
+      const sessionId = clean(body?.session_id);
       if (body?.consent !== true) return json({ error: "Consent is required before a manager follow-up can be saved." }, 400);
       if (!isPhone(phone)) return json({ error: "Please provide a valid phone number only." }, 400);
-      if (!question || question.length < 3) return json({ error: "The visitor question is missing." }, 400);
+      if (!followupSlug || !sessionId) return json({ error: "The active chat session could not be verified." }, 400);
 
       const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
       if (!serviceKey) {
@@ -232,6 +233,30 @@ Deno.serve(async (req) => {
       const admin = createClient(Deno.env.get("SUPABASE_URL")!, serviceKey, {
         auth: { persistSession: false, autoRefreshToken: false },
       });
+      const { data: bot, error: botError } = await admin.from("chatbots")
+        .select("id")
+        .eq("slug", followupSlug)
+        .eq("enabled", true)
+        .maybeSingle();
+      if (botError || !bot) return json({ error: "This chatbot is not available for follow-up." }, 404);
+
+      const { data: previousRows, error: previousError } = await admin.from("chatbot_messages")
+        .select("user_message,assistant_message")
+        .eq("chatbot_id", bot.id)
+        .eq("session_id", sessionId)
+        .order("created_at", { ascending: false })
+        .limit(1);
+      if (previousError) {
+        console.error("Manager follow-up validation failed:", previousError);
+        return json({ error: "We couldn't verify the follow-up request. Please try again." }, 500);
+      }
+      const previous = previousRows?.[0];
+      const previousReply = clean(previous?.assistant_message).toLowerCase();
+      const question = clean(previous?.user_message).slice(0, 2000);
+      if (!question || !/(phone|number|contact)/i.test(previousReply)) {
+        return json({ error: "No pending manager follow-up was found. Ask the chatbot to request a follow-up first." }, 409);
+      }
+
       const { data: savedLead, error: leadError } = await admin.from("leads").insert({
         name: "Website Chat Visitor",
         email: null,

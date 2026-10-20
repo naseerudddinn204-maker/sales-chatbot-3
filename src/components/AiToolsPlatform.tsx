@@ -25,8 +25,8 @@ function makeDraft(kind: string, topic: string, tone: string, audience: string) 
   return `Workflow: ${subject}\n\nTrigger: When ${who} submits a form or a new item arrives.\nAction 1: Validate the required fields and remove duplicates.\nAction 2: Prepare a personalized AI draft using the submitted details.\nAction 3: Send the draft to a human reviewer for approval.\nAction 4: After approval, send the message and record the result.\n\nSafety check: Keep human approval enabled before sending messages or publishing content.\n\nThis is a workflow plan only. Connect the relevant accounts and automation service before enabling it.`;
 }
 
-export const AiToolsPlatform: React.FC = () => {
-  const routeTool: ToolId = window.location.pathname.startsWith('/email') ? 'email' : window.location.pathname.startsWith('/auto-post-generator') ? 'social' : window.location.pathname.startsWith('/ai-automation') ? 'automation' : window.location.pathname.startsWith('/ai-content-writer') ? 'writer' : 'all';
+export const AiToolsPlatform: React.FC<{ initialTool?: Exclude<ToolId, 'all'> }> = ({ initialTool }) => {
+  const routeTool: ToolId = initialTool ?? (window.location.pathname.startsWith('/email') ? 'email' : window.location.pathname.startsWith('/auto-post-generator') ? 'social' : window.location.pathname.startsWith('/ai-automation') ? 'automation' : window.location.pathname.startsWith('/ai-content-writer') ? 'writer' : 'all');
   const [activeTool, setActiveTool] = useState<ToolId>(routeTool);
   const [mobileMenu, setMobileMenu] = useState(false);
   const [topic, setTopic] = useState('');

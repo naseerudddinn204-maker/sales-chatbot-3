@@ -3,6 +3,7 @@ import { AdminDashboard } from './components/AdminDashboard';
 import { EmbedChat } from './components/EmbedChat';
 import { ChatbotCatalog } from './components/ChatbotCatalog';
 import { AiToolsPlatform } from './components/AiToolsPlatform';
+import { AiToolsLanding } from './components/AiToolsLanding';
 
 export default function App() {
   const path = window.location.pathname;
@@ -20,7 +21,8 @@ export default function App() {
   // Keep the existing public chatbot demo library available as a tool.
   if (path === '/chatbots' || path === '/chatbots/') return <ChatbotCatalog />;
 
-  // Public routes, including old login/signup/pricing URLs, now lead to the tools workspace.
-  // Authentication and pricing are not part of the new public product experience.
-  return <AiToolsPlatform />;
+  // The public homepage introduces the broader AI tools and demo offering.
+  // The existing interactive workspace remains available at /workspace.
+  if (path === '/workspace' || path.startsWith('/workspace/')) return <AiToolsPlatform />;
+  return <AiToolsLanding />;
 }

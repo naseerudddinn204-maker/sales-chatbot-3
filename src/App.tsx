@@ -15,6 +15,9 @@ export default function App() {
   if (path.startsWith('/embed/')) return <EmbedChat slug={decodeURIComponent(path.split('/embed/')[1] || 'sales-chatbot')} />;
   if (path === '/chatbots' || path === '/chatbots/') return <ChatbotCatalog />;
   if (path === '/' || path === '/index.html') return <HomePage />;
-  if (['/email','/email/','/auto-post-generator','/auto-post-generator/','/ai-automation','/ai-automation/','/ai-content-writer','/ai-content-writer/'].includes(path)) return <AiToolsPlatform />;
+  if (path === '/email' || path === '/email/') return <AiToolsPlatform initialTool="email" />;
+  if (path === '/auto-post-generator' || path === '/auto-post-generator/') return <AiToolsPlatform initialTool="social" />;
+  if (path === '/ai-automation' || path === '/ai-automation/') return <AiToolsPlatform initialTool="automation" />;
+  if (path === '/ai-content-writer' || path === '/ai-content-writer/') return <AiToolsPlatform initialTool="writer" />;
   return <HomePage />;
 }

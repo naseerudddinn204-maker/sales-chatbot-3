@@ -31,8 +31,16 @@
     font-family: var(--font-sans);
   }
 
-  body {
+  html, body {
+    overscroll-behavior-x: none;
     overscroll-behavior-y: none;
+  }
+
+  /* Keep wheel/touch scrolling inside the current page instead of triggering
+     browser edge-swipe navigation on trackpads or touch devices. */
+  #root {
+    min-height: 100vh;
+    overscroll-behavior: none;
   }
 
   h1, h2, h3, h4, .font-headline {

@@ -22,6 +22,6 @@ export default function App() {
   if (path === '/auto-post-generator' || path === '/auto-post-generator/') return <AiToolsPlatform initialTool="social" />;
   if (path === '/ai-automation' || path === '/ai-automation/') return <AiToolsPlatform initialTool="automation" />;
   if (path === '/ai-content-writer' || path === '/ai-content-writer/') return <AiToolsPlatform initialTool="writer" />;
-  if (path === '/' || path === '/index.html') return <IntegrationsHome />;
-  return <IntegrationsHome />;
+  if (path === '/' || path === '/index.html') return <HomePage />;
+  return <HomePage />;
 }

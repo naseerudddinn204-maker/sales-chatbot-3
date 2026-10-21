@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { AdminDashboard } from './components/AdminDashboard';
 import { EmbedChat } from './components/EmbedChat';
 import { ChatbotCatalog } from './components/ChatbotCatalog';
@@ -9,6 +9,10 @@ import { IntegrationsHome } from './components/IntegrationsHome';
 
 export default function App() {
   const path = window.location.pathname;
+  useEffect(() => {
+    if ('scrollRestoration' in window.history) window.history.scrollRestoration = 'manual';
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+  }, [path]);
   if (path === '/admin' || path === '/admin/') {
     window.history.replaceState({}, '', '/admin/dashboard');
     return <AdminDashboard />;

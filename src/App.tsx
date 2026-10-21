@@ -6,6 +6,7 @@ import { AiToolsPlatform } from './components/AiToolsPlatform';
 import { AIToolsCatalog } from './components/AIToolsCatalog';
 import { HomePage } from './components/HomePage';
 import { IntegrationsHome } from './components/IntegrationsHome';
+import { ContactPage } from './components/ContactPage';
 
 export default function App() {
   const path = window.location.pathname;
@@ -19,9 +20,10 @@ export default function App() {
   }
   if (path.startsWith('/admin/')) return <AdminDashboard />;
   if (path.startsWith('/embed/')) return <EmbedChat slug={decodeURIComponent(path.split('/embed/')[1] || 'sales-chatbot')} />;
-  if (path === '/chatbots' || path === '/chatbots/') return <ChatbotCatalog />;
+  if (path === '/chatbots' || path === '/chatbots/' || path === '/demos' || path === '/demos/') return <ChatbotCatalog />;
   if (path === '/ai-tools' || path === '/ai-tools/') return <AIToolsCatalog />;
   if (path === '/integrations' || path === '/integrations/') return <IntegrationsHome />;
+  if (path === '/contact' || path === '/contact/') return <ContactPage />;
   if (path === '/email' || path === '/email/') return <AiToolsPlatform initialTool="email" />;
   if (path === '/auto-post-generator' || path === '/auto-post-generator/') return <AiToolsPlatform initialTool="social" />;
   if (path === '/ai-automation' || path === '/ai-automation/') return <AiToolsPlatform initialTool="automation" />;

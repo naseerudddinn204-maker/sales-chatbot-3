@@ -20,11 +20,11 @@ export const ContactPage: React.FC = () => {
       <nav className="mx-auto flex min-h-16 max-w-7xl flex-wrap items-center justify-between gap-3 px-4 py-3 sm:px-6 lg:px-8">
         <a href="/" className="flex items-center gap-2 font-extrabold tracking-tight"><span className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-700 text-white"><Sparkles size={19}/></span><span>AI Tools & Automation</span></a>
         <div className="flex flex-wrap gap-1 text-sm font-bold">
-          <a href="/ai-tools" className="rounded-lg px-3 py-2 text-slate-600 hover:bg-slate-100">AI Tools</a>
-          <a href="/demos" className="rounded-lg px-3 py-2 text-slate-600 hover:bg-slate-100">Demos</a>
-          <a href="/ai-automation" className="rounded-lg px-3 py-2 text-slate-600 hover:bg-slate-100">Automation</a>
-          <a href="/chatbots" className="rounded-lg px-3 py-2 text-slate-600 hover:bg-slate-100">Chatbots</a>
-          <a href="/contact" aria-current="page" className="rounded-lg bg-blue-50 px-3 py-2 text-blue-700">Contact</a>
+          <a href="/ai-tools" className="rounded-lg border border-transparent px-3 py-2 text-slate-600 transition hover:border-slate-200 hover:bg-slate-50">AI Tools</a>
+          <a href="/demos" className="rounded-lg border border-transparent px-3 py-2 text-slate-600 transition hover:border-slate-200 hover:bg-slate-50">Demos</a>
+          <a href="/ai-automation" className="rounded-lg border border-transparent px-3 py-2 text-slate-600 transition hover:border-slate-200 hover:bg-slate-50">Automation</a>
+          <a href="/chatbots" className="rounded-lg border border-transparent px-3 py-2 text-slate-600 transition hover:border-slate-200 hover:bg-slate-50">Chatbots</a>
+          <a href="/contact" aria-current="page" className="rounded-lg border border-blue-200 bg-blue-50 px-3 py-2 text-blue-700 shadow-sm ring-1 ring-blue-100">Contact</a>
         </div>
       </nav>
     </header>

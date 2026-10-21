@@ -13,11 +13,11 @@ export const HomePage: React.FC = () => (
       <nav aria-label="Main navigation" className="mx-auto flex min-h-16 max-w-7xl flex-wrap items-center justify-between gap-3 px-4 py-3 sm:px-6 lg:px-8">
         <a href="/" aria-current="page" className="flex items-center gap-2 font-extrabold tracking-tight"><span className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-700 text-white"><Sparkles size={19}/></span><span>AI Tools & Automation</span></a>
         <div className="flex flex-wrap items-center gap-1 text-sm font-bold">
-          <a href="/ai-tools" className="rounded-lg px-3 py-2 text-slate-600 hover:bg-slate-100">AI Tools</a>
-          <a href="/demos" className="rounded-lg px-3 py-2 text-slate-600 hover:bg-slate-100">Demos</a>
-          <a href="/ai-automation" className="rounded-lg px-3 py-2 text-slate-600 hover:bg-slate-100">Automation</a>
-          <a href="/chatbots" className="rounded-lg px-3 py-2 text-slate-600 hover:bg-slate-100">Chatbots</a>
-          <a href="/contact" className="rounded-lg px-3 py-2 text-slate-600 hover:bg-slate-100">Contact</a>
+          <a href="/ai-tools" aria-current={window.location.pathname === '/ai-tools' ? 'page' : undefined} className={window.location.pathname === '/ai-tools' ? "rounded-lg border border-blue-200 bg-blue-50 px-3 py-2 text-blue-700 shadow-sm ring-1 ring-blue-100" : "rounded-lg border border-transparent px-3 py-2 text-slate-600 transition hover:border-slate-200 hover:bg-slate-50"}>AI Tools</a>
+          <a href="/demos" aria-current={window.location.pathname === '/demos' ? 'page' : undefined} className={window.location.pathname === '/demos' ? "rounded-lg border border-blue-200 bg-blue-50 px-3 py-2 text-blue-700 shadow-sm ring-1 ring-blue-100" : "rounded-lg border border-transparent px-3 py-2 text-slate-600 transition hover:border-slate-200 hover:bg-slate-50"}>Demos</a>
+          <a href="/ai-automation" aria-current={window.location.pathname === '/ai-automation' ? 'page' : undefined} className={window.location.pathname === '/ai-automation' ? "rounded-lg border border-blue-200 bg-blue-50 px-3 py-2 text-blue-700 shadow-sm ring-1 ring-blue-100" : "rounded-lg border border-transparent px-3 py-2 text-slate-600 transition hover:border-slate-200 hover:bg-slate-50"}>Automation</a>
+          <a href="/chatbots" aria-current={window.location.pathname === '/chatbots' ? 'page' : undefined} className={window.location.pathname === '/chatbots' ? "rounded-lg border border-blue-200 bg-blue-50 px-3 py-2 text-blue-700 shadow-sm ring-1 ring-blue-100" : "rounded-lg border border-transparent px-3 py-2 text-slate-600 transition hover:border-slate-200 hover:bg-slate-50"}>Chatbots</a>
+          <a href="/contact" aria-current={window.location.pathname === '/contact' ? 'page' : undefined} className={window.location.pathname === '/contact' ? "rounded-lg border border-blue-200 bg-blue-50 px-3 py-2 text-blue-700 shadow-sm ring-1 ring-blue-100" : "rounded-lg border border-transparent px-3 py-2 text-slate-600 transition hover:border-slate-200 hover:bg-slate-50"}>Contact</a>
         </div>
       </nav>
     </header>

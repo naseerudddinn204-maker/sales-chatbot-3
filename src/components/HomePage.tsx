@@ -1,5 +1,5 @@
 import React from 'react';
-import { Bot, Headset, ShoppingBag, Building2, ArrowUpRight } from 'lucide-react';
+import { Bot, Headset, ShoppingBag, Building2, ArrowUpRight, Sparkles } from 'lucide-react';
 
 const demos = [
   { title: 'Customer Support Demos', description: 'Try chatbots that answer common questions and help customers find the right information.', icon: Headset, tone: 'text-blue-700 bg-blue-50' },
@@ -8,7 +8,14 @@ const demos = [
 ];
 
 export const HomePage: React.FC = () => (
-  <main className="min-h-screen bg-slate-50 px-4 py-10 sm:px-6 lg:px-8">
+  <div className="min-h-screen bg-slate-50 text-slate-900">
+    <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/95 backdrop-blur">
+      <nav aria-label="Main navigation" className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
+        <a href="/" aria-current="page" className="flex items-center gap-2 font-extrabold tracking-tight"><span className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-700 text-white"><Sparkles size={19}/></span><span>AI Tools & Automation</span></a>
+        <div className="flex items-center gap-2 text-sm font-bold"><a href="/" aria-current="page" className="rounded-lg bg-blue-50 px-3 py-2 text-blue-700">Home</a><a href="/ai-tools" className="rounded-lg px-3 py-2 text-slate-600 hover:bg-slate-100">AI Tools</a><a href="/chatbots" className="rounded-lg px-3 py-2 text-slate-600 hover:bg-slate-100">Chatbots</a></div>
+      </nav>
+    </header>
+    <main className="px-4 py-10 sm:px-6 lg:px-8">
     <section className="mx-auto max-w-7xl">
       <div className="mb-8">
         <div className="inline-flex items-center gap-2 rounded-full border border-blue-100 bg-blue-50 px-3 py-1.5 text-xs font-bold text-blue-800"><Bot size={14}/> Live chatbot demos</div>
@@ -26,5 +33,6 @@ export const HomePage: React.FC = () => (
         )})}
       </div>
     </section>
-  </main>
+    </main>
+  </div>
 );

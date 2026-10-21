@@ -5,6 +5,7 @@ import { ChatbotCatalog } from './components/ChatbotCatalog';
 import { AiToolsPlatform } from './components/AiToolsPlatform';
 import { AIToolsCatalog } from './components/AIToolsCatalog';
 import { HomePage } from './components/HomePage';
+import { IntegrationsHome } from './components/IntegrationsHome';
 
 export default function App() {
   const path = window.location.pathname;
@@ -16,10 +17,11 @@ export default function App() {
   if (path.startsWith('/embed/')) return <EmbedChat slug={decodeURIComponent(path.split('/embed/')[1] || 'sales-chatbot')} />;
   if (path === '/chatbots' || path === '/chatbots/') return <ChatbotCatalog />;
   if (path === '/ai-tools' || path === '/ai-tools/') return <AIToolsCatalog />;
+  if (path === '/integrations' || path === '/integrations/') return <IntegrationsHome />;
   if (path === '/email' || path === '/email/') return <AiToolsPlatform initialTool="email" />;
   if (path === '/auto-post-generator' || path === '/auto-post-generator/') return <AiToolsPlatform initialTool="social" />;
   if (path === '/ai-automation' || path === '/ai-automation/') return <AiToolsPlatform initialTool="automation" />;
   if (path === '/ai-content-writer' || path === '/ai-content-writer/') return <AiToolsPlatform initialTool="writer" />;
-  if (path === '/' || path === '/index.html') return <HomePage />;
-  return <HomePage />;
+  if (path === '/' || path === '/index.html') return <IntegrationsHome />;
+  return <IntegrationsHome />;
 }

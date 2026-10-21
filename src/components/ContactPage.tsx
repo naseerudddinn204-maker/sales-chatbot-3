@@ -11,15 +11,21 @@ export const ContactPage: React.FC = () => {
     event.preventDefault();
     const subject = encodeURIComponent('AI Tools & Automation enquiry');
     const body = encodeURIComponent(`Name: ${name}\nEmail: ${email}\n\n${message}`);
-    window.location.href = `mailto:hello@example.com?subject=${subject}&body=${body}`;
-    setNotice('Your email app should open with this message prepared. The website has not sent it automatically.');
+    window.location.href = `mailto:?subject=${subject}&body=${body}`;
+    setNotice('Your email app should open with this message prepared. This website does not send the email automatically.');
   };
 
   return <div className="min-h-screen bg-slate-50 text-slate-900">
     <header className="border-b border-slate-200 bg-white">
-      <nav className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
+      <nav className="mx-auto flex min-h-16 max-w-7xl flex-wrap items-center justify-between gap-3 px-4 py-3 sm:px-6 lg:px-8">
         <a href="/" className="flex items-center gap-2 font-extrabold tracking-tight"><span className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-700 text-white"><Sparkles size={19}/></span><span>AI Tools & Automation</span></a>
-        <a href="/" className="inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-bold text-slate-600 hover:bg-slate-100"><ArrowLeft size={16}/> Home</a>
+        <div className="flex flex-wrap gap-1 text-sm font-bold">
+          <a href="/ai-tools" className="rounded-lg px-3 py-2 text-slate-600 hover:bg-slate-100">AI Tools</a>
+          <a href="/demos" className="rounded-lg px-3 py-2 text-slate-600 hover:bg-slate-100">Demos</a>
+          <a href="/ai-automation" className="rounded-lg px-3 py-2 text-slate-600 hover:bg-slate-100">Automation</a>
+          <a href="/chatbots" className="rounded-lg px-3 py-2 text-slate-600 hover:bg-slate-100">Chatbots</a>
+          <a href="/contact" aria-current="page" className="rounded-lg bg-blue-50 px-3 py-2 text-blue-700">Contact</a>
+        </div>
       </nav>
     </header>
     <main className="mx-auto grid max-w-7xl gap-10 px-4 py-12 sm:px-6 lg:grid-cols-2 lg:px-8 lg:py-20">
@@ -39,7 +45,7 @@ export const ContactPage: React.FC = () => {
         <textarea id="contact-message" required rows={5} value={message} onChange={e=>setMessage(e.target.value)} className="mt-2 w-full resize-y rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-blue-500" placeholder="Tell us what you need..."/>
         <button type="submit" className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-blue-700 px-4 py-3 text-sm font-bold text-white hover:bg-blue-800"><Send size={16}/> Prepare email</button>
         {notice&&<p role="status" className="mt-3 text-sm leading-6 text-slate-600">{notice}</p>}
-        <p className="mt-3 text-xs leading-5 text-slate-500">Note: replace the placeholder recipient address with your business email before using this form.</p>
+        <p className="mt-3 text-xs leading-5 text-slate-500">This prepares an email in your email app; it does not send anything automatically.</p>
       </form>
     </main>
   </div>;

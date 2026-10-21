@@ -229,6 +229,15 @@ export function EmbedChat({ slug }: { slug: string }) {
   }
 
   useEffect(() => {
+    // The demo is a standalone screen: prevent the blurred page behind it from scrolling.
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, []);
+
+  useEffect(() => {
     let cancelled = false;
     async function loadConfig() {
       try {
@@ -349,7 +358,7 @@ export function EmbedChat({ slug }: { slug: string }) {
   }
 
   return (
-    <div className="relative w-full min-h-screen overflow-hidden bg-[#f9f9ff]">
+    <div className="fixed inset-0 z-50 h-[100dvh] w-full overflow-hidden bg-[#f9f9ff]">
       <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
         <div className="min-h-screen scale-[1.02] blur-[7px] opacity-75">
           <Header
@@ -365,7 +374,7 @@ export function EmbedChat({ slug }: { slug: string }) {
         <div className="absolute inset-0 bg-white/45" />
       </div>
 
-      <div className="relative z-50 w-full min-h-screen flex items-center justify-center p-2.5 sm:p-4 md:p-6">
+      <div className="relative z-50 flex h-full w-full items-center justify-center overflow-hidden p-2.5 sm:p-4 md:p-6">
         <div className="w-full max-w-[520px] h-[calc(100vh-1.25rem)] sm:h-[min(820px,calc(100vh-2rem))] md:h-[min(860px,calc(100vh-3rem))] max-h-[900px] overflow-hidden rounded-xl sm:rounded-2xl bg-white shadow-2xl border border-slate-200 flex flex-col">
           <div className="shrink-0 bg-[#1e3a5f] px-4 sm:px-5 py-3.5 text-white flex items-center gap-3">
             <MessageCircle className="shrink-0" />

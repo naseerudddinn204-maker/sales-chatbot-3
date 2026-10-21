@@ -461,6 +461,43 @@ Deno.serve(async (req) => {
       });
     }
 
+    if (action === "tool_image_generate") {
+      const input = clean(body?.input) || clean(body?.message);
+      if (!input) return json({ error: "Please describe the image you want to create." }, 400);
+      const key = Deno.env.get("GEMINI_API_KEY");
+      if (!key) return json({ error: "Image generation is not configured. Add GEMINI_API_KEY to the server environment." }, 503);
+      const audience = clean(body?.audience) || "a general business audience";
+      const tone = clean(body?.tone) || "Professional";
+      const prompt = "Create a polished, original social media marketing image. Topic: " + input +
+        ". Intended audience: " + audience + ". Style: " + tone +
+        ". Make the visual clear, professional, attractive, and suitable for a business social post. " +
+        "Prefer a clean composition, no fake logos, no fabricated statistics, and minimal or no embedded text. " +
+        "Return an image, not a written description.";
+      const response = await fetchWithRetry(
+        "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image:generateContent?key=" + encodeURIComponent(key),
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: prompt }] }],
+            generationConfig: { responseModalities: ["IMAGE", "TEXT"] },
+          }),
+        }
+      );
+      if (!response.ok) {
+        const detail = await response.text();
+        console.error("Gemini image generation failed", response.status, detail);
+        return json({ error: response.status === 429 ? "Image generation is busy. Please try again shortly." : geminiError(response.status) }, response.status === 429 ? 429 : 502);
+      }
+      const result = await response.json();
+      const parts = result?.candidates?.[0]?.content?.parts || [];
+      const imagePart = parts.find((part: any) => part?.inlineData?.data || part?.inline_data?.data);
+      const imageData = imagePart?.inlineData?.data || imagePart?.inline_data?.data;
+      const mimeType = imagePart?.inlineData?.mimeType || imagePart?.inline_data?.mime_type || "image/png";
+      if (!imageData) return json({ error: "The image model returned no image. Please try a different prompt." }, 502);
+      return json({ ok: true, image_data_url: "data:" + mimeType + ";base64," + imageData });
+    }
+
     if (action === "tool_generate") {
       const tool = clean(body?.tool);
       const allowedTools = ["email", "email_summary", "social", "automation", "writer"];

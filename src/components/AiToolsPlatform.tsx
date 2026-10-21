@@ -55,10 +55,15 @@ export const AiToolsPlatform: React.FC<{ initialTool?: Exclude<ToolId, 'all'> }>
     setNotice('');
     try {
       const tool = kind === 'reader' ? 'email_summary' : kind;
+      const requestInput = kind === 'automation'
+        ? `${input}\nTrigger: ${automationTrigger}\nAction: ${automationAction}\nDestination: ${automationDestination}`
+        : input;
       const response = await callBackend<{ ok: boolean; result: string; error?: string }>({
         action: 'tool_generate',
         tool,
-        input: kind === 'automation' ? `${input}\nTrigger: ${automationTrigger}\nAction: ${automationAction}\nDestination: ${automationDestination}` : input,
+        // The edge function validates `message`; keep `input` for compatible handlers.
+        message: requestInput,
+        input: requestInput,
         audience,
         tone,
       });

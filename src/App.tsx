@@ -3,6 +3,7 @@ import { AdminDashboard } from './components/AdminDashboard';
 import { EmbedChat } from './components/EmbedChat';
 import { ChatbotCatalog } from './components/ChatbotCatalog';
 import { AiToolsPlatform } from './components/AiToolsPlatform';
+import { AIToolsCatalog } from './components/AIToolsCatalog';
 import { HomePage } from './components/HomePage';
 
 export default function App() {
@@ -14,10 +15,11 @@ export default function App() {
   if (path.startsWith('/admin/')) return <AdminDashboard />;
   if (path.startsWith('/embed/')) return <EmbedChat slug={decodeURIComponent(path.split('/embed/')[1] || 'sales-chatbot')} />;
   if (path === '/chatbots' || path === '/chatbots/') return <ChatbotCatalog />;
-  if (path === '/' || path === '/index.html') return <HomePage />;
+  if (path === '/ai-tools' || path === '/ai-tools/') return <AIToolsCatalog />;
   if (path === '/email' || path === '/email/') return <AiToolsPlatform initialTool="email" />;
   if (path === '/auto-post-generator' || path === '/auto-post-generator/') return <AiToolsPlatform initialTool="social" />;
   if (path === '/ai-automation' || path === '/ai-automation/') return <AiToolsPlatform initialTool="automation" />;
   if (path === '/ai-content-writer' || path === '/ai-content-writer/') return <AiToolsPlatform initialTool="writer" />;
+  if (path === '/' || path === '/index.html') return <HomePage />;
   return <HomePage />;
 }

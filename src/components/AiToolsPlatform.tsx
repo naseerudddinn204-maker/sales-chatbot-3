@@ -52,7 +52,8 @@ export const AiToolsPlatform: React.FC<{ initialTool?: Exclude<ToolId, 'all'> }>
   const [automationResults, setAutomationResults] = useState<Record<string, string>>({});
   const [automationLoading, setAutomationLoading] = useState<string>('');
   const [sourceText, setSourceText] = useState('');
-  const [notice, setNotice] = useState('');\n  const [copiedKey, setCopiedKey] = useState('');
+  const [notice, setNotice] = useState('');
+  const [copiedKey, setCopiedKey] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedImage, setGeneratedImage] = useState('');
   const [isGeneratingImage, setIsGeneratingImage] = useState(false);

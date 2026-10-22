@@ -17,15 +17,15 @@ const buttonClass = 'inline-flex items-center justify-center gap-2 rounded-xl bg
 const inputClass = 'w-full rounded-xl border border-slate-200 bg-white px-3.5 py-3 text-sm text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:ring-4 focus:ring-blue-100';
 
 function renderResultText(text: string) {
-  return text.split('\\n').map((line, index) => {
-    const parts = line.split(/(\\*\\*.*?\\*\\*)/g);
+  return text.split('\n').map((line, index) => {
+    const parts = line.split(/(\*\*.*?\*\*)/g);
     return (
       <React.Fragment key={index}>
         {index > 0 && <br />}
         {parts.map((part, partIndex) => {
-          const boldMatch = part.match(/^\\*\\*(.*?)\\*\\*$/);
+          const boldMatch = part.match(/^\*\*(.*?)\*\*$/);
           if (boldMatch) return <strong key={partIndex} className="font-bold text-slate-800">{boldMatch[1]}</strong>;
-          return <React.Fragment key={partIndex}>{part.replace(/\\*\\*/g, '')}</React.Fragment>;
+          return <React.Fragment key={partIndex}>{part.replace(/\*\*/g, '')}</React.Fragment>;
         })}
       </React.Fragment>
     );

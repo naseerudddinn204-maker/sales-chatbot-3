@@ -92,6 +92,54 @@ Deno.serve(async (req) => {
       Deno.env.get("SUPABASE_ANON_KEY")!
     );
 
+    if (action === "email_send") {
+      const recipient = clean(body?.recipient).toLowerCase();
+      const subject = clean(body?.subject).slice(0, 180);
+      const emailText = clean(body?.text).slice(0, 12000);
+      if (!recipient || !/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(recipient)) return json({ error: "Enter a valid recipient email address." }, 400);
+      if (!subject || !emailText) return json({ error: "Email subject and message are required." }, 400);
+      const apiKey = Deno.env.get("RESEND_API_KEY");
+      const from = Deno.env.get("RESEND_FROM_EMAIL");
+      const allowlist = (Deno.env.get("RESEND_ALLOWED_RECIPIENTS") || "").split(",").map((item) => item.trim().toLowerCase()).filter(Boolean);
+      if (!apiKey || !from || allowlist.length === 0) {
+        return json({ error: "Email sending is not configured. Set RESEND_API_KEY, RESEND_FROM_EMAIL, and RESEND_ALLOWED_RECIPIENTS in Supabase secrets first." }, 503);
+      }
+      if (!allowlist.includes(recipient)) return json({ error: "This demo can only send to approved test recipients. Add this address to RESEND_ALLOWED_RECIPIENTS in Supabase secrets." }, 403);
+      const mailResponse = await fetch("https://api.resend.com/emails", {
+        method: "POST",
+        headers: { "Authorization": "Bearer " + apiKey, "Content-Type": "application/json" },
+        body: JSON.stringify({ from, to: [recipient], subject, text: emailText }),
+      });
+      const mailData = await mailResponse.json().catch(() => ({}));
+      if (!mailResponse.ok) return json({ error: clean(mailData?.message) || "Email provider rejected the message." }, mailResponse.status >= 500 ? 502 : 400);
+      return json({ ok: true, message: "Email accepted by the provider.", id: mailData?.id || null });
+    }
+
+    if (action === "automation_execute") {
+      const goal = clean(body?.goal).slice(0, 1000);
+      const trigger = clean(body?.trigger).slice(0, 300);
+      const workflowAction = clean(body?.workflow_action).slice(0, 300);
+      const destination = clean(body?.destination).slice(0, 300);
+      const payload = body?.payload && typeof body.payload === "object" ? body.payload : {};
+      if (!goal || !trigger || !workflowAction) return json({ error: "Workflow goal, trigger, and action are required." }, 400);
+      const webhookUrl = Deno.env.get("AUTOMATION_WEBHOOK_URL");
+      const webhookSecret = Deno.env.get("AUTOMATION_WEBHOOK_SECRET");
+      if (!webhookUrl || !webhookSecret) {
+        return json({ error: "Workflow execution is not connected yet. Configure AUTOMATION_WEBHOOK_URL and AUTOMATION_WEBHOOK_SECRET in Supabase secrets to connect n8n, Make, Zapier, or your own workflow runner." }, 503);
+      }
+      let parsedUrl: URL;
+      try { parsedUrl = new URL(webhookUrl); } catch { return json({ error: "AUTOMATION_WEBHOOK_URL must be a valid HTTPS URL." }, 500); }
+      if (parsedUrl.protocol !== "https:") return json({ error: "The automation webhook must use HTTPS." }, 500);
+      const runResponse = await fetch(parsedUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Authorization": "Bearer " + webhookSecret },
+        body: JSON.stringify({ event: "ai_tools.automation.execute", goal, trigger, action: workflowAction, destination, payload, requested_at: new Date().toISOString() }),
+      });
+      const runText = await runResponse.text();
+      if (!runResponse.ok) return json({ error: "Workflow runner returned HTTP " + runResponse.status + (runText ? ": " + runText.slice(0, 300) : "") }, 502);
+      return json({ ok: true, message: "Workflow runner accepted the execution request.", result: runText.slice(0, 2000) });
+    }
+
     if (action === "client_portal" || action === "client_support") {
       const authHeader = req.headers.get("Authorization") || "";
       const token = authHeader.startsWith("Bearer ") ? authHeader.slice(7) : "";

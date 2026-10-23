@@ -91,7 +91,15 @@ export const AiToolsPlatform: React.FC<{ initialTool?: Exclude<ToolId, 'all'> }>
         tone,
       });
       if (!response?.result) throw new Error(response?.error || 'The AI returned no result.');
-      setOutputs(previous => ({ ...previous, [kind]: response.result }));
+      setOutputs(previous => {
+        // Keep sender and reader drafts independently inside the Email workspace,
+        // but never carry a result from another tool into this tool's result card.
+        const next = kind === 'email' || kind === 'reader'
+          ? { email: previous.email, reader: previous.reader }
+          : {};
+        return { ...next, [kind]: response.result };
+      });
+      if (kind !== 'social') setGeneratedImage('');
       setNotice('AI result ready. Review it before sending or publishing.');
     } catch (error) {
       setNotice(error instanceof Error ? error.message : 'AI generation failed. Please try again.');

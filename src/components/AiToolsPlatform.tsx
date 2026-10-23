@@ -141,7 +141,7 @@ export const AiToolsPlatform: React.FC<{ initialTool?: Exclude<ToolId, 'all'> }>
               <div className="mt-4 rounded-2xl bg-slate-50 p-4"><div className="flex items-center gap-2 text-sm font-bold"><span className="h-2 w-2 rounded-full bg-emerald-500"/> Designed for practical work</div><p className="mt-1 text-xs leading-5 text-slate-500">Review drafts before sending. Connect accounts only when you are ready.</p></div>
             </div>
           </div>
-        </section>
+        </section>}
 
         <section id="tools" className={`mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8 ${isDedicatedPage ? "hidden" : ""}`}>
           <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end"><div><p className="text-xs font-extrabold uppercase tracking-[.18em] text-blue-700">Tool library</p><h2 className="mt-2 text-3xl font-extrabold tracking-tight sm:text-4xl">One workspace. Multiple ways to work smarter.</h2><p className="mt-3 max-w-2xl leading-7 text-slate-600">Open a tool and try a focused task. Account-based sending and publishing integrations can be connected separately.</p></div><div className="flex flex-wrap gap-2">{(['all','chatbot','email','social','automation','writer'] as ToolId[]).map(id=><button key={id} onClick={()=>setActiveTool(id)} className={`rounded-full border px-3 py-2 text-xs font-bold capitalize ${activeTool===id?'border-blue-700 bg-blue-700 text-white':'border-slate-200 bg-white text-slate-600 hover:border-blue-300'}`}>{id==='all'?'All tools':id==='social'?'Auto post':id==='writer'?'Content writer':id==='email'?'Email tools':id==='chatbot'?'Chatbot': 'Automation'}</button>)}</div></div>

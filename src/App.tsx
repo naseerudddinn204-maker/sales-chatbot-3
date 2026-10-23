@@ -24,6 +24,7 @@ export default function App() {
   if (path === '/ai-tools' || path === '/ai-tools/') return <AIToolsCatalog />;
   if (path === '/integrations' || path === '/integrations/') return <IntegrationsHome />;
   if (path === '/contact' || path === '/contact/') return <ContactPage />;
+  if (path === '/workspace' || path === '/workspace/') return <AiToolsPlatform initialTool="social" />;
   if (path === '/email' || path === '/email/') return <AiToolsPlatform initialTool="email" />;
   if (path === '/auto-post-generator' || path === '/auto-post-generator/') return <AiToolsPlatform initialTool="social" />;
   if (path === '/ai-automation' || path === '/ai-automation/') return <AiToolsPlatform initialTool="automation" />;

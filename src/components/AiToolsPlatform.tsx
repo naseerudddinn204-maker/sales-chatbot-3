@@ -110,17 +110,17 @@ export const AiToolsPlatform: React.FC<{ initialTool?: Exclude<ToolId, 'all'> }>
     <div className="min-h-screen bg-slate-50 text-slate-900">
       <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/95 backdrop-blur">
         <div className="mx-auto flex h-[72px] max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
-          <button onClick={() => { setActiveTool('all'); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="flex items-center gap-3 text-left">
+          <a href="/" className="flex items-center gap-3 text-left">
             <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-blue-700 text-white shadow-sm"><Sparkles size={21} /></span>
             <span><span className="block text-lg font-extrabold tracking-tight">AI Workbench</span><span className="block text-[11px] font-semibold uppercase tracking-[.16em] text-slate-500">Tools & Automation</span></span>
-          </button>
+          </a>
           <nav className="hidden items-center gap-1 md:flex">
-            <button onClick={() => setActiveTool('all')} className={`rounded-lg px-3 py-2 text-sm font-semibold ${activeTool === 'all' ? 'bg-blue-50 text-blue-700' : 'text-slate-600 hover:bg-slate-100'}`}>All tools</button>
-            {tools.map(t => <button key={t.id} onClick={() => { setActiveTool(t.id); document.getElementById('workspace')?.scrollIntoView({ behavior: 'smooth' }); }} className={`rounded-lg px-3 py-2 text-sm font-semibold ${activeTool === t.id ? 'bg-blue-50 text-blue-700' : 'text-slate-600 hover:bg-slate-100'}`}>{t.title}</button>)}
+            <a href="/workspace" className="rounded-lg px-3 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-100">All tools</a>
+            {tools.map(t => <a key={t.id} href={t.id === 'email' ? '/email' : t.id === 'social' ? '/auto-post-generator' : t.id === 'automation' ? '/ai-automation' : t.id === 'writer' ? '/content-writer' : '/ai-chatbot'} className={`rounded-lg px-3 py-2 text-sm font-semibold ${activeTool === t.id ? 'bg-blue-50 text-blue-700' : 'text-slate-600 hover:bg-slate-100'}`}>{t.title}</a>)}
           </nav>
           <button className="inline-flex items-center gap-2 rounded-xl border border-slate-200 px-3 py-2 text-sm font-bold text-slate-700 md:hidden" onClick={() => setMobileMenu(!mobileMenu)} aria-label="Toggle navigation">{mobileMenu ? <X size={18}/> : <Menu size={18}/>} Tools</button>
         </div>
-        {mobileMenu && <div className="grid gap-1 border-t border-slate-100 bg-white p-3 md:hidden"><button onClick={() => {setActiveTool('all');setMobileMenu(false)}} className="rounded-lg p-3 text-left text-sm font-semibold">All tools</button>{tools.map(t=><button key={t.id} onClick={()=>{setActiveTool(t.id);setMobileMenu(false);document.getElementById('workspace')?.scrollIntoView({behavior:'smooth'})}} className="rounded-lg p-3 text-left text-sm font-semibold hover:bg-slate-50">{t.title}</button>)}</div>}
+        {mobileMenu && <div className="grid gap-1 border-t border-slate-100 bg-white p-3 md:hidden"><a href="/workspace" className="rounded-lg p-3 text-left text-sm font-semibold">All tools</a>{tools.map(t=><a key={t.id} href={t.id === 'email' ? '/email' : t.id === 'social' ? '/auto-post-generator' : t.id === 'automation' ? '/ai-automation' : t.id === 'writer' ? '/content-writer' : '/ai-chatbot'} className="rounded-lg p-3 text-left text-sm font-semibold hover:bg-slate-50">{t.title}</a>)}</div>}
       </header>
 
       <main>

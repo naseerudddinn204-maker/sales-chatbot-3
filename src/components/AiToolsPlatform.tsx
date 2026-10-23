@@ -89,7 +89,7 @@ export const AiToolsPlatform: React.FC<{ initialTool?: Exclude<ToolId, 'all'> }>
       const requestInput = kind === 'automation'
         ? `${input}\nTrigger: ${automationTrigger}\nAction: ${automationAction}\nDestination: ${automationDestination}`
         : input;
-      const response = await callBackend<{ ok: boolean; result: string; error?: string }>({
+      const response = await callBackend<{ ok: boolean; result: string; error?: string; tool?: string }>({
         action: 'tool_generate',
         tool,
         // The edge function validates `message`; keep `input` for compatible handlers.
@@ -123,7 +123,7 @@ export const AiToolsPlatform: React.FC<{ initialTool?: Exclude<ToolId, 'all'> }>
     setNotice('');
     try {
       const prompt = `Automation demo: ${demo.title}\nGoal: ${demo.goal}\nTrigger: ${demo.trigger}\nAI action: ${demo.action}\nDestination: Send to me for approval\nCreate the specific output this automation would produce, then briefly list the trigger, action, review step, and expected result. Do not claim the workflow was actually executed.`;
-      const response = await callBackend<{ ok: boolean; result: string; error?: string }>({
+      const response = await callBackend<{ ok: boolean; result: string; error?: string; tool?: string }>({
         action: 'tool_generate',
         tool: 'automation',
         message: prompt,

@@ -1,7 +1,8 @@
 {
-  "name": "ChatBot AI Automation",
-  "description": "Enterprise AI chatbot platform with instant live chat, human handoff guarantee, and conversational automation.",
+  "name": "SalesChatbot – AI Workbench for Business Automation",
+  "description": "Explore practical AI tools, chatbot demos, email assistance, content generation, and business workflow automation in one AI workbench.",
   "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
 }
-

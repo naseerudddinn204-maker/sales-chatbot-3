@@ -4,9 +4,10 @@ import { ArrowRight, Bot, Sparkles, Workflow, Mail, Share2, Image, Video, Search
 
 const available = [
   { title: 'AI Chatbots', desc: 'Interactive assistants for customer support, FAQs, and lead capture.', icon: Bot, tone: 'blue', link: '/chatbots' },
-  { title: 'Auto Post Generator', desc: 'Draft social captions, calls to action, and hashtags in seconds.', icon: Share2, tone: 'pink', tool: 'social' },
-  { title: 'Email Assistant', desc: 'Draft professional emails and summarize messages with AI.', icon: Mail, tone: 'violet', tool: 'email' },
-  { title: 'Automation Builder', desc: 'Map triggers, steps, approval checks, and business workflows.', icon: Workflow, tone: 'green', tool: 'automation' },
+  { title: 'Auto Post Generator', desc: 'Draft social captions, calls to action, and hashtags in seconds.', icon: Share2, tone: 'pink', link: '/auto-post-generator' },
+  { title: 'Email Sender & Reader', desc: 'Draft professional emails and summarize messages with AI.', icon: Mail, tone: 'violet', link: '/email' },
+  { title: 'Automation Builder', desc: 'Map triggers, steps, approval checks, and business workflows.', icon: Workflow, tone: 'green', link: '/ai-automation' },
+  { title: 'AI Content Writer', desc: 'Write product descriptions, proposals, and useful business content.', icon: BrainCircuit, tone: 'blue', link: '/content-writer' },
 ];
 const ideas = [
   { title: 'AI Image Studio', desc: 'Explore campaign visuals and product graphics.', icon: Image },

@@ -51,7 +51,7 @@ export const AiToolsPlatform: React.FC = () => {
     setNotice('');
     try {
       const tool = kind === 'reader' ? 'email_summary' : kind;
-      const response = await callBackend<{ ok: boolean; result: string; error?: string }>({
+      const response = await callBackend<{ ok: boolean; result: string; error?: string; tool?: string }>({
         action: 'tool_generate',
         tool,
         input,

@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { callBackend } from '../lib/backendApi';
 import { Bot, Mail, MailOpen, Send, Share2, Workflow, FileText, Sparkles, ArrowRight, Copy, Check, WandSparkles, Zap, ShieldCheck, ChevronRight, Menu, X, Clock3, Link2, ImagePlus } from 'lucide-react';
 
@@ -66,6 +66,14 @@ export const AiToolsPlatform: React.FC<{ initialTool?: Exclude<ToolId, 'all'> }>
   const [automationAction, setAutomationAction] = useState('Draft a personalized follow-up email');
   const [automationDestination, setAutomationDestination] = useState('Send to me for approval');
 
+  // Each selected tool gets a clean result area. Never carry another tool's draft
+  // into the active tool when the user switches between cards.
+  useEffect(() => {
+    setOutputs({});
+    setGeneratedImage('');
+    setNotice('');
+  }, [activeTool]);
+
   const visibleTools = useMemo(() => activeTool === 'all' ? tools : tools.filter(t => t.id === activeTool), [activeTool]);
   const selected = tools.find(t => t.id === activeTool);
   const generate = async (kind: string) => {
@@ -91,6 +99,9 @@ export const AiToolsPlatform: React.FC<{ initialTool?: Exclude<ToolId, 'all'> }>
         tone,
       });
       if (!response?.result) throw new Error(response?.error || 'The AI returned no result.');
+      if (response.tool && response.tool !== tool) {
+        throw new Error(`The server returned a ${response.tool} result for the ${tool} tool. Please retry; the mismatched result was not displayed.`);
+      }
       setOutputs(previous => {
         // Keep sender and reader drafts independently inside the Email workspace,
         // but never carry a result from another tool into this tool's result card.

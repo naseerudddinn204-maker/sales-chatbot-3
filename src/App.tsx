@@ -21,8 +21,12 @@ export default function App() {
   // Keep the existing public chatbot demo library available as a tool.
   if (path === '/chatbots' || path === '/chatbots/') return <ChatbotCatalog />;
 
-  // The public homepage introduces the broader AI tools and demo offering.
-  // The existing interactive workspace remains available at /workspace.
+  // Each public tool has a dedicated URL; /workspace remains the all-tools library.
+  if (path === '/email' || path.startsWith('/email/')) return <AiToolsPlatform key="email" initialTool="email" />;
+  if (path === '/auto-post-generator' || path.startsWith('/auto-post-generator/')) return <AiToolsPlatform key="social" initialTool="social" />;
+  if (path === '/ai-automation' || path.startsWith('/ai-automation/')) return <AiToolsPlatform key="automation" initialTool="automation" />;
+  if (path === '/content-writer' || path.startsWith('/content-writer/')) return <AiToolsPlatform key="writer" initialTool="writer" />;
+  if (path === '/ai-chatbot' || path.startsWith('/ai-chatbot/')) return <AiToolsPlatform key="chatbot" initialTool="chatbot" />;
   if (path === '/workspace' || path.startsWith('/workspace/')) return <AiToolsPlatform />;
   return <AiToolsLanding />;
 }

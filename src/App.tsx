@@ -3,26 +3,29 @@ import { AdminDashboard } from './components/AdminDashboard';
 import { EmbedChat } from './components/EmbedChat';
 import { ChatbotCatalog } from './components/ChatbotCatalog';
 import { AiToolsPlatform } from './components/AiToolsPlatform';
-import { AiToolsLanding } from './components/AiToolsLanding';
+import { PublicLayout, PublicPages } from './components/PublicPages';
 
 export default function App() {
-  const path = window.location.pathname;
-
-  // Keep existing administration and embeddable chatbot endpoints intact.
+  const path = window.location.pathname.replace(/\\/+$/, '') || '/';
   if (path === '/admin' || path === '/admin/') {
     window.history.replaceState({}, '', '/admin/dashboard');
     return <AdminDashboard />;
   }
   if (path.startsWith('/admin/')) return <AdminDashboard />;
-  if (path.startsWith('/embed/')) {
-    return <EmbedChat slug={decodeURIComponent(path.split('/embed/')[1] || 'sales-chatbot')} />;
-  }
+  if (path.startsWith('/embed/')) return <EmbedChat slug={decodeURIComponent(path.split('/embed/')[1] || 'sales-chatbot')} />;
+  if (path === '/chatbots') return <ChatbotCatalog />;
+  if (path === '/workspace') return <AiToolsPlatform />;
 
-  // Keep the existing public chatbot demo library available as a tool.
-  if (path === '/chatbots' || path === '/chatbots/') return <ChatbotCatalog />;
-
-  // The public homepage introduces the broader AI tools and demo offering.
-  // The existing interactive workspace remains available at /workspace.
-  if (path === '/workspace' || path.startsWith('/workspace/')) return <AiToolsPlatform />;
-  return <AiToolsLanding />;
+  const routeMap: Record<string, 'home' | 'ai-tools' | 'email' | 'automation' | 'social' | 'writer' | 'demos' | 'contact'> = {
+    '/': 'home',
+    '/ai-tools': 'ai-tools',
+    '/demos': 'demos',
+    '/email': 'email',
+    '/automation': 'automation',
+    '/auto-post': 'social',
+    '/content-writer': 'writer',
+    '/contact': 'contact',
+  };
+  const page = routeMap[path] || 'home';
+  return <PublicLayout page={page}><PublicPages page={page} /></PublicLayout>;
 }

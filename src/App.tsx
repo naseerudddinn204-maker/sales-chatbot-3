@@ -6,7 +6,8 @@ import { AiToolsPlatform } from './components/AiToolsPlatform';
 import { PublicLayout, PublicPages } from './components/PublicPages';
 
 export default function App() {
-  const path = window.location.pathname.replace(/\\/+$/, '') || '/';
+  const rawPath = window.location.pathname;
+  const path = rawPath.length > 1 && rawPath.endsWith('/') ? rawPath.slice(0, -1) : rawPath;
   if (path === '/admin' || path === '/admin/') {
     window.history.replaceState({}, '', '/admin/dashboard');
     return <AdminDashboard />;

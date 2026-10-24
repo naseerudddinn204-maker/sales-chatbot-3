@@ -103,9 +103,27 @@ export const AiToolsPlatform: React.FC = () => {
     try {
       await navigator.clipboard.writeText(outputs[kind] || '');
       setCopiedKind(kind);
-      setNotice('');
-      window.setTimeout(() => setCopiedKind(current => current === kind ? '' : current), 2200);
-    } catch { setNotice('Select the draft and copy it manually.'); }
+      setNotice('✅ Copied to clipboard.');
+    } catch {
+      // Clipboard permissions can be unavailable in some browser contexts; try a selection-based fallback.
+      try {
+        const textToCopy = outputs[kind] || '';
+        const textarea = document.createElement('textarea');
+        textarea.value = textToCopy;
+        textarea.setAttribute('readonly', '');
+        textarea.style.position = 'fixed';
+        textarea.style.opacity = '0';
+        document.body.appendChild(textarea);
+        textarea.select();
+        const copied = document.execCommand('copy');
+        document.body.removeChild(textarea);
+        if (!copied) throw new Error('Clipboard copy was not confirmed');
+        setCopiedKind(kind);
+        setNotice('✅ Copied to clipboard.');
+      } catch {
+        setNotice('Copy was blocked by your browser. Select the result text and copy it manually.');
+      }
+    }
   };
   const removeOutput = (kind: string) => {
     setOutputs(previous => { const next = { ...previous }; delete next[kind]; return next; });

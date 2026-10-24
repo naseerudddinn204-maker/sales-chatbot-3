@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { callBackend } from '../lib/backendApi';
-import { ArrowRight, Bot, Check, Download, FileText, Image as ImageIcon, Mail, Menu, Share2, Sparkles, Workflow, X } from 'lucide-react';
+import { ArrowRight, Bot, Download, FileText, Image as ImageIcon, Mail, Menu, Share2, Sparkles, Workflow, X } from 'lucide-react';
 
-type PageId = 'home' | 'ai-tools' | 'email' | 'automation' | 'social' | 'writer' | 'contact';
+type PageId = 'home' | 'ai-tools' | 'email' | 'automation' | 'social' | 'writer' | 'demos' | 'contact';
 const links = [
   { label: 'Home', href: '/' },
   { label: 'AI Tools', href: '/ai-tools' },

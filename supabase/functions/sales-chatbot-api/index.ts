@@ -461,6 +461,41 @@ Deno.serve(async (req) => {
       });
     }
 
+    if (action === "tool_image_generate") {
+      const input = clean(body?.input).slice(0, 1800);
+      if (!input) return json({ error: "Please describe the image you want to create." }, 400);
+      const key = Deno.env.get("GEMINI_API_KEY");
+      if (!key) return json({ error: "Image generation is not configured. Add GEMINI_API_KEY to the server environment." }, 503);
+      const audience = clean(body?.audience).slice(0, 200) || "small business customers";
+      const tone = clean(body?.tone) || "Professional";
+      const prompt = "Create a polished, ready-to-use social media advertising image. Subject or brief: " + input +
+        ". Intended audience: " + audience + ". Style: " + tone +
+        ". Visual direction: modern blue-and-white design, clean business graphics, subtle glowing accents, strong visual hierarchy, professional commercial quality. Make the image itself; do not return a written caption or explanation. Avoid legible text unless explicitly requested in the brief.";
+      const response = await fetchWithRetry(
+        "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image:generateContent?key=" + encodeURIComponent(key),
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: prompt }] }],
+            generationConfig: { responseModalities: ["IMAGE", "TEXT"] },
+          }),
+        }
+      );
+      if (!response.ok) {
+        const detail = await response.text();
+        console.error("Gemini image generation failed", response.status, detail);
+        return json({ error: response.status === 429 ? geminiError(429) : response.status === 401 || response.status === 403 ? geminiError(response.status) : "Image generation failed. Check that the configured Gemini API key has access to the image-generation model." }, response.status === 429 ? 429 : response.status === 401 || response.status === 403 ? 502 : 502);
+      }
+      const result = await response.json();
+      const imagePart = result?.candidates?.[0]?.content?.parts?.find((part: any) => part?.inlineData?.data);
+      if (!imagePart?.inlineData?.data) {
+        console.error("Gemini image generation returned no image data");
+        return json({ error: "The image model returned no image. Please try a different topic." }, 502);
+      }
+      return json({ ok: true, imageData: imagePart.inlineData.data, mimeType: imagePart.inlineData.mimeType || "image/png" });
+    }
+
     if (action === "tool_generate") {
       const tool = clean(body?.tool);
       const allowedTools = ["email", "email_summary", "social", "automation", "writer"];

@@ -90,7 +90,7 @@ export const PublicPages: React.FC<{ page: PageId }> = ({ page }) => {
   if (page === 'automation') return <ToolPage kind="automation"/>;
   if (page === 'social') return <ToolPage kind="social"/>;
   if (page === 'writer') return <ToolPage kind="writer"/>;
-  if (page === 'ai-tools') return <CardGrid title="AI Tools" description="Choose one focused tool. Each opens on its own page and keeps its own result." />;
+  if (page === 'ai-tools') return <CardGrid title="AI Tools" description="Choose one focused tool. Each opens on its own page and keeps its own result." subset={cards.slice(0, 4)} />;
   if (page === 'demos') return <CardGrid title="Demo Library" description="Open an interactive demo and see what each tool can do." />;
   if (page === 'contact') return <main className="mx-auto max-w-3xl px-4 py-12 sm:px-6"><h1 className="text-3xl font-extrabold">Request a demo</h1><p className="mt-3 text-sm leading-6 text-slate-600">Explore the demos first, then contact your SalesChatbot team to discuss integrations and custom workflows.</p><div className="mt-6 rounded-2xl border border-slate-200 bg-white p-5"><p className="font-bold">Available demos</p><div className="mt-3 flex flex-wrap gap-3"><a className={button} href="/demos">Browse demos <ArrowRight size={16}/></a><a className="rounded-xl border border-slate-200 px-4 py-3 text-sm font-bold" href="/ai-tools">Explore AI tools</a></div></div></main>;
   return <CardGrid title="Explore the demos" description="Home is kept simple: open a demo card to visit that tool's own page." subset={[cards[4], cards[0], cards[1], cards[2], cards[3]]} />;

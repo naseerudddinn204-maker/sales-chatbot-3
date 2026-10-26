@@ -44,7 +44,7 @@ const START_MESSAGES: AgentMessage[] = [
   {
     id: 'welcome',
     role: 'assistant',
-    text: 'Hi! I’m the OrkenAI Labs AI Agent. I can help you explore our website, try chatbot demos, understand the AI tools, or learn how to request pricing and setup.',
+    text: 'Hi! I’m Labs 3.5 Flash. I can help you explore our website, try chatbot demos, understand the AI tools, or learn how to request pricing and setup.',
   },
 ];
 
@@ -101,14 +101,14 @@ export function AiAgentBubble() {
   return (
     <>
       {open && (
-        <section className="fixed bottom-24 right-4 z-[70] flex h-[min(580px,calc(100vh-8rem))] w-[min(390px,calc(100vw-2rem))] flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl shadow-slate-900/20 sm:bottom-24 sm:right-6" aria-label="AI Agent chat">
+        <section className="fixed bottom-24 right-4 z-[70] flex h-[min(580px,calc(100vh-8rem))] w-[min(390px,calc(100vw-2rem))] flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl shadow-slate-900/20 sm:bottom-24 sm:right-6" aria-label="Labs 3.5 Flash chat">
           <header className="flex items-center gap-3 bg-blue-700 px-4 py-3.5 text-white">
             <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/15"><Bot size={23} /></span>
             <div className="min-w-0 flex-1">
-              <div className="font-bold">AI Agent</div>
+              <div className="font-bold">Labs 3.5 Flash</div>
               <div className="mt-0.5 flex items-center gap-1.5 text-[11px] text-blue-100"><span className="h-2 w-2 rounded-full bg-emerald-300" /> Website help · Online</div>
             </div>
-            <button type="button" onClick={() => setOpen(false)} className="rounded-lg p-2 text-white/90 hover:bg-white/15" aria-label="Close AI Agent"><X size={18} /></button>
+            <button type="button" onClick={() => setOpen(false)} className="rounded-lg p-2 text-white/90 hover:bg-white/15" aria-label="Close Labs 3.5 Flash"><X size={18} /></button>
           </header>
           <div ref={transcriptRef} className="flex-1 space-y-3 overflow-y-auto bg-slate-50 p-3.5" aria-live="polite">
             {messages.map(message => (
@@ -123,22 +123,22 @@ export function AiAgentBubble() {
                 {suggestions.map(suggestion => <button key={suggestion} type="button" onClick={() => send(suggestion)} className="rounded-full border border-blue-200 bg-white px-3 py-1.5 text-left text-xs font-semibold text-blue-800 hover:bg-blue-50">{suggestion}</button>)}
               </div>
             )}
-            {loading && <div className="inline-flex items-center gap-1 rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-xs text-slate-500"><span className="h-1.5 w-1.5 animate-bounce rounded-full bg-slate-400" /><span className="h-1.5 w-1.5 animate-bounce rounded-full bg-slate-400 [animation-delay:120ms]" /><span className="h-1.5 w-1.5 animate-bounce rounded-full bg-slate-400 [animation-delay:240ms]" /> AI Agent is typing</div>}
+            {loading && <div className="inline-flex items-center gap-1 rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-xs text-slate-500"><span className="h-1.5 w-1.5 animate-bounce rounded-full bg-slate-400" /><span className="h-1.5 w-1.5 animate-bounce rounded-full bg-slate-400 [animation-delay:120ms]" /><span className="h-1.5 w-1.5 animate-bounce rounded-full bg-slate-400 [animation-delay:240ms]" /> Labs 3.5 Flash is typing</div>}
           </div>
           <div className="border-t border-slate-200 bg-white p-3">
             {awaitingContact && <p className="mb-2 text-xs leading-5 text-slate-600">Share your phone number or email. We’ll save your question for the manager to follow up.</p>}
             {error && <p className="mb-2 text-xs text-red-600">{error}</p>}
             <form onSubmit={event => { event.preventDefault(); void send(); }} className="flex items-center gap-2">
-              <input value={input} onChange={event => setInput(event.target.value)} placeholder={awaitingContact ? 'Your email or phone number' : 'Ask about tools, demos, or buying…'} className="min-w-0 flex-1 rounded-xl border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100" aria-label="Message AI Agent" />
+              <input value={input} onChange={event => setInput(event.target.value)} placeholder={awaitingContact ? 'Your email or phone number' : 'Ask about tools, demos, or buying…'} className="min-w-0 flex-1 rounded-xl border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100" aria-label="Message Labs 3.5 Flash" />
               <button type="submit" disabled={!input.trim() || loading} className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-700 text-white hover:bg-blue-800 disabled:cursor-not-allowed disabled:opacity-40" aria-label="Send message"><Send size={17} /></button>
             </form>
-            <p className="mt-2 text-center text-[10px] text-slate-400">OrkenAI Labs · AI Agent demo</p>
+            <p className="mt-2 text-center text-[10px] text-slate-400">Labs 3.5 Flash · Website assistant</p>
           </div>
         </section>
       )}
-      <button type="button" onClick={() => setOpen(value => !value)} className="fixed bottom-5 right-4 z-[70] inline-flex items-center gap-2 rounded-full bg-blue-700 px-4 py-3 text-sm font-bold text-white shadow-lg shadow-blue-900/25 transition hover:-translate-y-0.5 hover:bg-blue-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-700 sm:bottom-6 sm:right-6" aria-label={open ? 'Close AI Agent chat' : 'Open AI Agent chat'} aria-expanded={open}>
+      <button type="button" onClick={() => setOpen(value => !value)} className="fixed bottom-5 right-4 z-[70] inline-flex items-center gap-2 rounded-full bg-blue-700 px-4 py-3 text-sm font-bold text-white shadow-lg shadow-blue-900/25 transition hover:-translate-y-0.5 hover:bg-blue-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-700 sm:bottom-6 sm:right-6" aria-label={open ? 'Close Labs 3.5 Flash chat' : 'Open Labs 3.5 Flash chat'} aria-expanded={open}>
         {open ? <X size={19} /> : <MessageCircle size={20} />}
-        <span>AI Agent</span>
+        <span>Labs 3.5 Flash</span>
         {!open && <Sparkles size={15} className="text-blue-200" />}
       </button>
     </>

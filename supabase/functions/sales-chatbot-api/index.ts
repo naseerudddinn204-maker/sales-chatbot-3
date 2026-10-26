@@ -697,6 +697,14 @@ Deno.serve(async (req) => {
       const data = await ar.json();
       reply = clean(data?.candidates?.[0]?.content?.parts?.[0]?.text);
       if (!reply) reply = unknownReply;
+      // Deterministic fallback: don't let the model return a generic "I don't know"
+      // response for the website agent; ask for contact so the question can be logged.
+      if (
+        chatMode === "site_agent" &&
+        /i don't have that information|i don't have an answer to that question|not in my current business knowledge/i.test(reply)
+      ) {
+        reply = SITE_AGENT_MANAGER_REPLY;
+      }
     } else {
       // No Gemini key: never invent business answers.
       reply = unknownReply;

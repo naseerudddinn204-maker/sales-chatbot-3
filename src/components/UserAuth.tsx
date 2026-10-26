@@ -85,10 +85,10 @@ export function UserAuth({ mode }: { mode: Mode }) {
     : mode === 'forgot-password' ? 'Reset your password'
     : mode === 'reset-password' ? 'Choose a new password'
     : mode === 'account' ? 'Your account' : 'Welcome back';
-  const subtitle = mode === 'signup' ? 'Sign up to get started with Sales Chatbot.'
+  const subtitle = mode === 'signup' ? 'Sign up to get started with OrkenAI Labs.'
     : mode === 'forgot-password' ? 'We will email you a secure password reset link.'
     : mode === 'reset-password' ? 'Set a new password for your account.'
-    : mode === 'account' ? 'Manage your sign-in details.' : 'Log in to your Sales Chatbot account.';
+    : mode === 'account' ? 'Manage your sign-in details.' : 'Log in to your OrkenAI Labs account.';
   const inputClass = 'mt-1 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100';
 
   if (mode === 'account') {

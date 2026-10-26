@@ -6,11 +6,11 @@ type ToolId = 'all' | 'chatbot' | 'email' | 'social' | 'automation' | 'writer';
 type ToolCard = { id: Exclude<ToolId, 'all'>; title: string; description: string; label: string; icon: React.ElementType; color: string; bg: string };
 
 const tools: ToolCard[] = [
-  { id: 'chatbot', title: 'AI Chatbot', description: 'Try a business assistant that answers common customer questions and helps visitors find information.', label: 'Interactive demo', icon: Bot, color: 'text-blue-700', bg: 'bg-blue-50' },
-  { id: 'email', title: 'Email Sender & Reader', description: 'Draft professional emails, prepare replies, and summarize messages you paste in.', label: 'Email workspace', icon: Mail, color: 'text-violet-700', bg: 'bg-violet-50' },
-  { id: 'social', title: 'Auto Post Generator', description: 'Create social captions, calls to action, and hashtags for your business.', label: 'Content creation', icon: Share2, color: 'text-pink-700', bg: 'bg-pink-50' },
-  { id: 'automation', title: 'AI Automation Builder', description: 'Plan repeatable workflows with triggers, actions, and a clear next step.', label: 'Workflow planner', icon: Workflow, color: 'text-emerald-700', bg: 'bg-emerald-50' },
-  { id: 'writer', title: 'AI Content Writer', description: 'Prepare product descriptions, business copy, proposals, and short documents.', label: 'Writing assistant', icon: FileText, color: 'text-amber-700', bg: 'bg-amber-50' },
+  { id: 'chatbot', title: 'AI Chatbot', description: 'Explore a conversational assistant for common customer questions, product information, service enquiries, and guided next steps. Test the experience before deciding how it could fit your support journey.', label: 'Interactive demo', icon: Bot, color: 'text-blue-700', bg: 'bg-blue-50' },
+  { id: 'email', title: 'Email Sender & Reader', description: 'Prepare customer outreach, follow-ups, and replies in a consistent tone, then summarize incoming messages into their main points and action items. Sending remains under your control.', label: 'Email workspace', icon: Mail, color: 'text-violet-700', bg: 'bg-violet-50' },
+  { id: 'social', title: 'Auto Post Generator', description: 'Turn a campaign brief into a strong opening hook, social caption, clear call to action, and relevant hashtags. Prepare a matching visual when image generation is available, then review before publishing.', label: 'Content creation', icon: Share2, color: 'text-pink-700', bg: 'bg-pink-50' },
+  { id: 'automation', title: 'AI Automation Builder', description: 'Break a recurring task into a trigger, actions, decision points, approval checks, and exception handling. Use the plan to discuss a future integration; this demo does not run connected systems.', label: 'Workflow planner', icon: Workflow, color: 'text-emerald-700', bg: 'bg-emerald-50' },
+  { id: 'writer', title: 'AI Content Writer', description: 'Develop structured first drafts for landing pages, product descriptions, proposals, articles, and everyday business communications—with a tone and audience that match your brief.', label: 'Writing assistant', icon: FileText, color: 'text-amber-700', bg: 'bg-amber-50' },
 ];
 
 const buttonClass = 'inline-flex items-center justify-center gap-2 rounded-xl bg-blue-700 px-4 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-blue-800 disabled:cursor-not-allowed disabled:opacity-50';

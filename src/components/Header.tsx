@@ -30,12 +30,12 @@ export const Header: React.FC<HeaderProps> = ({
         <button
           onClick={() => onTabChange('home')}
           className="flex items-center gap-2.5 group text-left cursor-pointer focus:outline-none"
-          aria-label="Orken AI home"
+          aria-label="OrkenAI Labs home"
         >
           <div className="w-9 h-9 rounded-xl bg-[#1e3a5f] border border-white/10 flex items-center justify-center shadow-sm overflow-hidden transition-transform group-hover:scale-105 shrink-0">
             <img
               src="/orken-mark.svg"
-              alt="Orken AI logo"
+              alt="OrkenAI Labs logo"
               className="w-full h-full object-contain p-1"
               onError={(e) => {
                 e.currentTarget.style.display = 'none';
@@ -44,7 +44,7 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
           <div className="flex flex-col">
             <span className="font-headline text-[19px] text-white tracking-tight font-extrabold leading-none">
-              Orken AI
+              OrkenAI Labs
             </span>
             <span className="text-[10px] text-white/50 uppercase tracking-widest font-semibold mt-0.5">
               AI Automation

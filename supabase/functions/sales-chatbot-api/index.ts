@@ -579,11 +579,19 @@ Deno.serve(async (req) => {
 
       if (previousError) throw previousError;
       const previousRow = previous?.[0];
-      const previousQuestion = clean(previousRow?.user_message).slice(0, 2000);
+      const explicitSiteAgentFollowup = chatMode === "site_agent" &&
+        body?.contact_followup === true &&
+        Boolean(clean(body?.original_question)) &&
+        (isPhone(message) || isEmail(message));
+      const previousQuestion = (
+        explicitSiteAgentFollowup
+          ? clean(body?.original_question)
+          : clean(previousRow?.user_message)
+      ).slice(0, 2000);
       const previousReply = clean(previousRow?.assistant_message);
-      const askedForContact = chatMode === "site_agent"
+      const askedForContact = explicitSiteAgentFollowup || (chatMode === "site_agent"
         ? /(phone|number|email|contact|manager|i don't have that information|add the relevant details|business data|business knowledge|not related to this website)/i.test(previousReply)
-        : /phone/i.test(previousReply);
+        : /phone/i.test(previousReply));
 
       if (previousQuestion && askedForContact) {
         const contactEmail = isEmail(message) ? message.toLowerCase() : null;

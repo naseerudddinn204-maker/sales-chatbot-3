@@ -1,5 +1,5 @@
 {
-  "name": "ChatBot AI Automation",
+  "name": "OrkenAI Labs",
   "description": "Enterprise AI chatbot platform with instant live chat, human handoff guarantee, and conversational automation.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]

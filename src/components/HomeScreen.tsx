@@ -200,7 +200,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           <div className="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div className="rounded-2xl bg-white border border-gray-200 p-5">
               <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center"><MessageSquare size={20} /></div>
-              <h3 className="mt-4 font-bold">Sales Chatbot</h3>
+              <h3 className="mt-4 font-bold">OrkenAI Labs</h3>
               <p className="mt-1 text-sm text-gray-600">Answer product questions, qualify prospects, and turn visitors into leads.</p>
             </div>
             <div className="rounded-2xl bg-white border border-gray-200 p-5">

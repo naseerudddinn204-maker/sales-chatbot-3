@@ -58,7 +58,7 @@ export function ClientDashboard({ session, onLogout }: { session: SiteSession; o
   const input = 'mt-1 w-full rounded-xl border border-[#dce3f0] bg-white px-4 py-3 text-sm outline-none focus:border-[#1e3a5f] focus:ring-4 focus:ring-[#dce7f8]';
   return <div className="min-h-screen w-full overflow-x-hidden bg-[#f9f9ff] text-[#151c27]">
     <header className="sticky top-0 z-30 border-b border-white/10 bg-[#1e3a5f] shadow-sm"><div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-4 sm:px-6">
-      <div><p className="text-xs font-bold uppercase tracking-widest text-white/70">Sales Chatbot</p><h1 className="mt-1 text-xl font-extrabold text-white sm:text-2xl">Client Dashboard</h1></div>
+      <div><p className="text-xs font-bold uppercase tracking-widest text-white/70">OrkenAI Labs</p><h1 className="mt-1 text-xl font-extrabold text-white sm:text-2xl">Client Dashboard</h1></div>
       <div className="flex gap-2"><a href="/" className="inline-flex shrink-0 items-center gap-2 rounded-xl border border-white/30 px-3 py-2 text-sm font-semibold text-white transition hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-white"><ArrowLeft size={15}/><span className="hidden sm:inline">Back to website</span><span className="sm:hidden">Website</span></a><button onClick={onLogout} className="inline-flex shrink-0 items-center gap-2 rounded-xl bg-blue-600 px-3 py-2 text-sm font-bold text-white transition hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-white"><LogOut size={15}/>Log out</button></div>
     </div></header>
     <div className="mx-auto grid w-full max-w-7xl min-w-0 items-start gap-5 px-4 py-6 sm:px-6 lg:grid-cols-[230px_minmax(0,1fr)] lg:py-8">

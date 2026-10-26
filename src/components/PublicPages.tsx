@@ -21,10 +21,10 @@ const cards = [
 const button = 'inline-flex items-center justify-center gap-2 rounded-xl bg-blue-700 px-4 py-3 text-sm font-bold text-white transition hover:bg-blue-800 disabled:cursor-not-allowed disabled:opacity-50';
 const input = 'mt-2 w-full rounded-xl border border-slate-200 bg-white px-3.5 py-3 text-sm text-slate-800 outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100';
 const toolConfig: Record<string, { title: string; description: string; tool: string; placeholder: string; icon: React.ElementType }> = {
-  email: { title: 'Email Sender & Reader', description: 'Draft an email or paste one to get a clear summary. Drafts stay here for review; sending opens your own mail app.', tool: 'email', placeholder: 'e.g. Follow up with a customer after a product demo', icon: Mail },
-  automation: { title: 'AI Automation Builder', description: 'Plan a repeatable workflow with clear steps and human approval. This demo creates a plan; it does not run connected accounts.', tool: 'automation', placeholder: 'e.g. When a lead form arrives, draft a personalized follow-up for review', icon: Workflow },
-  social: { title: 'Auto Post Generator', description: 'Generate a social post and optionally create a matching campaign image.', tool: 'social', placeholder: 'e.g. Launch announcement for our new AI service', icon: Share2 },
-  writer: { title: 'AI Content Writer', description: 'Create a useful first draft for business content, product pages, proposals, or articles.', tool: 'writer', placeholder: 'e.g. Write a product description for a small-business AI assistant', icon: FileText },
+  email: { title: 'Write and Understand Emails Faster', description: 'Draft an email or paste one to get a clear summary. Drafts stay here for review; sending opens your own mail app.', tool: 'email', placeholder: 'e.g. Follow up with a customer after a product demo', icon: Mail },
+  automation: { title: 'Turn Repetitive Tasks into Workflows', description: 'Plan a repeatable workflow with clear steps and human approval. This demo creates a plan; it does not run connected accounts.', tool: 'automation', placeholder: 'e.g. When a lead form arrives, draft a personalized follow-up for review', icon: Workflow },
+  social: { title: 'Create Social Posts in Less Time', description: 'Generate a social post and optionally create a matching campaign image.', tool: 'social', placeholder: 'e.g. Launch announcement for our new AI service', icon: Share2 },
+  writer: { title: 'Turn Ideas into Clear Content', description: 'Create a useful first draft for business content, product pages, proposals, or articles.', tool: 'writer', placeholder: 'e.g. Write a product description for a small-business AI assistant', icon: FileText },
 };
 function saveTextFile(filename: string, content: string) {
   const url = URL.createObjectURL(new Blob([content], { type: 'text/plain;charset=utf-8' }));
@@ -90,10 +90,10 @@ export const PublicPages: React.FC<{ page: PageId }> = ({ page }) => {
   if (page === 'automation') return <ToolPage kind="automation"/>;
   if (page === 'social') return <ToolPage kind="social"/>;
   if (page === 'writer') return <ToolPage kind="writer"/>;
-  if (page === 'ai-tools') return <CardGrid title="AI Tools" description="Choose one focused tool. Each opens on its own page and keeps its own result." subset={cards.slice(0, 4)} />;
-  if (page === 'demos') return <CardGrid title="Demo Library" description="Open an interactive demo and see what each tool can do." />;
-  if (page === 'contact') return <main className="mx-auto max-w-3xl px-4 py-12 sm:px-6"><h1 className="text-3xl font-extrabold">Request a demo</h1><p className="mt-3 text-sm leading-6 text-slate-600">Explore the demos first, then contact your SalesChatbot team to discuss integrations and custom workflows.</p><div className="mt-6 rounded-2xl border border-slate-200 bg-white p-5"><p className="font-bold">Available demos</p><div className="mt-3 flex flex-wrap gap-3"><a className={button} href="/demos">Browse demos <ArrowRight size={16}/></a><a className="rounded-xl border border-slate-200 px-4 py-3 text-sm font-bold" href="/ai-tools">Explore AI tools</a></div></div></main>;
-  return <CardGrid title="Explore the demos" description="Home is kept simple: open a demo card to visit that tool's own page." subset={[cards[4], cards[0], cards[1], cards[2], cards[3]]} />;
+  if (page === 'ai-tools') return <CardGrid title="Tools to Get More Done" description="Choose one focused tool. Each opens on its own page and keeps its own result." subset={cards.slice(0, 4)} />;
+  if (page === 'demos') return <CardGrid title="See AI Tools in Action" description="Open an interactive demo and see what each tool can do." />;
+  if (page === 'contact') return <main className="mx-auto max-w-3xl px-4 py-12 sm:px-6"><h1 className="text-3xl font-extrabold">Let’s Discuss Your Business Needs</h1><p className="mt-3 text-sm leading-6 text-slate-600">Explore the demos first, then contact your SalesChatbot team to discuss integrations and custom workflows.</p><div className="mt-6 rounded-2xl border border-slate-200 bg-white p-5"><p className="font-bold">Available demos</p><div className="mt-3 flex flex-wrap gap-3"><a className={button} href="/demos">Browse demos <ArrowRight size={16}/></a><a className="rounded-xl border border-slate-200 px-4 py-3 text-sm font-bold" href="/ai-tools">Explore AI tools</a></div></div></main>;
+  return <CardGrid title="AI for Everyday Business Tasks" description="Home is kept simple: open a demo card to visit that tool's own page." subset={[cards[4], cards[0], cards[1], cards[2], cards[3]]} />;
 };
 export const PublicLayout: React.FC<{ children: React.ReactNode; page: PageId }> = ({ children, page }) => {
   const [menu, setMenu] = useState(false);

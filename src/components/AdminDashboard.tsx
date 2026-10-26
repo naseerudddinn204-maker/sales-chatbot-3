@@ -160,7 +160,7 @@ export function AdminDashboard() {
       {sidebarVisible && <aside className="w-full shrink-0 bg-[#111827] text-white lg:sticky lg:top-0 lg:h-screen lg:w-[220px] lg:overflow-y-auto">
         <div className="flex h-full flex-col px-3 py-3 lg:px-4 lg:py-5">
           <a href="/admin/chatbots" className="flex items-center gap-2 px-2 py-1.5">
-            <span className="flex h-9 w-9 items-center justify-center overflow-hidden rounded-2xl border border-white/20 bg-gradient-to-br from-white to-blue-50 shadow-lg shadow-blue-950/20"><img src="/orken-mark.svg" alt="Orken AI logo" className="h-full w-full object-contain p-1" /></span>
+            <span className="flex h-9 w-9 items-center justify-center overflow-hidden rounded-2xl border border-white/20 bg-gradient-to-br from-white to-blue-50 shadow-lg shadow-blue-950/20"><img src="/orken-mark.svg" alt="OrkenAI Labs logo" className="h-full w-full object-contain p-1" /></span>
             <span className="min-w-0"><span className="block text-base font-extrabold tracking-tight">OrkenAI Labs</span><span className="block text-[10px] text-white/55">Admin workspace</span></span>
           </a>
           <div className="mt-6 hidden px-2 text-[10px] font-bold uppercase tracking-[.18em] text-blue-200/60 lg:block">Workspace</div>

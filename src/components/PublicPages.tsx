@@ -91,15 +91,41 @@ function ContactInquiryForm() {
   const [business, setBusiness] = useState('');
   const [interest, setInterest] = useState('AI chatbots');
   const [message, setMessage] = useState('');
-  const [prepared, setPrepared] = useState(false);
-  return <form className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7" onSubmit={event => { event.preventDefault(); setPrepared(true); }}>
+  const [submitting, setSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState('');
+  async function submitInquiry(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setSubmitting(true);
+    setSubmitted(false);
+    setError('');
+    try {
+      const response = await callBackend<{ ok?: boolean; message?: string; error?: string }>({
+        action: 'lead',
+        name: name.trim(),
+        email: email.trim(),
+        company: business.trim(),
+        order_type: 'Business inquiry',
+        primary_goal: interest,
+        message: message.trim(),
+      });
+      if (!response?.ok) throw new Error(response?.error || 'We could not save your inquiry. Please try again.');
+      setSubmitted(true);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'We could not submit your inquiry. Please try again.');
+    } finally {
+      setSubmitting(false);
+    }
+  }
+  return <form className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7" onSubmit={submitInquiry}>
     <div><p className="text-xs font-extrabold uppercase tracking-widest text-blue-700">Business inquiry</p><h2 className="mt-2 text-2xl font-extrabold tracking-tight">Discuss your business goals</h2><p className="mt-2 text-sm leading-6 text-slate-600">Tell us about your organisation, the challenge you want to solve, and the type of AI support you are exploring. Include enough context for a useful follow-up.</p></div>
-    <div className="mt-6 grid gap-4 sm:grid-cols-2"><div><label className="block text-xs font-bold text-slate-600">Your name *</label><input required className={input} value={name} onChange={event=>{setName(event.target.value);setPrepared(false);}} placeholder="Name"/></div><div><label className="block text-xs font-bold text-slate-600">Work email *</label><input required type="email" className={input} value={email} onChange={event=>{setEmail(event.target.value);setPrepared(false);}} placeholder="you@company.com"/></div></div>
-    <div className="mt-4"><label className="block text-xs font-bold text-slate-600">Company or business</label><input className={input} value={business} onChange={event=>{setBusiness(event.target.value);setPrepared(false);}} placeholder="Company name (optional)"/></div>
-    <div className="mt-4"><label className="block text-xs font-bold text-slate-600">What are you interested in? *</label><select required className={input} value={interest} onChange={event=>{setInterest(event.target.value);setPrepared(false);}}><option>AI chatbots</option><option>Email assistant</option><option>Social content generation</option><option>AI automation workflows</option><option>Custom AI solution</option></select></div>
-    <div className="mt-4"><label className="block text-xs font-bold text-slate-600">What would you like to improve? *</label><textarea required className={input+' min-h-32'} value={message} onChange={event=>{setMessage(event.target.value);setPrepared(false);}} placeholder="Describe the repetitive task, customer need, or business goal…"/></div>
-    <button className={button+' mt-5 w-full'} type="submit">Prepare inquiry <ArrowRight size={16}/></button>
-    {prepared&&<div role="status" className="mt-4 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm leading-6 text-amber-950"><p className="font-extrabold">Your inquiry is ready to review.</p><p className="mt-1">This form is a front-end demo and is not connected to an inbox yet, so your message has not been sent. Connect a business email or form endpoint before accepting real inquiries.</p><button type="button" className="mt-3 rounded-lg border border-amber-300 bg-white px-3 py-2 text-xs font-bold" onClick={()=>navigator.clipboard?.writeText(['Business inquiry','Name: '+name,'Email: '+email,'Company: '+business,'Interested in: '+interest,'Message: '+message].join(String.fromCharCode(10)))}>Copy inquiry details</button></div>}
+    <div className="mt-6 grid gap-4 sm:grid-cols-2"><div><label className="block text-xs font-bold text-slate-600">Your name *</label><input required maxLength={120} className={input} value={name} onChange={event=>{setName(event.target.value);setSubmitted(false);setError('');}} placeholder="Name"/></div><div><label className="block text-xs font-bold text-slate-600">Work email *</label><input required maxLength={254} type="email" className={input} value={email} onChange={event=>{setEmail(event.target.value);setSubmitted(false);setError('');}} placeholder="you@company.com"/></div></div>
+    <div className="mt-4"><label className="block text-xs font-bold text-slate-600">Company or business</label><input maxLength={160} className={input} value={business} onChange={event=>{setBusiness(event.target.value);setSubmitted(false);setError('');}} placeholder="Company name (optional)"/></div>
+    <div className="mt-4"><label className="block text-xs font-bold text-slate-600">What are you interested in? *</label><select required className={input} value={interest} onChange={event=>{setInterest(event.target.value);setSubmitted(false);setError('');}}><option>AI chatbots</option><option>Email assistant</option><option>Social content generation</option><option>AI automation workflows</option><option>Custom AI solution</option></select></div>
+    <div className="mt-4"><label className="block text-xs font-bold text-slate-600">What would you like to improve? *</label><textarea required maxLength={2000} className={input+' min-h-32'} value={message} onChange={event=>{setMessage(event.target.value);setSubmitted(false);setError('');}} placeholder="Describe the repetitive task, customer need, or business goal…"/></div>
+    <button className={button+' mt-5 w-full'} type="submit" disabled={submitting}>{submitting ? 'Sending inquiry…' : 'Send inquiry'} <ArrowRight size={16}/></button>
+    {error&&<div role="alert" className="mt-4 rounded-xl border border-red-200 bg-red-50 p-4 text-sm leading-6 text-red-800"><p className="font-extrabold">Inquiry not submitted</p><p className="mt-1">{error}</p></div>}
+    {submitted&&<div role="status" className="mt-4 rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm leading-6 text-emerald-950"><p className="font-extrabold">Thanks, {name.trim()} — your inquiry has been received.</p><p className="mt-1">Your request about {interest.toLowerCase()} has been saved successfully and is available to the OrkenAI Labs team in the Admin Dashboard under Client Requests.</p><p className="mt-2 text-xs text-emerald-800">We have recorded your details and business requirements. This confirmation does not mean an email reply has been sent.</p></div>}
     <p className="mt-4 text-xs leading-5 text-slate-500">Fields marked * are required. Avoid including confidential or sensitive information.</p>
   </form>;
 }

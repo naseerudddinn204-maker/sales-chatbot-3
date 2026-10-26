@@ -14,6 +14,7 @@ const json = (body: unknown, status = 200) =>
   });
 
 const MANAGER_REPLY = "I don't have that information. Please share your phone number so our manager can contact you about this question.";
+const SITE_AGENT_MANAGER_REPLY = "I can help with this website, its AI tools, chatbot demos, and how to request pricing or setup. I don't have an answer to that question here. Please share your phone number or email address, and our manager will contact you about your question.";
 const NO_ANSWER_REPLY = "I don't have that information in my current business knowledge.";
 
 function isGreeting(message: string) {
@@ -41,6 +42,11 @@ function isPhone(value: string) {
   if (!/^\+?[\d\s().-]{7,24}$/.test(candidate)) return false;
   const digits = candidate.replace(/\D/g, "");
   return digits.length >= 7 && digits.length <= 15;
+}
+
+function isEmail(value: string) {
+  const candidate = value.trim();
+  return candidate.length <= 254 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(candidate);
 }
 
 function isTravelPlanningRequest(message: string) {
@@ -84,8 +90,9 @@ Deno.serve(async (req) => {
     }
     const action = clean(body?.action) || "chat";
     const slug = clean(body?.slug) || "sales-chatbot";
-    const chatMode = clean(body?.chat_mode) === "pricing_popup" ? "pricing_popup" : "demo";
-    const unknownReply = chatMode === "pricing_popup" ? MANAGER_REPLY : NO_ANSWER_REPLY;
+    const requestedChatMode = clean(body?.chat_mode);
+    const chatMode = requestedChatMode === "pricing_popup" ? "pricing_popup" : requestedChatMode === "site_agent" ? "site_agent" : "demo";
+    const unknownReply = chatMode === "site_agent" ? SITE_AGENT_MANAGER_REPLY : chatMode === "pricing_popup" ? MANAGER_REPLY : NO_ANSWER_REPLY;
 
     const sb = createClient(
       Deno.env.get("SUPABASE_URL")!,
@@ -557,10 +564,12 @@ Deno.serve(async (req) => {
     const hasKnowledge = Boolean(businessDescription || knowledgeText);
     const key = Deno.env.get("GEMINI_API_KEY");
 
-    // If the visitor is replying with a phone number after the bot requested a manager,
-    // save the previous visitor question and this phone number as a lead.
-    if (chatMode === "pricing_popup" && isPhone(message)) {
-      const { data: previous } = await sb
+    // Capture contact details for the floating website AI Agent, while preserving
+    // the existing phone-only flow used by the pricing popup.
+    const siteAgentContact = chatMode === "site_agent" && (isPhone(message) || isEmail(message));
+    const pricingPopupPhone = chatMode === "pricing_popup" && isPhone(message);
+    if (siteAgentContact || pricingPopupPhone) {
+      const { data: previous, error: previousError } = await sb
         .from("chatbot_messages")
         .select("user_message,assistant_message")
         .eq("chatbot_id", bot.id)
@@ -568,16 +577,22 @@ Deno.serve(async (req) => {
         .order("created_at", { ascending: false })
         .limit(1);
 
+      if (previousError) throw previousError;
       const previousRow = previous?.[0];
-      const previousQuestion = clean(previousRow?.user_message);
+      const previousQuestion = clean(previousRow?.user_message).slice(0, 2000);
       const previousReply = clean(previousRow?.assistant_message);
+      const askedForContact = chatMode === "site_agent"
+        ? /(phone|number|email|contact|manager)/i.test(previousReply)
+        : /phone/i.test(previousReply);
 
-      if (previousQuestion && previousReply.toLowerCase().includes("phone")) {
+      if (previousQuestion && askedForContact) {
+        const contactEmail = isEmail(message) ? message.toLowerCase() : null;
+        const contactPhone = isPhone(message) ? message : null;
         const { error: leadError } = await sb.from("leads").insert({
           name: "Website Chat Visitor",
-          email: null,
+          email: contactEmail,
           company: null,
-          phone: message,
+          phone: contactPhone,
           message: previousQuestion,
           company_website: null,
           traffic_volume: null,
@@ -586,7 +601,7 @@ Deno.serve(async (req) => {
 
         if (leadError) throw leadError;
 
-        const reply = "Thank you! Your contact number has been recorded. Our manager will follow up with you.";
+        const reply = "Thank you! Your contact details and question have been saved. Our manager will contact you soon.";
         await sb.from("chatbot_messages").insert({
           chatbot_id: bot.id,
           session_id: sessionId,

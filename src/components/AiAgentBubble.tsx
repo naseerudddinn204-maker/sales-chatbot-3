@@ -28,6 +28,14 @@ RESPONSE RULES
 Answer based on this knowledge and address only what the visitor asked. When asked how to use a tool, give the relevant page path and a practical next step. If the visitor asks an unrelated question or something this knowledge does not cover, do not answer it. Reply: "I can't answer that because it isn't related to this website. If you share your mobile number or email address, I'll forward it to my manager, and they'll contact you as soon as possible." Do not answer the unrelated question. Confirm that contact details were saved only if the backend confirms the lead was saved.
 `.trim();
 
+function isContactValue(value: string) {
+  const candidate = value.trim();
+  const digits = candidate.replace(/\D/g, '');
+  const phone = /^\+?[\d\s().-]{7,24}$/.test(candidate) && digits.length >= 7 && digits.length <= 15;
+  const email = candidate.length <= 254 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(candidate);
+  return phone || email;
+}
+
 function cleanAgentReply(value: string) {
   return value
     .replace(/\*\*(.*?)\*\*/g, '$1')
@@ -71,8 +79,14 @@ export function AiAgentBubble() {
     setMessages(current => [...current, { id: String(Date.now()), role: 'user', text }]);
     setLoading(true);
     try {
+      const contactFollowup = awaitingContact && isContactValue(text);
+      const originalQuestion = contactFollowup
+        ? [...messages].reverse().find(message => message.role === 'user' && !isContactValue(message.text))?.text
+        : undefined;
       const result = await callBackend<{ reply?: string; session_id?: string; lead_saved?: boolean }>({
         message: text,
+        contact_followup: contactFollowup,
+        original_question: originalQuestion,
         session_id: sessionId || undefined,
         slug: 'sales-chatbot',
         chat_mode: 'site_agent',

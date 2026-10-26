@@ -14,7 +14,7 @@ const json = (body: unknown, status = 200) =>
   });
 
 const MANAGER_REPLY = "I don't have that information. Please share your phone number so our manager can contact you about this question.";
-const SITE_AGENT_MANAGER_REPLY = "I can help with this website, its AI tools, chatbot demos, and how to request pricing or setup. I don't have an answer to that question here. Please share your phone number or email address, and our manager will contact you about your question.";
+const SITE_AGENT_MANAGER_REPLY = "I can't answer that because it isn't related to this website. If you share your mobile number or email address, I'll forward it to my manager, and they'll contact you as soon as possible.";
 const NO_ANSWER_REPLY = "I don't have that information in my current business knowledge.";
 
 function isGreeting(message: string) {

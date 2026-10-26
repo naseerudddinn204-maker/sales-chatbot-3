@@ -80,8 +80,11 @@ export function AiAgentBubble() {
         knowledge_text: SITE_CONTEXT,
       });
       if (result.session_id) setSessionId(result.session_id);
-      const reply = cleanAgentReply(result.reply || 'Sorry, I could not prepare an answer. Please try again.');
-      setAwaitingContact(/phone number or email|email address|contact details/i.test(reply));
+      const cleanedReply = cleanAgentReply(result.reply || 'Sorry, I could not prepare an answer. Please try again.');
+      const reply = /i don't have that information|i don't have an answer to that question|add the relevant details in the business knowledge/i.test(cleanedReply)
+        ? "I can't answer that because it isn't related to this website. If you share your mobile number or email address, I'll forward it to my manager, and they'll contact you as soon as possible."
+        : cleanedReply;
+      setAwaitingContact(/phone number or email|email address|contact details|mobile number/i.test(reply));
       setMessages(current => [...current, { id: String(Date.now() + 1), role: 'assistant', text: reply }]);
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Please try again in a moment.';

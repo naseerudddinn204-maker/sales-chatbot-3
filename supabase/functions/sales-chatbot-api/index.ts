@@ -582,7 +582,7 @@ Deno.serve(async (req) => {
       const previousQuestion = clean(previousRow?.user_message).slice(0, 2000);
       const previousReply = clean(previousRow?.assistant_message);
       const askedForContact = chatMode === "site_agent"
-        ? /(phone|number|email|contact|manager)/i.test(previousReply)
+        ? /(phone|number|email|contact|manager|i don't have that information|add the relevant details|business data|business knowledge|not related to this website)/i.test(previousReply)
         : /phone/i.test(previousReply);
 
       if (previousQuestion && askedForContact) {

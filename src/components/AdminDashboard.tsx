@@ -161,7 +161,7 @@ export function AdminDashboard() {
         <div className="flex h-full flex-col px-3 py-3 lg:px-4 lg:py-5">
           <a href="/admin/chatbots" className="flex items-center gap-2 px-2 py-1.5">
             <span className="flex h-9 w-9 items-center justify-center overflow-hidden rounded-2xl border border-white/20 bg-gradient-to-br from-white to-blue-50 shadow-lg shadow-blue-950/20"><img src="/orken-mark.svg" alt="Orken AI logo" className="h-full w-full object-contain p-1" /></span>
-            <span className="min-w-0"><span className="block text-base font-extrabold tracking-tight">SalesChatbot</span><span className="block text-[10px] text-white/55">Admin workspace</span></span>
+            <span className="min-w-0"><span className="block text-base font-extrabold tracking-tight">OrkenAI Labs</span><span className="block text-[10px] text-white/55">Admin workspace</span></span>
           </a>
           <div className="mt-6 hidden px-2 text-[10px] font-bold uppercase tracking-[.18em] text-blue-200/60 lg:block">Workspace</div>
           <nav className="mt-3 grid grid-cols-2 sm:grid-cols-4 gap-1.5 lg:flex lg:flex-col" aria-label="Dashboard pages">
@@ -183,7 +183,7 @@ export function AdminDashboard() {
         <div className="flex min-h-[82px] w-full items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8">
           <div className="min-w-0">
             <div className="truncate text-xl font-extrabold tracking-tight text-[#10233f]">{adminPage==='dashboard'?'Dashboard overview':adminPage==='settings'?'Settings':adminPage==='users'?'Registered Users':adminPage==='requests'?'Client Requests':adminPage==='questions'?'Client Questions':adminPage==='pricing-orders'?'Pricing Orders':'Chatbot Workspace'}</div>
-            <div className="truncate text-xs text-slate-500">SalesChatbot  /  Manage your business workspace</div>
+            <div className="truncate text-xs text-slate-500">OrkenAI Labs  /  Manage your business workspace</div>
           </div>
           <div className="flex shrink-0 items-center gap-2">
             <button onClick={() => setSidebarVisible(v => !v)} aria-label={sidebarVisible ? "Hide sidebar" : "Show sidebar"} title={sidebarVisible ? "Hide sidebar" : "Show sidebar"} className="flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-600 transition hover:bg-slate-50">

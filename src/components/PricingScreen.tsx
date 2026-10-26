@@ -9,7 +9,7 @@ const emptyForm:OrderForm={name:'',email:'',phone:'',company:'',website:'',messa
 
 export const PricingScreen:React.FC<PricingScreenProps>=({onNavigateToContact,onOpenLiveChat,onShowToast})=>{
  const[annual,setAnnual]=useState(true),[plans,setPlans]=useState<Plan[]>([]),[faq,setFaq]=useState<number|null>(0);
- const[chatbotName,setChatbotName]=useState('Sales Chatbot');
+ const[chatbotName,setChatbotName]=useState('OrkenAI Labs');
  const[orderPlan,setOrderPlan]=useState<Plan|null>(null),[billing,setBilling]=useState<'monthly'|'annual'>('annual');
  const[form,setForm]=useState<OrderForm>(emptyForm),[submitting,setSubmitting]=useState(false),[submitted,setSubmitted]=useState(false),[footerPage,setFooterPage]=useState<string|null>(null);
  useEffect(()=>{callBackend<{prices:Plan[];chatbot?:{name?:string}}>({action:'config',slug:'sales-chatbot'}).then(r=>{setPlans(r.prices||[]);if(r.chatbot?.name)setChatbotName(r.chatbot.name)}).catch(()=>setPlans([]))},[]);

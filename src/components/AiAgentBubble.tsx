@@ -83,7 +83,7 @@ export function AiAgentBubble() {
       if (contactFollowup && sessionId) {
         const result = await callBackend<{ message?: string; lead_saved?: boolean }>({
           action: 'manager_followup',
-          phone: text,
+          contact: text,
           consent: true,
           session_id: sessionId,
           slug: 'sales-chatbot',

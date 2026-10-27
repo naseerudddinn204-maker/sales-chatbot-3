@@ -80,26 +80,34 @@ export function AiAgentBubble() {
     setLoading(true);
     try {
       const contactFollowup = awaitingContact && isContactValue(text);
-      const originalQuestion = contactFollowup
-        ? [...messages].reverse().find(message => message.role === 'user' && !isContactValue(message.text))?.text
-        : undefined;
-      const result = await callBackend<{ reply?: string; session_id?: string; lead_saved?: boolean }>({
-        message: text,
-        contact_followup: contactFollowup,
-        original_question: originalQuestion,
-        session_id: sessionId || undefined,
-        slug: 'sales-chatbot',
-        chat_mode: 'site_agent',
-        business_description: SITE_CONTEXT,
-        knowledge_text: SITE_CONTEXT,
-      });
-      if (result.session_id) setSessionId(result.session_id);
-      const cleanedReply = cleanAgentReply(result.reply || 'Sorry, I could not prepare an answer. Please try again.');
-      const reply = /i don't have that information|i don't have an answer to that question|add the relevant details in the business knowledge/i.test(cleanedReply)
-        ? "I can't answer that because it isn't related to this website. If you share your mobile number or email address, I'll forward it to my manager, and they'll contact you as soon as possible."
-        : cleanedReply;
-      setAwaitingContact(/phone number or email|email address|contact details|mobile number/i.test(reply));
-      setMessages(current => [...current, { id: String(Date.now() + 1), role: 'assistant', text: reply }]);
+      if (contactFollowup && sessionId) {
+        const result = await callBackend<{ message?: string; lead_saved?: boolean }>({
+          action: 'manager_followup',
+          phone: text,
+          consent: true,
+          session_id: sessionId,
+          slug: 'sales-chatbot',
+        });
+        const reply = result.message || 'Thank you! Your contact number has been recorded for manager follow-up.';
+        setAwaitingContact(false);
+        setMessages(current => [...current, { id: String(Date.now() + 1), role: 'assistant', text: reply }]);
+      } else {
+        const result = await callBackend<{ reply?: string; session_id?: string; lead_saved?: boolean }>({
+          message: text,
+          session_id: sessionId || undefined,
+          slug: 'sales-chatbot',
+          chat_mode: 'site_agent',
+          business_description: SITE_CONTEXT,
+          knowledge_text: SITE_CONTEXT,
+        });
+        if (result.session_id) setSessionId(result.session_id);
+        const cleanedReply = cleanAgentReply(result.reply || 'Sorry, I could not prepare an answer. Please try again.');
+        const reply = /i don't have that information|i don't have an answer to that question|add the relevant details in the business knowledge/i.test(cleanedReply)
+          ? "I can't answer that because it isn't related to this website. If you share your phone number, our manager can follow up with you about your question."
+          : cleanedReply;
+        setAwaitingContact(/phone number|contact details|mobile number/i.test(reply));
+        setMessages(current => [...current, { id: String(Date.now() + 1), role: 'assistant', text: reply }]);
+      }
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Please try again in a moment.';
       setError(message);

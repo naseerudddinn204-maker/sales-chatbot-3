@@ -63,6 +63,7 @@ export function AiAgentBubble() {
   const [loading, setLoading] = useState(false);
   const [sessionId, setSessionId] = useState('');
   const [awaitingContact, setAwaitingContact] = useState(false);
+  const [followupCompleted, setFollowupCompleted] = useState(false);
   const [error, setError] = useState('');
   const transcriptRef = useRef<HTMLDivElement>(null);
 
@@ -79,6 +80,11 @@ export function AiAgentBubble() {
     setMessages(current => [...current, { id: String(Date.now()), role: 'user', text }]);
     setLoading(true);
     try {
+      if (followupCompleted && /^(ok(?:ay)?|thanks?|thank you|got it|alright|understood|great|cool)[!.?\s]*$/i.test(text)) {
+        setMessages(current => [...current, { id: String(Date.now() + 1), role: 'assistant', text: "You're welcome! Our manager can follow up using the contact details you shared. Is there anything else about our website I can help you with?" }]);
+        return;
+      }
+      if (followupCompleted) setFollowupCompleted(false);
       const contactFollowup = awaitingContact && isContactValue(text);
       if (contactFollowup && sessionId) {
         const result = await callBackend<{ message?: string; lead_saved?: boolean }>({
@@ -90,6 +96,7 @@ export function AiAgentBubble() {
         });
         const reply = result.message || 'Thank you! Your contact number has been recorded for manager follow-up.';
         setAwaitingContact(false);
+        setFollowupCompleted(true);
         setMessages(current => [...current, { id: String(Date.now() + 1), role: 'assistant', text: reply }]);
       } else {
         const result = await callBackend<{ reply?: string; session_id?: string; lead_saved?: boolean }>({

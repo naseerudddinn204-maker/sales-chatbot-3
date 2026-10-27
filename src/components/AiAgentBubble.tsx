@@ -80,6 +80,10 @@ export function AiAgentBubble() {
     setMessages(current => [...current, { id: String(Date.now()), role: 'user', text }]);
     setLoading(true);
     try {
+      if (!awaitingContact && /\b(price|pricing|cost|monthly|per month|subscription|how much|chatbot fee|chatbot cost)\b/i.test(text)) {
+        setMessages(current => [...current, { id: String(Date.now() + 1), role: 'assistant', text: "We don’t have a confirmed monthly chatbot price list on this website yet. Please visit the Contact page at /contact to request pricing and setup details from our team." }]);
+        return;
+      }
       if (!awaitingContact && /^(ok(?:ay)?|thanks?|thank you|got it|alright|understood|great|cool)[!.?\\s]*$/i.test(text)) {
         setMessages(current => [...current, { id: String(Date.now() + 1), role: 'assistant', text: "Sounds good! Let me know which AI tool or demo you’d like help with, and I’ll guide you to the right page." }]);
         return;

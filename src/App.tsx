@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { AdminDashboard } from './components/AdminDashboard';
 import { EmbedChat } from './components/EmbedChat';
+import { AiAgentBubble } from './components/AiAgentBubble';
 import { ChatbotCatalog } from './components/ChatbotCatalog';
 import { AiToolsPlatform } from './components/AiToolsPlatform';
 import { PublicLayout, PublicPages } from './components/PublicPages';
@@ -49,8 +50,8 @@ export default function App() {
   }
   if (path.startsWith('/admin/')) return <AdminDashboard />;
   if (path.startsWith('/embed/')) return <EmbedChat slug={decodeURIComponent(path.split('/embed/')[1] || 'sales-chatbot')} />;
-  if (path === '/chatbots') return <ChatbotCatalog />;
-  if (path === '/workspace') return <AiToolsPlatform />;
+  if (path === '/chatbots') return <><ChatbotCatalog /><AiAgentBubble /></>;
+  if (path === '/workspace') return <><AiToolsPlatform /><AiAgentBubble /></>;
 
   const routeMap: Record<string, 'home' | 'ai-tools' | 'email' | 'automation' | 'social' | 'writer' | 'demos' | 'contact'> = {
     '/': 'home',
@@ -63,5 +64,5 @@ export default function App() {
     '/contact': 'contact',
   };
   const page = routeMap[path] || 'home';
-  return <PublicLayout page={page}><PublicPages page={page} /></PublicLayout>;
+  return <PublicLayout page={page}><PublicPages page={page} /><AiAgentBubble /></PublicLayout>;
 }

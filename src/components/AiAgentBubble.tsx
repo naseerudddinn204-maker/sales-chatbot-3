@@ -96,7 +96,7 @@ export function AiAgentBubble() {
           message: text,
           session_id: sessionId || undefined,
           slug: 'sales-chatbot',
-          chat_mode: 'site_agent',
+          chat_mode: 'pricing_popup',
           business_description: SITE_CONTEXT,
           knowledge_text: SITE_CONTEXT,
         });

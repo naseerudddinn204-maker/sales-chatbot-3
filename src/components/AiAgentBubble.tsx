@@ -80,6 +80,10 @@ export function AiAgentBubble() {
     setMessages(current => [...current, { id: String(Date.now()), role: 'user', text }]);
     setLoading(true);
     try {
+      if (!awaitingContact && /^(ok(?:ay)?|thanks?|thank you|got it|alright|understood|great|cool)[!.?\\s]*$/i.test(text)) {
+        setMessages(current => [...current, { id: String(Date.now() + 1), role: 'assistant', text: "Sounds good! Let me know which AI tool or demo you’d like help with, and I’ll guide you to the right page." }]);
+        return;
+      }
       if (followupCompleted && /^(ok(?:ay)?|thanks?|thank you|got it|alright|understood|great|cool)[!.?\s]*$/i.test(text)) {
         setMessages(current => [...current, { id: String(Date.now() + 1), role: 'assistant', text: "You're welcome! Our manager can follow up using the contact details you shared. Is there anything else about our website I can help you with?" }]);
         return;

@@ -1,8 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { FileText, MessageCircle, Send, Upload, X, ChevronDown, ChevronUp, Mic, MicOff, Volume2, VolumeX, ArrowLeft } from 'lucide-react';
-import { Header } from './Header';
-import { HomeScreen } from './HomeScreen';
-import { ScreenTab } from '../types';
 
 const SUPABASE_URL = 'https://tlkmcfpzfdokcnyyvkov.supabase.co';
 const SUPABASE_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY || 'sb_publishable_-gNvioLExBonu8hGuWa8lQ_eIWmhMn6';
@@ -350,19 +347,9 @@ export function EmbedChat({ slug }: { slug: string }) {
 
   return (
     <div className="relative w-full min-h-screen overflow-hidden bg-[#f9f9ff]">
-      <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
-        <div className="min-h-screen scale-[1.02] blur-[7px] opacity-75">
-          <Header
-            currentTab={'home' as ScreenTab}
-            onTabChange={() => {}}
-            isFramedView={false}
-            onToggleFrameView={() => {}}
-          />
-          <main className="pt-16">
-            <HomeScreen onNavigateToDemo={() => {}} onNavigateToContact={() => {}} onOpenLiveChat={() => {}} />
-          </main>
-        </div>
-        <div className="absolute inset-0 bg-white/45" />
+      <div className="absolute inset-0 pointer-events-none bg-gradient-to-br from-slate-50 via-white to-blue-50" aria-hidden="true">
+        <div className="absolute -left-24 -top-24 h-72 w-72 rounded-full bg-blue-100/60 blur-3xl" />
+        <div className="absolute -bottom-24 -right-24 h-72 w-72 rounded-full bg-indigo-100/50 blur-3xl" />
       </div>
 
       <div className="relative z-50 w-full min-h-screen flex items-center justify-center p-2.5 sm:p-4 md:p-6">

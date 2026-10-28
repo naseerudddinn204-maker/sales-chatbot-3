@@ -10,11 +10,19 @@ type Message = { role: 'user' | 'assistant'; text: string };
 const headers = { apikey: SUPABASE_KEY, Authorization: 'Bearer ' + SUPABASE_KEY, 'Content-Type': 'application/json' };
 
 function looksLikePhone(value: string) {
-  const candidate = value.trim();
+  const candidate = value.trim().replace(/\\+$/, '').trim();
   // Only treat a phone-number-only reply as contact information; ignore budgets and other text with digits.
   if (!/^\+?[\d\s().-]{7,24}$/.test(candidate)) return false;
   const digits = candidate.replace(/\D/g, '');
   return digits.length >= 7 && digits.length <= 15;
+}
+
+function looksLikeEmail(value: string) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
+}
+
+function looksLikeContact(value: string) {
+  return looksLikeEmail(value) || looksLikePhone(value);
 }
 
 export function EmbedChat({ slug }: { slug: string }) {
@@ -250,11 +258,11 @@ export function EmbedChat({ slug }: { slug: string }) {
     };
   }, [slug]);
 
-  async function saveLead(phone: string) {
+  async function saveLead(contact: string) {
     const response = await fetch(API, {
       method: 'POST',
       headers,
-      body: JSON.stringify({ action: 'manager_followup', phone, slug, session_id: session, consent: true }),
+      body: JSON.stringify({ action: 'manager_followup', contact: contact.trim().replace(/\\+$/, '').trim(), slug, session_id: session, consent: true }),
     });
     const data = await response.json().catch(() => ({}));
     if (!response.ok || data?.ok !== true) {
@@ -295,14 +303,14 @@ export function EmbedChat({ slug }: { slug: string }) {
     setBackendError('');
     const previousAssistant = [...messages].reverse().find(m => m.role === 'assistant')?.text || '';
     const previousQuestion = [...messages].reverse().find(m => m.role === 'user')?.text || '';
-    const isPhoneReply = looksLikePhone(text) && /phone|number|contact/i.test(previousAssistant);
+    const isContactReply = looksLikeContact(text) && /phone|number|contact|email|address/i.test(previousAssistant);
     setInput('');
     setMessages(m => [...m, { role: 'user', text }]);
     setLoading(true);
     try {
-      if (isPhoneReply && previousQuestion) {
+      if (isContactReply && previousQuestion) {
         await saveLead(text);
-        setMessages(m => [...m, { role: 'assistant', text: 'Thank you! Your contact number has been recorded. Our manager will follow up with you.' }]);
+        setMessages(m => [...m, { role: 'assistant', text: 'Thank you! Your contact details and question have been recorded. Our manager will follow up with you.' }]);
         return;
       }
 

@@ -3,6 +3,8 @@ import { Bot, Code2, LogOut, Plus, Save, Trash2, DollarSign, Copy, Check, Clipbo
 import { createChatbot, createPrice, deleteChatbot, deletePrice, getAdminUser, getSession, listChatbots, listLeads, listPrices, listProfiles, signOut, updateChatbot, updatePrice } from '../lib/supabaseAdmin';
 import { AdminLogin } from './AdminLogin';
 import { PricingOrdersPanel } from './PricingOrdersPanel';
+import { KnowledgeUploader } from './KnowledgeUploader';
+import { callBackend } from '../lib/backendApi';
 
 type Bot = { id:string; name:string; slug:string; description:string; system_prompt:string; welcome_message:string; enabled:boolean; embed_code?:string; logo_url?:string; brand_color?:string; knowledge_description?:string; knowledge_text?:string };
 type Price = { id:string; plan_name:string; monthly_price:number; annual_price:number; description:string; features:string[]; highlighted:boolean; enabled:boolean; sort_order:number };
@@ -36,6 +38,10 @@ export function AdminDashboard() {
   const [requestSortAsc, setRequestSortAsc] = useState(false);
   const [requestPage, setRequestPage] = useState(1);
   const [selectedRequest, setSelectedRequest] = useState<Lead | null>(null);
+  const [trainingQuestion, setTrainingQuestion] = useState('What services do you offer?');
+  const [trainingReply, setTrainingReply] = useState('');
+  const [trainingBusy, setTrainingBusy] = useState(false);
+  const [trainingError, setTrainingError] = useState('');
 
   async function load() {
     setLoading(true);
@@ -56,6 +62,24 @@ export function AdminDashboard() {
 
   useEffect(() => { if (loggedIn) load(); else setLoading(false); }, [loggedIn]);
   useEffect(() => { if (selected) listPrices(selected.id).then(setPrices).catch(() => setPrices([])); }, [selected?.id]);
+  useEffect(() => {
+    if (!selected) return;
+    const slug = selected.slug.toLowerCase();
+    const question = slug.includes('auto-service') ? 'What services do you offer and what is the sample oil change price?' :
+      slug.includes('beauty') ? 'What treatments do you offer and when are you open?' :
+      slug.includes('clinic') ? 'What are your sample opening hours, and can you diagnose symptoms?' :
+      slug.includes('event-planner') ? 'What sample packages do you offer for 20 guests?' :
+      slug.includes('fashion') ? 'What products and sample prices are in your collection?' :
+      slug.includes('finance') ? 'What are your support hours, and should I share my password?' :
+      slug.includes('food-order') ? 'What is on the sample menu and can I place an order here?' :
+      slug.includes('online-tutor') ? 'Which subjects do you offer and how much is one-to-one tutoring?' :
+      slug.includes('property-finder') ? 'What sample rental listings do you have, and are they real available homes?' :
+      slug.includes('travel-concierge') ? 'What sample travel packages do you offer, and are flights included?' :
+      'What services do you offer?';
+    setTrainingQuestion(question);
+    setTrainingReply('');
+    setTrainingError('');
+  }, [selected?.id]);
 
   if (!loggedIn) return <AdminLogin onLoggedIn={() => setLoggedIn(true)} />;
   if (loading) return <div className="min-h-screen bg-[#f4f5f9] p-5 sm:p-8"><div className="mx-auto max-w-6xl"><div className="mb-8 h-10 w-64 animate-pulse rounded-xl bg-slate-200"/><div className="grid grid-cols-2 gap-4 lg:grid-cols-5">{Array.from({length:5},(_,i)=><div key={i} className="h-28 animate-pulse rounded-2xl border border-slate-200 bg-white"/>)}</div><div className="mt-6 grid gap-4 lg:grid-cols-[1fr_1.3fr]"><div className="h-72 animate-pulse rounded-2xl border border-slate-200 bg-white"/><div className="h-72 animate-pulse rounded-2xl border border-slate-200 bg-white"/></div><p className="mt-5 text-sm text-slate-500">Loading your live dashboard data…</p></div></div>;
@@ -144,6 +168,29 @@ export function AdminDashboard() {
     if (!confirm('Delete this pricing plan?')) return;
     await deletePrice(id);
     setPrices(prices.filter(p => p.id !== id));
+  }
+
+  async function testSelectedBot() {
+    if (!selected || !trainingQuestion.trim()) return;
+    setTrainingBusy(true);
+    setTrainingReply('');
+    setTrainingError('');
+    try {
+      const result = await callBackend<{ ok?: boolean; reply?: string }>({
+        slug: selected.slug,
+        message: trainingQuestion.trim(),
+        session_id: `admin-training-${selected.id}`,
+        chat_mode: 'demo',
+        business_description: selected.knowledge_description || '',
+        knowledge_text: selected.knowledge_text || '',
+      });
+      if (!result?.reply) throw new Error('The chatbot returned no answer.');
+      setTrainingReply(result.reply);
+    } catch (error) {
+      setTrainingError(error instanceof Error ? error.message : 'Could not test this chatbot.');
+    } finally {
+      setTrainingBusy(false);
+    }
   }
 
   async function copyEmbed() {
@@ -367,6 +414,29 @@ export function AdminDashboard() {
                       onChange={e=>setSelected({...selected,knowledge_text:e.target.value})}
                       placeholder={"Add extra approved information here.\n\nChatbot instructions:\n- Answer only about this business.\n- Use only the information supplied above.\n- Never guess or invent facts.\n- If the answer is not available, ask for the visitor's phone number so the manager can follow up.\n- Do not answer unrelated questions."}
                     />
+
+                    <KnowledgeUploader
+                      slug={selected.slug}
+                      onUploaded={knowledgeText => setSelected(current => current ? { ...current, knowledge_text: knowledgeText } : current)}
+                    />
+
+                    <div className="mt-4 rounded-2xl border border-violet-100 bg-violet-50/60 p-4 sm:p-5">
+                      <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+                        <div>
+                          <h4 className="font-bold text-sm text-violet-950">Train & test this chatbot</h4>
+                          <p className="mt-1 text-xs leading-5 text-violet-900">Har chatbot ki apni business knowledge aur test question hai. Pehle upar information edit karke Save karein, phir yahan se response check karein. Test current editor fields use karta hai.</p>
+                        </div>
+                        <span className="shrink-0 rounded-full bg-white px-3 py-1 text-[11px] font-bold text-violet-700">{(selected.knowledge_description || '').trim() || (selected.knowledge_text || '').trim() ? 'Knowledge added' : 'Knowledge needed'}</span>
+                      </div>
+                      <label className="mt-4 mb-1 block text-xs font-semibold text-slate-700">Test question</label>
+                      <textarea className={inputClass} rows={2} value={trainingQuestion} onChange={e => setTrainingQuestion(e.target.value)} placeholder="Ask a question this chatbot should answer..." />
+                      <div className="mt-3 flex flex-wrap gap-2">
+                        <button type="button" disabled={trainingBusy || !trainingQuestion.trim()} onClick={testSelectedBot} className="inline-flex items-center justify-center gap-2 rounded-xl bg-violet-700 px-4 py-2.5 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-60">{trainingBusy ? <RefreshCw size={15} className="animate-spin"/> : <Bot size={15}/>} {trainingBusy ? 'Testing response…' : 'Test chatbot'}</button>
+                        <a href={liveUrl} target="_blank" rel="noreferrer" className="inline-flex items-center justify-center gap-2 rounded-xl border border-violet-200 bg-white px-4 py-2.5 text-sm font-semibold text-violet-800"><ExternalLink size={15}/> Open live demo</a>
+                      </div>
+                      {trainingError && <div role="alert" className="mt-3 rounded-xl border border-red-200 bg-red-50 p-3 text-xs text-red-700">{trainingError}</div>}
+                      {trainingReply && <div className="mt-3 rounded-xl border border-slate-200 bg-white p-4"><div className="text-[11px] font-bold uppercase tracking-wide text-slate-500">Chatbot response</div><p className="mt-2 whitespace-pre-wrap break-words text-sm leading-6 text-slate-800">{trainingReply}</p></div>}
+                    </div>
 
                     <div className="mt-4 rounded-2xl border border-blue-100 bg-blue-50 p-4">
                       <h4 className="font-bold text-sm text-blue-950">How to use this chatbot</h4>

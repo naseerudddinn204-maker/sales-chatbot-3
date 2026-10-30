@@ -63,12 +63,12 @@ export function WebsiteChatbotDemo() {
     setScan(null); setMessages([]); setNotice(''); setWebsite(''); setQuestion('');
   }
 
-  return <main className="mx-auto max-w-7xl px-4 py-9 sm:px-6 lg:px-8">
-    <a href="/ai-tools" className="text-sm font-bold text-blue-700 hover:text-blue-900">← All AI tools</a>
-    <div className="mt-5 flex items-start gap-4">
+  return <main className={scan ? "fixed inset-0 z-[100] h-[100dvh] w-screen overflow-hidden bg-slate-100" : "mx-auto max-w-7xl px-4 py-9 sm:px-6 lg:px-8"}>
+    {!scan&&<a href="/ai-tools" className="text-sm font-bold text-blue-700 hover:text-blue-900">← All AI tools</a>}
+    {!scan&&<div className="mt-5 flex items-start gap-4">
       <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-blue-50 text-blue-700"><Bot size={25}/></span>
       <div><p className="text-xs font-extrabold uppercase tracking-widest text-blue-700">OrkenAI Labs · Interactive demo</p><h1 className="mt-1 text-2xl font-extrabold tracking-tight sm:text-3xl">Build a chatbot from your website</h1><p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600">Enter a public website address. We’ll read a limited set of public pages and place a floating chatbot over your website preview.</p></div>
-    </div>
+    </div>}
 
     {!scan ? <section className="mt-7 grid gap-5 lg:grid-cols-[1.1fr_.9fr]">
       <form onSubmit={createDemo} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
@@ -86,12 +86,12 @@ export function WebsiteChatbotDemo() {
         </div>
         <div className="mt-6 rounded-xl border border-emerald-100 bg-emerald-50/70 p-4"><div className="flex items-center gap-2 text-sm font-extrabold text-emerald-900"><ShieldCheck size={17}/> Private, temporary demo</div><p className="mt-1 text-xs leading-5 text-emerald-900/80">Website text stays in this browser session for testing and is not saved as a permanent chatbot or shared with other demos.</p></div>
       </section>
-    </section> : <section className="mt-7 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 bg-white p-4 sm:px-5"><div className="flex min-w-0 items-center gap-3"><span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-700"><CheckCircle2 size={21}/></span><div className="min-w-0"><h2 className="truncate text-sm font-extrabold">{scan.title || new URL(scan.website_url).hostname}</h2><p className="truncate text-xs text-slate-500">{scan.website_url} · {scan.pages_scanned} pages scanned</p></div></div><div className="flex gap-2"><button type="button" className="rounded-lg border border-slate-200 px-3 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50" onClick={()=>setShowPreview(!showPreview)}>{showPreview?'Hide':'Show'} preview</button><button type="button" className="inline-flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50" onClick={resetDemo}><RefreshCw size={14}/> New website</button></div></div>
+    </section> : <section className="h-full w-full overflow-hidden bg-white">
+      <div className="absolute left-3 right-3 top-3 z-30 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-200/80 bg-white/95 p-3 shadow-lg backdrop-blur sm:left-5 sm:right-5 sm:top-5 sm:px-5"><div className="flex min-w-0 items-center gap-3"><span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-700"><CheckCircle2 size={21}/></span><div className="min-w-0"><h2 className="truncate text-sm font-extrabold">{scan.title || new URL(scan.website_url).hostname}</h2><p className="truncate text-xs text-slate-500">{scan.website_url} · {scan.pages_scanned} pages scanned</p></div></div><div className="flex gap-2"><button type="button" className="rounded-lg border border-slate-200 px-3 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50" onClick={()=>setShowPreview(!showPreview)}>{showPreview?'Hide':'Show'} preview</button><button type="button" className="inline-flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50" onClick={resetDemo}><RefreshCw size={14}/> New website</button></div></div>
       {notice&&<p role="status" className="border-b border-blue-100 bg-blue-50 px-5 py-2.5 text-xs text-blue-900">{notice}</p>}
       {showPreview&&<section className="relative overflow-hidden bg-slate-100">
-        <div className="flex items-center justify-between gap-3 border-b border-slate-200 bg-white px-4 py-3"><div className="min-w-0"><h3 className="text-xs font-extrabold uppercase tracking-wider text-slate-600">Live website preview</h3><p className="truncate text-xs text-slate-500">{scan.website_url}</p></div><a href={scan.website_url} target="_blank" rel="noreferrer" className="shrink-0 text-xs font-bold text-blue-700 hover:text-blue-900">Open original ↗</a></div>
-        <div className="relative isolate h-[620px] w-full overflow-hidden sm:h-[720px]">
+        <div className="absolute left-3 top-[88px] z-20 flex max-w-[calc(100%-24px)] items-center gap-2 rounded-lg border border-slate-200 bg-white/90 px-3 py-2 shadow-md backdrop-blur sm:left-5 sm:top-[92px]"><div className="min-w-0"><h3 className="text-[11px] font-extrabold uppercase tracking-wider text-slate-600">Live preview</h3><p className="max-w-[40vw] truncate text-[11px] text-slate-500">{scan.website_url}</p></div><a href={scan.website_url} target="_blank" rel="noreferrer" className="shrink-0 text-[11px] font-bold text-blue-700 hover:text-blue-900">Open ↗</a></div>
+        <div className="relative isolate h-[100dvh] w-full overflow-hidden">
           <iframe title="Website preview with floating chatbot" src={scan.website_url} className="absolute inset-0 h-full w-full border-0 bg-white" sandbox="allow-scripts allow-forms allow-same-origin" referrerPolicy="no-referrer"/>
           {chatOpen&&<section className="absolute bottom-4 right-4 z-20 flex aspect-square h-auto w-[min(360px,calc(100%-32px))] max-h-[calc(100%-32px)] flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl sm:bottom-6 sm:right-6">
             <div className="flex items-center gap-3 bg-gradient-to-r from-blue-800 to-indigo-700 p-4 text-white"><span className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/15"><Bot size={21}/></span><div className="min-w-0 flex-1"><h3 className="text-sm font-extrabold">Website AI Assistant</h3><p className="text-[11px] text-blue-100">Online · Website knowledge loaded</p></div><button type="button" onClick={()=>setChatOpen(false)} className="rounded-lg p-2 text-white/90 hover:bg-white/15" aria-label="Minimize chatbot">−</button></div>
@@ -100,9 +100,9 @@ export function WebsiteChatbotDemo() {
           </section>}
           {!chatOpen&&<button type="button" onClick={()=>setChatOpen(true)} className="absolute bottom-6 right-6 z-20 flex h-16 w-16 items-center justify-center rounded-full bg-blue-700 text-white shadow-xl transition hover:scale-105 hover:bg-blue-800" aria-label="Open website chatbot"><MessageCircle size={27}/></button>}
         </div>
-        <p className="border-t border-slate-200 bg-white px-4 py-2 text-[11px] leading-5 text-slate-500">The chatbot is floating over this preview, like a website chat widget. Some websites block iframe previews; if blank, open the original site in a new tab.</p>
+        
       </section>}
     </section>}
-    <p className="mt-5 text-xs leading-5 text-slate-500">This is a temporary evaluation demo only. It does not install a chatbot on the original website, provide embed code, or make a payment request. Answers may miss information that is hidden behind logins, loaded dynamically, or outside the scanned pages.</p>
+    {!scan&&<p className="mt-5 text-xs leading-5 text-slate-500">This is a temporary evaluation demo only. It does not install a chatbot on the original website, provide embed code, or make a payment request. Answers may miss information that is hidden behind logins, loaded dynamically, or outside the scanned pages.</p>
   </main>;
 }

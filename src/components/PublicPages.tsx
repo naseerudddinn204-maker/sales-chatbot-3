@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { callBackend } from '../lib/backendApi';
+import { WebsiteChatbotDemo } from './WebsiteChatbotDemo';
 import { ArrowRight, Bot, Download, FileText, Image as ImageIcon, Mail, Menu, Share2, Sparkles, Workflow, X } from 'lucide-react';
 
-type PageId = 'home' | 'ai-tools' | 'email' | 'automation' | 'social' | 'writer' | 'demos' | 'contact';
+type PageId = 'home' | 'ai-tools' | 'email' | 'automation' | 'social' | 'writer' | 'demos' | 'contact' | 'website-demo';
 const links = [
   { label: 'Home', href: '/' },
   { label: 'AI Tools', href: '/ai-tools' },
+  { label: 'Website Chatbot Demo', href: '/website-chatbot-demo' },
   { label: 'Demos', href: '/demos' },
   { label: 'Automation', href: '/automation' },
   { label: 'Chatbots', href: '/chatbots' },
@@ -131,6 +133,7 @@ function ContactInquiryForm() {
 }
 
 export const PublicPages: React.FC<{ page: PageId }> = ({ page }) => {
+  if (page === 'website-demo') return <WebsiteChatbotDemo/>;
   if (page === 'email') return <ToolPage kind="email"/>;
   if (page === 'automation') return <ToolPage kind="automation"/>;
   if (page === 'social') return <ToolPage kind="social"/>;
@@ -167,5 +170,5 @@ export const PublicPages: React.FC<{ page: PageId }> = ({ page }) => {
 };
 export const PublicLayout: React.FC<{ children: React.ReactNode; page: PageId }> = ({ children, page }) => {
   const [menu, setMenu] = useState(false);
-  return <div className="min-h-screen bg-slate-50 text-slate-900"><header className="sticky top-0 z-30 border-b border-slate-200 bg-white/95 backdrop-blur"><div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-3 px-4 sm:px-6 lg:px-8"><a href="/" className="flex items-center gap-2.5"><span className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-700 text-white"><Sparkles size={19}/></span><span><strong className="block text-sm font-extrabold">OrkenAI Labs</strong><span className="block text-[10px] font-bold uppercase tracking-widest text-slate-500">AI Workbench</span></span></a><nav className="hidden items-center gap-1 md:flex">{links.map(link=><a key={link.href} href={link.href} className={'rounded-lg border px-3 py-2 text-xs font-bold '+((link.href==='/'&&page==='home')||(link.href==='/ai-tools'&&page==='ai-tools')||(link.href==='/demos'&&page==='demos')||(link.href==='/automation'&&page==='automation')||(link.href==='/contact'&&page==='contact')?'border-blue-200 bg-blue-50 text-blue-800': 'border-transparent text-slate-600 hover:bg-slate-100')}>{link.label}</a>)}</nav><button className="rounded-lg border border-slate-200 p-2 md:hidden" onClick={()=>setMenu(!menu)} aria-label="Toggle menu">{menu?<X size={18}/>:<Menu size={18}/>}</button></div>{menu&&<nav className="grid gap-1 border-t border-slate-100 bg-white p-3 md:hidden">{links.map(link=><a key={link.href} href={link.href} className="rounded-lg p-3 text-sm font-bold text-slate-700">{link.label}</a>)}</nav>}</header>{children}<footer className="mt-10 border-t border-slate-200 bg-white px-4 py-5 text-center text-xs text-slate-500">OrkenAI Labs AI Workbench · Review AI drafts before taking action.</footer></div>;
+  return <div className="min-h-screen bg-slate-50 text-slate-900"><header className="sticky top-0 z-30 border-b border-slate-200 bg-white/95 backdrop-blur"><div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-3 px-4 sm:px-6 lg:px-8"><a href="/" className="flex items-center gap-2.5"><span className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-700 text-white"><Sparkles size={19}/></span><span><strong className="block text-sm font-extrabold">OrkenAI Labs</strong><span className="block text-[10px] font-bold uppercase tracking-widest text-slate-500">AI Workbench</span></span></a><nav className="hidden items-center gap-1 md:flex">{links.map(link=><a key={link.href} href={link.href} className={'rounded-lg border px-3 py-2 text-xs font-bold '+((link.href==='/'&&page==='home')||(link.href==='/ai-tools'&&page==='ai-tools')||(link.href==='/demos'&&page==='demos')||(link.href==='/automation'&&page==='automation')||(link.href==='/contact'&&page==='contact')||(link.href==='/website-chatbot-demo'&&page==='website-demo')?'border-blue-200 bg-blue-50 text-blue-800': 'border-transparent text-slate-600 hover:bg-slate-100')}>{link.label}</a>)}</nav><button className="rounded-lg border border-slate-200 p-2 md:hidden" onClick={()=>setMenu(!menu)} aria-label="Toggle menu">{menu?<X size={18}/>:<Menu size={18}/>}</button></div>{menu&&<nav className="grid gap-1 border-t border-slate-100 bg-white p-3 md:hidden">{links.map(link=><a key={link.href} href={link.href} className="rounded-lg p-3 text-sm font-bold text-slate-700">{link.label}</a>)}</nav>}</header>{children}<footer className="mt-10 border-t border-slate-200 bg-white px-4 py-5 text-center text-xs text-slate-500">OrkenAI Labs AI Workbench · Review AI drafts before taking action.</footer></div>;
 };

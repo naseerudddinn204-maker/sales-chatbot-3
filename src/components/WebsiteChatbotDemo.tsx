@@ -103,6 +103,6 @@ export function WebsiteChatbotDemo() {
         
       </section>}
     </section>}
-    {!scan&&<p className="mt-5 text-xs leading-5 text-slate-500">This is a temporary evaluation demo only. It does not install a chatbot on the original website, provide embed code, or make a payment request. Answers may miss information that is hidden behind logins, loaded dynamically, or outside the scanned pages.</p>
+    {!scan&&<p className="mt-5 text-xs leading-5 text-slate-500">This is a temporary evaluation demo only. It does not install a chatbot on the original website, provide embed code, or make a payment request. Answers may miss information that is hidden behind logins, loaded dynamically, or outside the scanned pages.</p>}
   </main>;
 }

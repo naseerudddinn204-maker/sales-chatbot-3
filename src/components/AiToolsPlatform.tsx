@@ -66,7 +66,18 @@ export const AiToolsPlatform: React.FC = () => {
       });
       if (!response?.result) throw new Error(response?.error || 'The AI returned no result.');
       if (response.tool && response.tool !== tool) throw new Error(`Received a ${response.tool} result for ${tool}; the mismatched result was not displayed.`);
-      setOutputs(previous => ({ ...previous, [kind]: response.result }));
+      const cleanResult = kind === 'reader'
+        ? response.result
+            .replace(/\\*\\*(.*?)\\*\\*/gs, '$1')
+            .replace(/\\*(.*?)\\*/gs, '$1')
+            .replace(/(^|\\n)\\s*[-+]\\s+/g, '$1• ')
+            .replace(/(^|\\n)\\s*\\d+\\.\\s+/g, '$1• ')
+            .replace(/\\s+([.,!?;:])/g, '$1')
+            .replace(/[ \\t]+\\n/g, '\\n')
+            .replace(/\\n{3,}/g, '\\n\\n')
+            .trim()
+        : response.result;
+      setOutputs(previous => ({ ...previous, [kind]: cleanResult }));
       setNotice('AI result ready. Review it before sending or publishing.');
     } catch (error) {
       setNotice(error instanceof Error ? error.message : 'AI generation failed. Please try again.');

@@ -4,22 +4,22 @@
   --font-headline: "Plus Jakarta Sans", sans-serif;
   --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 
-  --color-primary-container: #1d4ed8;
-  --color-primary-hover: #1e40af;
-  --color-secondary-blue: #2563eb;
+  --color-primary-container: #5b4bff;
+  --color-primary-hover: #4938e8;
+  --color-secondary-blue: #7c6bff;
   --color-accent-success: #10b981;
   --color-surface-card: #ffffff;
-  --color-surface-page: #f8fafc;
-  --color-surface-subtle: #f1f5f9;
-  --color-surface-container-low: #eff6ff;
+  --color-surface-page: #f6f7ff;
+  --color-surface-subtle: #f0f1ff;
+  --color-surface-container-low: #e9ebff;
   --color-badge-red-bg: #fee2e2;
   --color-badge-red-text: #991b1b;
-  --color-badge-blue-bg: #eff6ff;
-  --color-badge-blue-text: #1e40af;
-  --color-text-primary: #0f172a;
-  --color-text-secondary: #475569;
-  --color-text-muted: #94a3b8;
-  --color-border-subtle: #e2e8f0;
+  --color-badge-blue-bg: #eef0ff;
+  --color-badge-blue-text: #4938c8;
+  --color-text-primary: #101b4c;
+  --color-text-secondary: #46557d;
+  --color-text-muted: #8993b5;
+  --color-border-subtle: #dde2ff;
 }
 
 @layer base {
@@ -65,9 +65,9 @@
   -webkit-font-smoothing: antialiased;
 }
 
-::selection { background: #bfdbfe; color: #1e3a8a; }
+::selection { background: #e3e5ff; color: #30258f; }
 ::-moz-selection { background: #bfdbfe; color: #1e3a8a; }
-:focus-visible { outline-color: #93c5fd; --tw-ring-color: #93c5fd; }
+:focus-visible { outline-color: #a69cff; --tw-ring-color: #a69cff; }
 
 ::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
@@ -86,7 +86,7 @@ main h4 { font-size: 1.1rem !important; line-height: 1.35 !important; }
 }
 
 /* Stronger, clearer borders and shadows for the public website. */
-main [class*="border"] { border-color: rgba(30, 58, 95, 0.28); }
+main [class*="border"] { border-color: rgba(91, 75, 255, 0.28); }
 
 main :is(div, article, button, a)[class*="rounded-"][class*="border"]:not([class*="rounded-full"]) {
   border-color: rgba(30, 58, 95, 0.24);
@@ -116,4 +116,14 @@ main :is(div, article, section, button, a)[class*="rounded-"][class*="bg-gray-50
 
 body:has(header.fixed) :is(strong, b, .font-semibold, .font-bold, .font-extrabold, .font-black) {
   text-shadow: 0 1px 2px rgba(15, 23, 42, 0.14);
+}
+
+
+/* Shared OrkenAI lavender palette: color-only treatment for public pages. */
+main {
+  background-color: #f7f8ff;
+}
+main :is(div, article, section, button, a)[class*="rounded-"][class*="bg-white"]:not([class*="rounded-full"]),
+main :is(div, article, section, button, a)[class*="rounded-"][class*="bg-gray-50"]:not([class*="rounded-full"]) {
+  background-image: linear-gradient(135deg, rgba(238, 240, 255, 0.88), rgba(226, 230, 255, 0.72));
 }

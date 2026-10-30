@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { callBackend } from '../lib/backendApi';
 import { WebsiteChatbotDemo } from './WebsiteChatbotDemo';
-import { ArrowRight, Bot, Download, FileText, Image as ImageIcon, Mail, Menu, Share2, Sparkles, Workflow, X } from 'lucide-react';
+import { ArrowRight, Bot, Download, FileText, Globe, Image as ImageIcon, Mail, Menu, Share2, Sparkles, Workflow, X } from 'lucide-react';
 
 type PageId = 'home' | 'ai-tools' | 'email' | 'automation' | 'social' | 'writer' | 'demos' | 'contact' | 'website-demo';
 const links = [
@@ -19,6 +19,7 @@ const cards = [
   { title: 'AI Automation Builder', description: 'Map a repetitive business process into triggers, ordered steps, decision points, human approvals, and exception handling—before connecting live systems.', href: '/automation', icon: Workflow, status: 'Try Demo' },
   { title: 'AI Content Writer', description: 'Develop clearer first drafts for website pages, product descriptions, proposals, articles, and business communications, tailored to your audience and tone.', href: '/content-writer', icon: FileText, status: 'Try Demo' },
   { title: 'AI Chatbots', description: 'Explore assistants designed for sales enquiries, customer support, product discovery, and common questions—then see which conversation experience fits your business.', href: '/chatbots', icon: Bot, status: 'Try Demo' },
+  { title: 'Website Chatbot Demo', description: 'Turn public information from your own website into a temporary chatbot and test it beside a website preview.', href: '/website-chatbot-demo', icon: Globe, status: 'Try Demo' },
 ];
 const button = 'inline-flex items-center justify-center gap-2 rounded-xl bg-blue-700 px-4 py-3 text-sm font-bold text-white transition hover:bg-blue-800 disabled:cursor-not-allowed disabled:opacity-50';
 const input = 'mt-2 w-full rounded-xl border border-slate-200 bg-white px-3.5 py-3 text-sm text-slate-800 outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100';
@@ -138,7 +139,7 @@ export const PublicPages: React.FC<{ page: PageId }> = ({ page }) => {
   if (page === 'automation') return <ToolPage kind="automation"/>;
   if (page === 'social') return <ToolPage kind="social"/>;
   if (page === 'writer') return <ToolPage kind="writer"/>;
-  if (page === 'ai-tools') return <CardGrid title="AI Tools Built Around Real Business Work" description="Explore focused assistants for customer communication, content production, and workflow planning. Open a tool to test its inputs and review its output on a dedicated page; live sending, publishing, and automation require their respective integrations." subset={cards.slice(0, 4)} />;
+  if (page === 'ai-tools') return <CardGrid title="AI Tools Built Around Real Business Work" description="Explore focused assistants for customer communication, content production, and workflow planning. Open a tool to test its inputs and review its output on a dedicated page; live sending, publishing, and automation require their respective integrations." subset={cards} />;
   if (page === 'demos') return <CardGrid title="Explore Practical AI Demonstrations" description="See how AI can support common business tasks—from drafting customer emails and preparing social campaigns to planning repeatable workflows and answering customer questions. Choose a demo to explore its dedicated experience and review the result before taking action." />;
   if (page === 'contact') return <main className="mx-auto max-w-7xl px-4 py-9 sm:px-6 lg:px-8"><div className="mx-auto max-w-2xl"><ContactInquiryForm /></div></main>;
   return <main className="mx-auto max-w-7xl px-4 pb-12 sm:px-6 lg:px-8">

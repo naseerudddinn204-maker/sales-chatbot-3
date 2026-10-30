@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ArrowRight, Bot, CheckCircle2, Globe, Loader2, MessageCircle, RefreshCw, Send, ShieldCheck, Sparkles } from 'lucide-react';
+import { ArrowRight, Bot, CheckCircle2, Globe, Loader2, MessageCircle, MoreVertical, RefreshCw, Send, ShieldCheck } from 'lucide-react';
 
 const API_URL = 'https://tlkmcfpzfdokcnyyvkov.supabase.co/functions/v1/website-chatbot-demo';
 const API_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY || 'sb_publishable_-gNvioLExBonu8hGuWa8lQ_eIWmhMn6';
@@ -31,6 +31,7 @@ export function WebsiteChatbotDemo() {
   const [notice, setNotice] = useState('');
   const [showPreview, setShowPreview] = useState(true);
   const [chatOpen, setChatOpen] = useState(true);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   async function createDemo(event: React.FormEvent) {
     event.preventDefault();
@@ -86,11 +87,18 @@ export function WebsiteChatbotDemo() {
         </div>
         <div className="mt-6 rounded-xl border border-emerald-100 bg-emerald-50/70 p-4"><div className="flex items-center gap-2 text-sm font-extrabold text-emerald-900"><ShieldCheck size={17}/> Private, temporary demo</div><p className="mt-1 text-xs leading-5 text-emerald-900/80">Website text stays in this browser session for testing and is not saved as a permanent chatbot or shared with other demos.</p></div>
       </section>
-    </section> : <section className="h-full w-full overflow-hidden bg-white">
-      <div className="absolute left-3 right-3 top-3 z-30 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-200/80 bg-white/95 p-3 shadow-lg backdrop-blur sm:left-5 sm:right-5 sm:top-5 sm:px-5"><div className="flex min-w-0 items-center gap-3"><span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-700"><CheckCircle2 size={21}/></span><div className="min-w-0"><h2 className="truncate text-sm font-extrabold">{scan.title || new URL(scan.website_url).hostname}</h2><p className="truncate text-xs text-slate-500">{scan.website_url} · {scan.pages_scanned} pages scanned</p></div></div><div className="flex gap-2"><button type="button" className="rounded-lg border border-slate-200 px-3 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50" onClick={()=>setShowPreview(!showPreview)}>{showPreview?'Hide':'Show'} preview</button><button type="button" className="inline-flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50" onClick={resetDemo}><RefreshCw size={14}/> New website</button></div></div>
-      {notice&&<p role="status" className="border-b border-blue-100 bg-blue-50 px-5 py-2.5 text-xs text-blue-900">{notice}</p>}
-      {showPreview&&<section className="relative overflow-hidden bg-slate-100">
-        <div className="absolute left-3 top-[88px] z-20 flex max-w-[calc(100%-24px)] items-center gap-2 rounded-lg border border-slate-200 bg-white/90 px-3 py-2 shadow-md backdrop-blur sm:left-5 sm:top-[92px]"><div className="min-w-0"><h3 className="text-[11px] font-extrabold uppercase tracking-wider text-slate-600">Live preview</h3><p className="max-w-[40vw] truncate text-[11px] text-slate-500">{scan.website_url}</p></div><a href={scan.website_url} target="_blank" rel="noreferrer" className="shrink-0 text-[11px] font-bold text-blue-700 hover:text-blue-900">Open ↗</a></div>
+    </section> : <section className="relative h-full w-full overflow-hidden bg-white">
+      <div className="absolute right-3 top-3 z-40 sm:right-5 sm:top-5">
+        <button type="button" aria-label="Demo options" aria-expanded={menuOpen} onClick={()=>setMenuOpen(!menuOpen)} className="flex h-11 w-11 items-center justify-center rounded-full border border-slate-200 bg-white/95 text-slate-700 shadow-lg backdrop-blur hover:bg-slate-50"><MoreVertical size={21}/></button>
+        {menuOpen&&<div className="absolute right-0 mt-2 w-72 overflow-hidden rounded-xl border border-slate-200 bg-white p-2 shadow-2xl">
+          <div className="border-b border-slate-100 px-3 py-2"><p className="text-sm font-bold text-slate-800">{scan.title || new URL(scan.website_url).hostname}</p><p className="mt-1 break-all text-xs text-slate-500">{scan.website_url}</p><p className="mt-1 text-xs text-slate-500">{scan.pages_scanned} pages scanned</p></div>
+          <a href={scan.website_url} target="_blank" rel="noreferrer" className="block rounded-lg px-3 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50">Open original website ↗</a>
+          <button type="button" onClick={()=>{setShowPreview(!showPreview);setMenuOpen(false);}} className="block w-full rounded-lg px-3 py-2.5 text-left text-sm font-semibold text-slate-700 hover:bg-slate-50">{showPreview?'Hide website preview':'Show website preview'}</button>
+          <button type="button" onClick={()=>{resetDemo();setMenuOpen(false);}} className="flex w-full items-center gap-2 rounded-lg px-3 py-2.5 text-left text-sm font-semibold text-slate-700 hover:bg-slate-50"><RefreshCw size={15}/> New website</button>
+        </div>}
+      </div>
+      {notice&&<p role="status" className="absolute left-3 top-3 z-30 rounded-lg border border-blue-100 bg-blue-50 px-3 py-2 text-xs text-blue-900">{notice}</p>}
+      {showPreview?<section className="relative h-full overflow-hidden bg-slate-100">
         <div className="relative isolate h-[100dvh] w-full overflow-hidden">
           <iframe title="Website preview with floating chatbot" src={scan.website_url} className="absolute inset-0 h-full w-full border-0 bg-white" sandbox="allow-scripts allow-forms allow-same-origin" referrerPolicy="no-referrer"/>
           {chatOpen&&<section className="absolute bottom-4 right-4 z-20 flex aspect-square h-auto w-[min(360px,calc(100%-32px))] max-h-[calc(100%-32px)] flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl sm:bottom-6 sm:right-6">
@@ -101,7 +109,8 @@ export function WebsiteChatbotDemo() {
           {!chatOpen&&<button type="button" onClick={()=>setChatOpen(true)} className="absolute bottom-6 right-6 z-20 flex h-16 w-16 items-center justify-center rounded-full bg-blue-700 text-white shadow-xl transition hover:scale-105 hover:bg-blue-800" aria-label="Open website chatbot"><MessageCircle size={27}/></button>}
         </div>
         
-      </section>}
+      </section> : <div className="flex h-full items-center justify-center bg-slate-50 px-6 text-center"><div><p className="text-sm font-bold text-slate-800">Website preview is hidden</p><p className="mt-1 text-sm text-slate-500">Open the three-dot menu to show it again.</p></div></div>}
+      <a href="/" className="absolute bottom-4 left-4 z-40 rounded-xl border border-slate-200 bg-white/95 px-4 py-3 text-sm font-bold text-slate-700 shadow-lg backdrop-blur hover:bg-slate-50 sm:bottom-6 sm:left-6">← Back to Home</a>
     </section>}
     {!scan&&<p className="mt-5 text-xs leading-5 text-slate-500">This is a temporary evaluation demo only. It does not install a chatbot on the original website, provide embed code, or make a payment request. Answers may miss information that is hidden behind logins, loaded dynamically, or outside the scanned pages.</p>}
   </main>;

@@ -33,7 +33,7 @@ export const AiToolsLanding: React.FC = () => {
       const result = await callBackend<{ok:boolean; error?:string}>({
         action: 'lead', name: name.trim(), email: email.trim(), company: company.trim(),
         order_type: 'Free AI Demo', chatbot_name: interest, primary_goal: interest,
-        message: ['Free demo request: ' + interest, message.trim()].filter(Boolean).join(' — '),
+        message: ['Free demo request: ' + interest, message.trim()].filter(Boolean).join(' - '),
       });
       if (!result?.ok) throw new Error(result?.error || 'Could not submit your request.');
       setNotice('Thank you! Your demo request has been received. Our team can follow up by email.');
@@ -59,7 +59,7 @@ export const AiToolsLanding: React.FC = () => {
         <div className="mx-auto grid max-w-7xl items-center gap-12 px-4 py-16 sm:px-6 sm:py-20 lg:grid-cols-[1.05fr_.95fr] lg:px-8 lg:py-24">
           <div><span className="inline-flex items-center gap-2 rounded-full border border-indigo-200 bg-white/80 px-3 py-1.5 text-xs font-extrabold text-indigo-800"><Zap size={14}/> Smarter tools. Better results.</span>
             <h1 className="mt-6 max-w-2xl text-4xl font-extrabold leading-[1.08] tracking-tight sm:text-6xl">AI tools, <span className="bg-gradient-to-r from-indigo-600 via-blue-600 to-fuchsia-600 bg-clip-text text-transparent">automation</span> and chatbots for your business.</h1>
-            <p className="mt-5 max-w-xl text-base leading-7 text-slate-600 sm:text-lg">Create content, simplify repetitive work, engage customers, and explore new AI solutions — all from one growing platform.</p>
+            <p className="mt-5 max-w-xl text-base leading-7 text-slate-600 sm:text-lg">Create content, simplify repetitive work, engage customers, and explore new AI solutions - all from one growing platform.</p>
             <div className="mt-8 flex flex-wrap gap-3"><a href="/workspace" className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-5 py-3.5 text-sm font-extrabold text-white shadow-xl shadow-indigo-600/20 hover:bg-indigo-700">Try AI Workbench <ArrowRight size={17}/></a><a href="#demos" className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-5 py-3.5 text-sm font-extrabold text-slate-700 hover:border-indigo-200 hover:bg-indigo-50"><PlayCircle size={17}/> Explore demos</a></div>
             <div className="mt-7 flex flex-wrap gap-x-5 gap-y-3 text-xs font-semibold text-slate-500"><span className="flex items-center gap-2"><ShieldCheck size={16} className="text-emerald-600"/> Start without an account</span><span className="flex items-center gap-2"><Clock3 size={16} className="text-indigo-600"/> Practical business use cases</span></div>
           </div>

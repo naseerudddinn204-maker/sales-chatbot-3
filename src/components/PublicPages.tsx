@@ -111,6 +111,11 @@ function ContactInquiryForm() {
       });
       if (!response?.ok) throw new Error(response?.error || 'We could not save your inquiry. Please try again.');
       setSubmitted(true);
+      setName('');
+      setEmail('');
+      setBusiness('');
+      setInterest('AI chatbots');
+      setMessage('');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'We could not submit your inquiry. Please try again.');
     } finally {
@@ -125,7 +130,7 @@ function ContactInquiryForm() {
     <div className="mt-4"><label className="block text-xs font-bold text-slate-600">What would you like to improve? *</label><textarea required maxLength={2000} className={input+' min-h-32'} value={message} onChange={event=>{setMessage(event.target.value);setSubmitted(false);setError('');}} placeholder="Describe the repetitive task, customer need, or business goal…"/></div>
     <button className={button+' mt-5 w-full'} type="submit" disabled={submitting}>{submitting ? 'Sending inquiry…' : 'Send inquiry'} <ArrowRight size={16}/></button>
     {error&&<div role="alert" className="mt-4 rounded-xl border border-red-200 bg-red-50 p-4 text-sm leading-6 text-red-800"><p className="font-extrabold">Inquiry not submitted</p><p className="mt-1">{error}</p></div>}
-    {submitted&&<div role="status" className="mt-4 rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm leading-6 text-emerald-950"><p className="font-extrabold">Thanks, {name.trim()} - your inquiry has been received.</p><p className="mt-1">Your request about {interest.toLowerCase()} has been saved successfully and is available to the OrkenAI Labs team in the Admin Dashboard under Client Requests.</p><p className="mt-2 text-xs text-emerald-800">We have recorded your details and business requirements. This confirmation does not mean an email reply has been sent.</p></div>}
+    {submitted&&<div role="status" className="mt-4 rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm leading-6 text-emerald-950"><p className="font-extrabold">Thanks - your inquiry has been received.</p><p className="mt-1">Your inquiry has been saved successfully and is available to the OrkenAI Labs team in the Admin Dashboard under Client Requests.</p><p className="mt-2 text-xs text-emerald-800">We have recorded your details and business requirements. This confirmation does not mean an email reply has been sent.</p></div>}
     <p className="mt-4 text-xs leading-5 text-slate-500">Fields marked * are required. Avoid including confidential or sensitive information.</p>
   </form>;
 }

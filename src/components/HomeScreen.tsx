@@ -156,7 +156,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                 <Bot size={15} /> See it in action
               </span>
               <h2 className="mt-3 text-2xl font-extrabold leading-tight text-gray-950 sm:text-3xl lg:text-4xl">How Can a Chatbot Answer?</h2>
-              <p className="mt-3 max-w-xl text-sm leading-6 text-gray-600 sm:text-base sm:leading-7">See how an AI chatbot can answer customer questions about your products, pricing, orders, and support — any time of day.</p>
+              <p className="mt-3 max-w-xl text-sm leading-6 text-gray-600 sm:text-base sm:leading-7">See how an AI chatbot can answer customer questions about your products, pricing, orders, and support - any time of day.</p>
               <span className="mt-5 inline-flex items-center gap-2 rounded-xl bg-blue-600 px-5 py-3 text-sm font-bold text-white shadow-md transition-colors group-hover:bg-blue-700">
                 Try the Free Demo <ArrowRight size={17} />
               </span>

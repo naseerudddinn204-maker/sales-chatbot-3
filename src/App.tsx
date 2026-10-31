@@ -53,7 +53,7 @@ export default function App() {
   if (path === '/chatbots') return <><ChatbotCatalog /><AiAgentBubble /></>;
   if (path === '/workspace') return <><AiToolsPlatform /><AiAgentBubble /></>;
 
-  const routeMap: Record<string, 'home' | 'ai-tools' | 'email' | 'automation' | 'social' | 'writer' | 'demos' | 'contact' | 'website-demo'> = {
+  const routeMap: Record<string, 'home' | 'ai-tools' | 'email' | 'automation' | 'social' | 'writer' | 'demos' | 'contact'> = {
     '/': 'home',
     '/ai-tools': 'ai-tools',
     '/demos': 'demos',
@@ -62,7 +62,6 @@ export default function App() {
     '/auto-post': 'social',
     '/content-writer': 'writer',
     '/contact': 'contact',
-    '/website-chatbot-demo': 'website-demo',
   };
   const page = routeMap[path] || 'home';
   return <PublicLayout page={page}><PublicPages page={page} /><AiAgentBubble /></PublicLayout>;

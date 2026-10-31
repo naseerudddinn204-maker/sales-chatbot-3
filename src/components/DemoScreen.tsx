@@ -65,7 +65,7 @@ export const DemoScreen: React.FC<DemoScreenProps> = ({
     {
       id: 'd1',
       sender: 'bot',
-      text: 'Hi! 👋 Welcome to the AI Chatbot demo. I’m ready to help—ask me anything about support, sales, or technical questions.',
+      text: 'Hi! 👋 Welcome to the AI Chatbot demo. I’m ready to help-ask me anything about support, sales, or technical questions.',
       time: '12:00 PM',
       options: []
     }

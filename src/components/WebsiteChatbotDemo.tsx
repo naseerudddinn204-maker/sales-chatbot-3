@@ -40,7 +40,7 @@ export function WebsiteChatbotDemo() {
       const result = await request<ScanResult>({ action: 'scan_website', website_url: website.trim() });
       setScan(result);
       setMessages([{ role: 'assistant', text: `Hi! I’m the demo assistant for ${result.title || new URL(result.website_url).hostname}. Ask me about the information found on this website.` }]);
-      setNotice(`Demo ready. Scanned ${result.pages_scanned} public page(s).`);
+      setNotice('');
     } catch (error) {
       setNotice(error instanceof Error ? error.message : 'We could not scan this website.');
     } finally { setScanning(false); }

@@ -312,14 +312,17 @@ export function AdminDashboard() {
           </div>
           {clientQuestions.length === 0 ? <div className="rounded-2xl bg-slate-50 p-5 text-sm text-slate-500">No client questions yet.</div> : (
             <div className="overflow-x-auto">
-              <table className="w-full min-w-[760px] text-left text-xs">
+              <table className="w-full min-w-[640px] table-fixed text-left text-xs">
+                <colgroup><col className="w-[19%]"/><col className="w-[17%]"/><col className="w-[24%]"/><col className="w-[40%]"/></colgroup>
                 <thead><tr className="border-b text-xs uppercase text-slate-500"><th className="px-2.5 py-2">Date & Time</th><th className="px-2.5 py-2">Phone Number</th><th className="px-2.5 py-2">Email</th><th className="px-2.5 py-2">Question</th></tr></thead>
-                <tbody>{clientQuestions.map(lead => <tr key={lead.id} className="border-b last:border-0">
-                  <td className="whitespace-nowrap px-2.5 py-2">{new Date(lead.created_at).toLocaleString()}</td>
-                  <td className="whitespace-nowrap px-2.5 py-2 font-semibold">{lead.phone || '-'}</td><td className="max-w-[190px] break-all px-2.5 py-2">{lead.email || '-'}</td>
-                  <td className="max-w-[380px] break-words px-2.5 py-2 leading-5">{lead.message}</td>
+                <tbody>{clientQuestions.map(lead => <tr key={lead.id} className="border-b last:border-0 align-top">
+                  <td className="whitespace-normal px-2.5 py-2 leading-4">{new Date(lead.created_at).toLocaleString()}</td>
+                  <td className="break-all px-2.5 py-2 font-semibold leading-4">{lead.phone || '-'}</td>
+                  <td className="break-all px-2.5 py-2 leading-4">{lead.email || '-'}</td>
+                  <td className="break-words px-2.5 py-2 leading-4">{lead.message}</td>
                 </tr>)}</tbody>
-              </table>            </div>
+              </table>
+            </div>
           )}
         </div>}
 

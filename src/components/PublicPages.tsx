@@ -76,7 +76,7 @@ function ToolPage({ kind }: { kind: 'email' | 'automation' | 'social' | 'writer'
   }
   const Icon = config.icon;
   const samplePrompts = kind === 'email'
-    ? ['Follow up after a product demo', 'Thank a customer for their order', 'Summarize this customer email']
+    ? ['Follow up after a product demo', 'Thank a customer for their order', 'Send a project update to a customer']
     : kind === 'automation'
       ? ['Organize new website leads', 'Prepare weekly sales reports', 'Route support requests for approval']
       : kind === 'social'

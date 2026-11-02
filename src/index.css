@@ -189,3 +189,43 @@ main :is(div, article, section, button, a)[class*="rounded-"][class*="bg-white"]
 main :is(div, article, section, button, a)[class*="rounded-"][class*="bg-gray-50"]:not([class*="rounded-full"]) {
   background-image: linear-gradient(135deg, rgba(238, 240, 255, 0.88), rgba(226, 230, 255, 0.72));
 }
+
+
+/* Homepage finishing pass: keep the hero comfortable on narrow screens. */
+@media (max-width: 639px) {
+  main:has(#home-demos) {
+    overflow-x: clip;
+  }
+
+  main:has(#home-demos) > section:first-child {
+    margin-top: 0.75rem;
+    border-radius: 1.5rem;
+    padding: 1.5rem 1.125rem;
+  }
+
+  main:has(#home-demos) > section:first-child h1 {
+    font-size: clamp(1.9rem, 8vw, 2.5rem);
+    line-height: 1.1;
+    letter-spacing: -0.035em;
+  }
+
+  main:has(#home-demos) > section:first-child p {
+    overflow-wrap: anywhere;
+  }
+
+  #home-demos {
+    padding-top: 2.75rem;
+  }
+
+  #home-demos article {
+    min-width: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  main:has(#home-demos) a,
+  main:has(#home-demos) article {
+    scroll-behavior: auto;
+    transition-duration: 0.01ms !important;
+  }
+}

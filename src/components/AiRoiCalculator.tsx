@@ -1,10 +1,10 @@
 import React, { useMemo, useState } from 'react';
 import { Calculator, Clock3, Wallet, Users, TrendingUp, Bot, Mail } from 'lucide-react';
 
-const fieldClass = 'mt-2 w-full rounded-xl border border-slate-200 bg-white px-3.5 py-3 text-sm text-slate-800 outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100';
+const inputClass = 'mt-2 w-full rounded-xl border border-white/10 bg-[#0b1930] px-3.5 py-3 text-sm text-white outline-none transition placeholder:text-slate-500 focus:border-blue-400 focus:ring-4 focus:ring-blue-400/10';
+const labelClass = 'text-xs font-semibold leading-5 text-slate-300';
 
 export function AiRoiCalculator() {
-  // Editable office example: 3 staff, Rs 20,000 each per month, 8-hour shifts.
   const [employees, setEmployees] = useState(3);
   const [salaryPerEmployee, setSalaryPerEmployee] = useState(20000);
   const [workDays, setWorkDays] = useState(26);
@@ -20,81 +20,114 @@ export function AiRoiCalculator() {
     const people = Math.max(0, employees);
     const salary = Math.max(0, salaryPerEmployee);
     const totalPayroll = people * salary;
-    const emailPayroll = totalPayroll * Math.min(100, Math.max(0, emailWorkShare)) / 100;
+    const emailShare = Math.min(100, Math.max(0, emailWorkShare)) / 100;
     const coverage = Math.min(100, Math.max(0, automationCoverage)) / 100;
+    const emailPayroll = totalPayroll * emailShare;
     const salaryEquivalentSaved = emailPayroll * coverage;
-    const hoursSaved = people * Math.max(0, workHours) * Math.max(1, workDays) * (Math.min(100, Math.max(0, emailWorkShare)) / 100) * coverage;
+    const hoursSaved = people * Math.max(0, workHours) * Math.max(1, workDays) * emailShare * coverage;
     const aiCost = Math.max(0, monthlyAiCost);
     const monthlyNet = salaryEquivalentSaved - aiCost;
     const yearlyNet = monthlyNet * 12 - Math.max(0, setupCost);
     const payback = monthlyNet > 0 && setupCost > 0 ? setupCost / monthlyNet : null;
-    const breakEvenAiCost = salaryEquivalentSaved;
-    return { totalPayroll, emailPayroll, salaryEquivalentSaved, hoursSaved, monthlyNet, yearlyNet, payback, breakEvenAiCost };
+    return { totalPayroll, salaryEquivalentSaved, hoursSaved, monthlyNet, yearlyNet, payback, breakEvenAiCost: salaryEquivalentSaved };
   }, [employees, salaryPerEmployee, workDays, workHours, emailWorkShare, automationCoverage, monthlyAiCost, setupCost]);
 
   const money = (value: number) => new Intl.NumberFormat('en-PK', {
     style: 'currency', currency, maximumFractionDigits: 0,
   }).format(Number.isFinite(value) ? value : 0);
 
+  const number = (value: number) => new Intl.NumberFormat('en-PK', { maximumFractionDigits: 1 }).format(value);
+
   return (
-    <section id="ai-roi-calculator" className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-      <div className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
-        <div className="bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-950 p-6 sm:p-8">
-          <div className="flex items-start gap-4">
-            <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white/10 text-cyan-200"><Calculator size={24}/></span>
-            <div>
-              <p className="text-xs font-extrabold uppercase tracking-widest text-cyan-200">Real office example</p>
-              <h2 className="mt-1 text-2xl font-extrabold tracking-tight text-white sm:text-3xl">Email Automation Savings Calculator</h2>
-              <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-300">Estimate what your business could save by automating routine email reading and replies instead of having staff spend their working hours on them.</p>
-            </div>
-          </div>
+    <section id="ai-roi-calculator" className="bg-[#071225] px-4 py-12 text-white sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-6xl">
+        <div className="mb-10 text-center">
+          <span className="inline-flex rounded-full border border-blue-400/30 bg-blue-500/10 px-4 py-2 text-xs font-bold tracking-wide text-blue-300">FREE BUSINESS TOOL</span>
+          <h2 className="mt-6 text-3xl font-bold tracking-tight text-white sm:text-5xl">Discover Your <span className="text-blue-400">AI Automation ROI</span></h2>
+          <p className="mx-auto mt-4 max-w-2xl text-sm leading-6 text-slate-400 sm:text-base">Find out how much time and potential labor value your business could save by automating routine email reading and replies.</p>
         </div>
-        <div className="grid gap-7 p-5 sm:p-7 lg:grid-cols-[1fr_.95fr]">
-          <div className="space-y-6">
-            <div>
-              <div className="mb-4 flex items-center gap-2"><Users size={17} className="text-blue-700"/><h3 className="font-extrabold text-slate-900">1. Your office team</h3></div>
-              <div className="grid gap-4 sm:grid-cols-2">
-                <label className="text-xs font-bold text-slate-600">Number of employees<input className={fieldClass} type="number" min="0" step="1" value={employees} onChange={e=>setEmployees(Math.max(0,Number(e.target.value)||0))}/></label>
-                <label className="text-xs font-bold text-slate-600">Monthly salary per employee<input className={fieldClass} type="number" min="0" step="500" value={salaryPerEmployee} onChange={e=>setSalaryPerEmployee(Math.max(0,Number(e.target.value)||0))}/></label>
-                <label className="text-xs font-bold text-slate-600">Working days per month<input className={fieldClass} type="number" min="1" max="31" step="1" value={workDays} onChange={e=>setWorkDays(Math.min(31,Math.max(1,Number(e.target.value)||1)))}/></label>
-                <label className="text-xs font-bold text-slate-600">Working hours per employee / day<input className={fieldClass} type="number" min="1" max="24" step="0.5" value={workHours} onChange={e=>setWorkHours(Math.min(24,Math.max(1,Number(e.target.value)||1)))}/></label>
+
+        <div className="grid items-start gap-6 lg:grid-cols-2">
+          <section className="rounded-3xl border border-white/10 bg-[#101f38] p-5 shadow-xl shadow-black/10 sm:p-7">
+            <h3 className="mb-7 text-xl font-bold text-white sm:text-2xl">Tell us about your business</h3>
+
+            <div className="space-y-7">
+              <div>
+                <div className="mb-4 flex items-center gap-2"><Users size={17} className="text-blue-400"/><h4 className="font-semibold text-white">Your office team</h4></div>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <label className={labelClass}>Number of employees<input className={inputClass} type="number" min="0" step="1" value={employees} onChange={e=>setEmployees(Math.max(0,Number(e.target.value)||0))}/></label>
+                  <label className={labelClass}>Monthly salary per employee<input className={inputClass} type="number" min="0" step="500" value={salaryPerEmployee} onChange={e=>setSalaryPerEmployee(Math.max(0,Number(e.target.value)||0))}/></label>
+                  <label className={labelClass}>Working days per month<input className={inputClass} type="number" min="1" max="31" step="1" value={workDays} onChange={e=>setWorkDays(Math.min(31,Math.max(1,Number(e.target.value)||1)))}/></label>
+                  <label className={labelClass}>Working hours per employee / day<input className={inputClass} type="number" min="1" max="24" step="0.5" value={workHours} onChange={e=>setWorkHours(Math.min(24,Math.max(1,Number(e.target.value)||1)))}/></label>
+                </div>
+                <p className="mt-3 rounded-xl border border-white/5 bg-[#0b1930] p-3 text-xs leading-5 text-slate-400">Example: 3 employees × Rs 20,000 monthly salary = Rs 60,000 total monthly payroll, working 8 hours per day.</p>
               </div>
-              <div className="mt-3 rounded-xl bg-slate-50 p-3 text-xs leading-5 text-slate-600">Example pre-filled: 3 employees × Rs 20,000 monthly salary = Rs 60,000 total monthly payroll, working 8 hours per day.</div>
-            </div>
-            <div className="border-t border-slate-100 pt-5">
-              <div className="mb-4 flex items-center gap-2"><Mail size={17} className="text-blue-700"/><h3 className="font-extrabold text-slate-900">2. Email work handled by AI</h3></div>
-              <div className="grid gap-4 sm:grid-cols-2">
-                <label className="text-xs font-bold text-slate-600">Share of staff time spent on emails<input className={fieldClass} type="number" min="0" max="100" step="5" value={emailWorkShare} onChange={e=>setEmailWorkShare(Math.min(100,Math.max(0,Number(e.target.value)||0)))}/><span className="mt-1 block font-normal text-slate-500">100% means their full workday is email reading and replying.</span></label>
-                <label className="text-xs font-bold text-slate-600">How much of this email work will AI automate? (%)<input className={fieldClass} type="number" min="0" max="100" step="5" value={automationCoverage} onChange={e=>setAutomationCoverage(Math.min(100,Math.max(0,Number(e.target.value)||0)))}/><span className="mt-1 block font-normal text-slate-500">Use a realistic estimate; sensitive replies can still need approval.</span></label>
-                <label className="text-xs font-bold text-slate-600 sm:col-span-2">AI system availability per day (hours)<input className={fieldClass} type="number" min="0" max="24" step="1" value={automationHours} onChange={e=>setAutomationHours(Math.min(24,Math.max(0,Number(e.target.value)||0)))}/><span className="mt-1 block font-normal text-slate-500">Automation can monitor incoming emails 24/7. This does not mean 24 employee work hours are saved daily.</span></label>
+
+              <div className="border-t border-white/10 pt-6">
+                <div className="mb-4 flex items-center gap-2"><Mail size={17} className="text-blue-400"/><h4 className="font-semibold text-white">Email work handled by AI</h4></div>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <label className={labelClass}>Share of staff time spent on emails (%)<input className={inputClass} type="number" min="0" max="100" step="5" value={emailWorkShare} onChange={e=>setEmailWorkShare(Math.min(100,Math.max(0,Number(e.target.value)||0)))}/><span className="mt-1 block font-normal text-slate-500">100% means their full workday is email reading and replying.</span></label>
+                  <label className={labelClass}>How much email work will AI automate? (%)<input className={inputClass} type="number" min="0" max="100" step="5" value={automationCoverage} onChange={e=>setAutomationCoverage(Math.min(100,Math.max(0,Number(e.target.value)||0)))}/><span className="mt-1 block font-normal text-slate-500">Sensitive replies can still require human approval.</span></label>
+                  <label className={labelClass + ' sm:col-span-2'}>AI system availability per day (hours)<input className={inputClass} type="number" min="0" max="24" step="1" value={automationHours} onChange={e=>setAutomationHours(Math.min(24,Math.max(0,Number(e.target.value)||0)))}/><span className="mt-1 block font-normal text-slate-500">AI can monitor incoming emails 24/7. This does not mean employees save 24 working hours every day.</span></label>
+                </div>
+              </div>
+
+              <div className="border-t border-white/10 pt-6">
+                <div className="mb-4 flex items-center gap-2"><Wallet size={17} className="text-blue-400"/><h4 className="font-semibold text-white">Automation investment</h4></div>
+                <div className="mb-4 flex items-center justify-between gap-3"><label htmlFor="roi-currency" className="text-xs font-semibold text-slate-300">Currency</label><select id="roi-currency" className="rounded-xl border border-white/10 bg-[#0b1930] px-3 py-2 text-sm font-semibold text-white outline-none focus:border-blue-400" value={currency} onChange={e=>setCurrency(e.target.value)}><option value="PKR">PKR (Rs)</option><option value="USD">USD ($)</option><option value="GBP">GBP (£)</option><option value="EUR">EUR (€)</option></select></div>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <label className={labelClass}>AI automation cost per month<input className={inputClass} type="number" min="0" step="500" value={monthlyAiCost} onChange={e=>setMonthlyAiCost(Math.max(0,Number(e.target.value)||0))}/></label>
+                  <label className={labelClass}>One-time setup cost (optional)<input className={inputClass} type="number" min="0" step="500" value={setupCost} onChange={e=>setSetupCost(Math.max(0,Number(e.target.value)||0))}/></label>
+                </div>
               </div>
             </div>
-            <div className="border-t border-slate-100 pt-5">
-              <div className="mb-4 flex items-center gap-2"><Wallet size={17} className="text-blue-700"/><h3 className="font-extrabold text-slate-900">3. Automation investment</h3></div>
-              <div className="mb-4 flex items-center justify-between gap-3"><p className="text-xs text-slate-500">Currency</p><select aria-label="Currency" className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-700" value={currency} onChange={e=>setCurrency(e.target.value)}><option value="PKR">PKR (Rs)</option><option value="USD">USD ($)</option><option value="GBP">GBP (£)</option><option value="EUR">EUR (€)</option></select></div>
-              <div className="grid gap-4 sm:grid-cols-2">
-                <label className="text-xs font-bold text-slate-600">AI automation cost per month<input className={fieldClass} type="number" min="0" step="500" value={monthlyAiCost} onChange={e=>setMonthlyAiCost(Math.max(0,Number(e.target.value)||0))}/></label>
-                <label className="text-xs font-bold text-slate-600">One-time setup cost (optional)<input className={fieldClass} type="number" min="0" step="500" value={setupCost} onChange={e=>setSetupCost(Math.max(0,Number(e.target.value)||0))}/></label>
+          </section>
+
+          <section className="h-fit rounded-3xl border border-blue-400/20 bg-gradient-to-br from-[#122c52] to-[#10172c] p-5 shadow-xl shadow-black/10 sm:p-7">
+            <span className="text-xs font-bold tracking-wider text-blue-300">YOUR ESTIMATED RESULTS</span>
+            <h3 className="mt-2 text-2xl font-bold text-white">Your AI Savings Report</h3>
+            <div className="mt-6 grid grid-cols-2 gap-3">
+              <Result label="Total monthly salaries" value={money(result.totalPayroll)}/>
+              <Result label="AI availability" value={`${automationHours} hours/day`}/>
+              <Result label="Potential hours saved / month" value={number(result.hoursSaved)} suffix=" hrs"/>
+              <Result label="Monthly labor value" value={money(result.salaryEquivalentSaved)}/>
+              <Result label="AI cost / month" value={money(monthlyAiCost)}/>
+              <Result label="Break-even AI budget / month" value={money(result.breakEvenAiCost)}/>
+            </div>
+            <div className="mt-4 rounded-2xl border border-blue-300/20 bg-blue-500/10 p-5">
+              <p className="text-sm font-medium text-blue-200">Estimated monthly net benefit / capacity value</p>
+              <p className={`mt-2 break-words text-3xl font-bold tabular-nums sm:text-4xl ${result.monthlyNet >= 0 ? 'text-white' : 'text-rose-300'}`}>{money(result.monthlyNet)}</p>
+              <p className="mt-2 text-xs leading-5 text-blue-100/70">Estimated salary-cost equivalent released minus AI monthly cost.</p>
+              <div className="mt-5 border-t border-blue-300/20 pt-4">
+                <p className="text-sm text-blue-200">Estimated first-year net benefit</p>
+                <p className="mt-1 text-2xl font-bold text-white">{money(result.yearlyNet)}</p>
+                <p className="mt-4 text-sm text-blue-200">Estimated setup payback</p>
+                <p className="mt-1 text-xl font-semibold text-white">{setupCost === 0 ? 'No setup cost' : result.payback === null ? 'Not reached' : `${result.payback.toFixed(1)} months`}</p>
               </div>
             </div>
-          </div>
-          <div className="h-fit rounded-2xl border border-blue-100 bg-blue-50/60 p-5 lg:sticky lg:top-6">
-            <div className="flex items-center gap-2 text-sm font-extrabold text-slate-900"><TrendingUp size={17} className="text-blue-700"/> Estimated savings for your office</div>
-            <div className="mt-5 grid grid-cols-2 gap-3">
-              <div className="rounded-xl border border-white bg-white p-3"><p className="text-xs text-slate-500">Total monthly salaries</p><p className="mt-1 text-lg font-extrabold tabular-nums text-slate-900">{money(result.totalPayroll)}</p></div>
-              <div className="rounded-xl border border-white bg-white p-3"><p className="text-xs text-slate-500">AI availability</p><p className="mt-1 text-lg font-extrabold tabular-nums text-slate-900">{automationHours} hours/day</p></div>
-              <div className="col-span-2 rounded-xl border border-white bg-white p-4"><p className="text-xs text-slate-500">Estimated staff hours freed per month</p><p className="mt-1 text-2xl font-extrabold tabular-nums text-slate-900">{result.hoursSaved.toLocaleString('en-PK',{maximumFractionDigits:1})} hours</p></div>
-              <div className="col-span-2 rounded-xl border border-white bg-white p-4"><p className="text-xs text-slate-500">Monthly salary-cost equivalent of automated email work</p><p className="mt-1 text-2xl font-extrabold tabular-nums text-slate-900">{money(result.salaryEquivalentSaved)}</p><p className="mt-1 text-xs text-slate-500">Based on the email-work share and automation percentage above.</p></div>
-              <div className="rounded-xl border border-white bg-white p-3"><p className="text-xs text-slate-500">AI cost / month</p><p className="mt-1 text-lg font-extrabold tabular-nums text-slate-900">{money(monthlyAiCost)}</p></div>
-              <div className="rounded-xl border border-white bg-white p-3"><p className="text-xs text-slate-500">Break-even AI budget / month</p><p className="mt-1 text-lg font-extrabold tabular-nums text-slate-900">{money(result.breakEvenAiCost)}</p></div>
-              <div className="col-span-2 rounded-xl border border-blue-200 bg-blue-100/70 p-4"><p className="text-xs font-bold text-blue-900">Estimated net monthly saving / capacity value</p><p className={`mt-1 text-2xl font-extrabold tabular-nums ${result.monthlyNet >= 0 ? 'text-blue-950' : 'text-rose-700'}`}>{money(result.monthlyNet)}</p><p className="mt-1 text-xs text-blue-900/80">Salary-cost equivalent released minus AI monthly cost.</p></div>
-              <div className="col-span-2 rounded-xl border border-white bg-white p-4"><p className="text-xs text-slate-500">Estimated net value over 12 months, after setup cost</p><p className="mt-1 text-xl font-extrabold tabular-nums text-slate-900">{money(result.yearlyNet)}</p><p className="mt-1 text-xs text-slate-500">Includes 12 months of AI cost and one-time setup cost.</p></div>
-            </div>
-            <div className="mt-4 flex items-center justify-between gap-4 border-t border-blue-100 pt-4"><div><p className="text-xs text-slate-500">Setup payback estimate</p><p className="mt-1 text-lg font-extrabold text-slate-900">{setupCost === 0 ? 'No setup cost' : result.payback === null ? 'Not reached' : `${result.payback.toFixed(1)} months`}</p></div><div className="text-right"><p className="text-xs text-slate-500">Email work automated</p><p className="mt-1 text-lg font-extrabold text-slate-900">{automationCoverage}%</p></div></div>
-            <p className="mt-4 flex items-start gap-2 text-xs leading-5 text-slate-500"><Clock3 size={14} className="mt-0.5 shrink-0"/> Important: this is the salary-cost equivalent of staff capacity freed, not guaranteed cash savings or a recommendation to remove employees. If staff remain employed, the benefit is time they can use for other work. Actual results depend on email volume, accuracy, human review, and the AI system cost.</p>
-          </div>
+            <a href="https://orken.us/" target="_blank" rel="noopener noreferrer" className="mt-5 flex w-full items-center justify-center rounded-xl bg-blue-500 px-5 py-4 text-center text-sm font-bold text-white transition hover:bg-blue-400">Get My Personalized AI Automation Plan →</a>
+            <p className="mt-4 flex items-start gap-2 text-xs leading-5 text-slate-400"><Clock3 size={14} className="mt-0.5 shrink-0"/> Illustrative estimates only. Staff time value is not automatically cash saved. Actual results depend on email volume, automation coverage, accuracy, human review and AI system costs.</p>
+          </section>
         </div>
+
+        <section className="mt-12 text-center">
+          <h3 className="text-2xl font-bold text-white">Why automate your business?</h3>
+          <div className="mt-6 grid gap-4 md:grid-cols-3">
+            <Feature icon={<Clock3 size={19}/>} title="Save Time" description="Reduce repetitive manual tasks and free your team for valuable work."/>
+            <Feature icon={<Bot size={19}/>} title="Work Smarter" description="Automate email reading, replies and everyday business workflows."/>
+            <Feature icon={<TrendingUp size={19}/>} title="Grow Faster" description="Build efficient systems that can support your business growth."/>
+          </div>
+        </section>
+        <footer className="mt-12 border-t border-white/10 pt-6 text-center text-xs text-slate-500">Powered by Orken AI · AI Solutions & Automation</footer>
       </div>
     </section>
   );
+}
+
+function Result({ label, value, suffix = '' }: { label: string; value: string; suffix?: string }) {
+  return <div className="rounded-2xl border border-white/10 bg-white/5 p-4"><p className="text-xs leading-5 text-slate-400">{label}</p><p className="mt-2 break-words text-xl font-bold text-white sm:text-2xl">{value}{suffix}</p></div>;
+}
+
+function Feature({ icon, title, description }: { icon: React.ReactNode; title: string; description: string }) {
+  return <div className="rounded-2xl border border-white/10 bg-[#101f38] p-5 text-left"><span className="inline-flex rounded-xl bg-blue-500/10 p-2 text-blue-300">{icon}</span><h4 className="mt-3 text-base font-semibold text-blue-300">{title}</h4><p className="mt-2 text-sm leading-6 text-slate-400">{description}</p></div>;
 }

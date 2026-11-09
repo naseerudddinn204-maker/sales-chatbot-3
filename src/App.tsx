@@ -4,6 +4,7 @@ import { EmbedChat } from './components/EmbedChat';
 import { AiAgentBubble } from './components/AiAgentBubble';
 import { ChatbotCatalog } from './components/ChatbotCatalog';
 import { AiToolsPlatform } from './components/AiToolsPlatform';
+import { AiRoiCalculator } from './components/AiRoiCalculator';
 import { PublicLayout, PublicPages } from './components/PublicPages';
 
 export default function App() {
@@ -64,5 +65,5 @@ export default function App() {
     '/contact': 'contact',
   };
   const page = routeMap[path] || 'home';
-  return <PublicLayout page={page}><PublicPages page={page} /><AiAgentBubble /></PublicLayout>;
+  return <PublicLayout page={page}><PublicPages page={page} />{page === 'ai-tools' && <AiRoiCalculator />}<AiAgentBubble /></PublicLayout>;
 }
